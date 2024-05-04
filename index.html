@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Johnny's Game List</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="icon" type="image/x-icon" href="./icon/orange.ico" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Oxanium:wght@200..800&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="./main.css" />
+  </head>
+
+  <body>
+    <div class="container" id="container">
+      <div class="header">
+        <h2 class="title">Johnny's Game List</h2>
+        <div class="buttons">
+          <button class="header-button" id="readme" type="button">
+            README _
+          </button>
+          <button class="header-button" id="log" type="button">
+            GAME LOG _
+          </button>
+        </div>
+      </div>
+
+      <div class="item-container">
+        <div class="timeline">
+          <div class="item" data-text="Grand Theft Auto: Vice City">
+            <div class="content">
+              <img src="./img/gta-vc.png" alt="" class="img" />
+              <h2 class="content-title">2017</h2>
+            </div>
+          </div>
+
+          <div class="item" data-text="Grand Theft Auto V">
+            <div class="content">
+              <img src="./img/gta-5.png" alt="" class="img" />
+              <h2 class="content-title">2018</h2>
+            </div>
+          </div>
+
+          <div class="item" data-text="Dark Souls *">
+            <div class="content">
+              <img src="./img/dark-souls-1.jpg" alt="" class="img" />
+              <h2 class="content-title">2018</h2>
+            </div>
+          </div>
+
+          <div class="item" data-text="Sekiro: Shadows Die Twice *">
+            <div class="content">
+              <img src="./img/sekiro.jpg" alt="" class="img" />
+              <h2 class="content-title">2019</h2>
+            </div>
+          </div>
+
+          <div class="item" data-text="Dark Souls II">
+            <div class="content">
+              <img src="./img/dark-souls-2.png" alt="" class="img" />
+              <h2 class="content-title">2019</h2>
+            </div>
+          </div>
+
+          <div class="item" data-text="Grand Theft Auto: San Andreas">
+            <div class="content">
+              <img src="./img/gta-sa.jpg" alt="" class="img" />
+              <h2 class="content-title">2019</h2>
+            </div>
+          </div>
+
+          <div class="item" data-text="Dark Souls III *">
+            <div class="content">
+              <img src="./img/dark-souls-3.jpg" alt="" class="img" />
+              <h2 class="content-title">2020</h2>
+            </div>
+          </div>
+
+          <div class="item" data-text="Hades">
+            <div class="content">
+              <img src="./img/hades.png" alt="" class="img" />
+              <h2 class="content-title">2020</h2>
+            </div>
+          </div>
+
+          <div class="item" data-text="Nioh">
+            <div class="content">
+              <img src="./img/nioh.jpg" alt="" class="img" />
+              <h2 class="content-title">2020</h2>
+            </div>
+          </div>
+
+          <div class="item" data-text="Inside">
+            <div class="content">
+              <img src="./img/inside.jpg" alt="" class="img" />
+              <h2 class="content-title">2021</h2>
+            </div>
+          </div>
+
+          <div class="item" data-text="Nioh 2 - ">
+            <div class="content">
+              <img src="./img/nioh2.jpg" alt="" class="img" />
+              <h2 class="content-title">2021</h2>
+            </div>
+          </div>
+
+          <div class="item" data-text="Cyberpunk 2077 *">
+            <div class="content">
+              <img src="./img/cyberpunk.png" alt="" class="img" />
+              <h2 class="content-title">2021</h2>
+            </div>
+          </div>
+
+          <div class="item" data-text="Elden Ring *">
+            <div class="content">
+              <img src="./img/elden-ring.jpg" alt="" class="img" />
+              <h2 class="content-title">2022</h2>
+            </div>
+          </div>
+
+          <div class="item" data-text="Limbo -">
+            <div class="content">
+              <img src="./img/limbo.jpeg" alt="" class="img" />
+              <h2 class="content-title">2022</h2>
+            </div>
+          </div>
+
+          <div class="item" data-text="Bloodborne">
+            <div class="content">
+              <img src="./img/bloodborne.jpg" alt="" class="img" />
+              <h2 class="content-title">2022</h2>
+            </div>
+          </div>
+
+          <div class="item" data-text="GTA III">
+            <div class="content">
+              <img src="./img/gta-3.jpg" alt="" class="img" />
+              <h2 class="content-title">2022</h2>
+            </div>
+          </div>
+
+          <div class="item" data-text="A Way Out">
+            <div class="content">
+              <img src="./img/a-way-out.jpg" alt="" class="img" />
+              <h2 class="content-title">2023</h2>
+            </div>
+          </div>
+
+          <div class="item" data-text="It Takes Two">
+            <div class="content">
+              <img src="./img/it-takes-two.jpg" alt="" class="img" />
+              <h2 class="content-title">2023</h2>
+            </div>
+          </div>
+
+          <div class="item" data-text="Grand Theft Auto IV">
+            <div class="content">
+              <img src="./img/gta-4.png" alt="" class="img" />
+              <h2 class="content-title">2023</h2>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">
+        <h2>Contact Me</h2>
+
+        <div class="footer-button-container">
+          <button class="footer-button">
+            <img class="footer-icon" src="./icon/envelope-solid.svg" />
+            <span class="footer-text">johnnymu0809@gmail.com</span>
+          </button>
+
+          <button class="footer-button">
+            <img class="footer-icon" src="./icon/linkedin.svg" />
+            <span class="footer-text">
+              https://www.linkedin.com/in/zicheng-mu/
+            </span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+      const readMe = document.getElementById("readme");
+      readMe.onclick = function () {
+        Swal.fire({
+          icon: "info",
+          width: "800px",
+          html: `
+                <style>
+                    * { 
+                        font-size: 16px;
+                    }
+                </style>
+
+                 About this website:  <br />
+                 <br /> All elements and styles are coded by hand, <br />
+                 i.e. <b> no CSS frameworks like Tailwind or Bootstrap used</b>. <br />
+                 <br /> Except for this "Alert" window
+                 (which is much better than the default one, isn't it?), <br />
+                 everything else is implemented with <b>Vanilla JavaScript</b>. <br />
+                 <br /> My purpose in doing so was to demonstrate that I am familiar with the fundamentals. <br />
+                 <b> I am open to learning and using new techniques/frameworks/languages. </b>
+                 <br /> <br /> <hr /> <br />
+                 About the games:  <br/> <br />
+                 Games with a star mark (*) following their names indicate that the <b>Platinum Trophy</b> has been obtained. <br />
+                 <br /> Sadly, games with a dash (-) means I gave up in the middle way.`,
+        });
+      };
+
+      const log = document.getElementById("log");
+      log.onclick = function () {
+        Swal.fire({
+          width: "800px",
+          html: `
+                <style>
+                    * { 
+                        font-size: 20px;
+                    }
+                </style>
+
+                <br /><br />
+                <b>May 2024 - </b> I started my journey in <b>Sifu</b>.`,
+        });
+      };
+    </script>
+
+    <script src="./main.js"></script>
+  </body>
+</html>
