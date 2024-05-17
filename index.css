@@ -169,30 +169,31 @@
 
 /* #region footer START */
 .footer {
-  height: 300px;
-  /* margin-top: 100px; */
+  height: 325px;
   background-color: rgb(45, 45, 45);
-  padding-top: 100px;
+  /* background-color: rgba(255, 255, 0, 0.9); */
+  padding-top: 50px;
   text-align: center;
 }
 
 .footer h2 {
   color: rgba(0, 255, 255, 0.9);
   font-size: 42px;
+  margin-bottom: 30px;
 }
 
 .footer-button-container {
-  margin-top: 80px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
 }
 
 .footer-button {
   display: flex;
-  align-items: center;
-  justify-content: flex-start;
 
   height: 50px;
   width: 450px;
-  margin: 10px auto;
+  margin: 0 15px;
 
   font-size: 18px;
   font-weight: bold;
@@ -212,4 +213,70 @@
   color: white;
 }
 
+.msg-form {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+
+  /* background-color: #00b8ff;
+  width: 600px;
+  height: 300px; */
+}
+
+.form-label {
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  margin-right: 20px;
+
+  display: inline-block;
+  vertical-align: top;
+}
+
+.form-input {
+  height: 30px;
+  width: 300px;
+  margin-bottom: 20px;
+}
+
+/* .form-input-field {
+  height: 200px;
+  width: 500px;
+  margin: 10px 20px;
+} */
+
+.msg-button {
+  text-align: center;
+
+  height: 50px;
+  width: 300px;
+  margin: 20px 0;
+
+  line-height: 50px;
+  color: white;
+
+  font-size: 20px;
+  font-weight: bold;
+
+  background-color: rgba(61, 26, 175, 0.7);
+  clip-path: polygon(5% 0%, 100% 0%, 100% 75%, 95% 100%, 0 100%, 0% 25%);
+}
+
+.submit-button {
+  text-align: center;
+
+  height: 50px;
+  width: 300px;
+  margin: 20px 0;
+
+  line-height: 50px;
+  color: white;
+
+  font-size: 20px;
+  font-weight: bold;
+
+  background-color: rgba(61, 26, 175, 0.7);
+  clip-path: polygon(5% 0%, 100% 0%, 100% 75%, 95% 100%, 0 100%, 0% 25%);
+}
 /* #endregion footer END */

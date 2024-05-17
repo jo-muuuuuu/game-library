@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <title>Johnny's Game List</title>
 
+    <!-- Fonts and icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="icon" type="image/x-icon" href="./icon/orange.ico" />
@@ -12,7 +13,10 @@
       rel="stylesheet"
     />
 
-    <link rel="stylesheet" href="./main.css" />
+    <!-- Alert Library -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <link rel="stylesheet" href="./index.css" />
   </head>
 
   <body>
@@ -182,55 +186,13 @@
             </span>
           </button>
         </div>
+
+        <button class="msg-button" type="button">LEAVE A MESSAGE _</button>
+
+        <div id="for-form"></div>
       </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script>
-      const readMe = document.getElementById("readme");
-      readMe.onclick = function () {
-        Swal.fire({
-          icon: "info",
-          width: "800px",
-          html: `
-                <style>
-                    * { 
-                        font-size: 16px;
-                    }
-                </style>
-
-                 About this website:  <br />
-                 <br /> All elements and styles are coded by hand, <br />
-                 i.e. <b> no CSS frameworks like Tailwind or Bootstrap used</b>. <br />
-                 <br /> Except for this "Alert" window
-                 (which is much better than the default one, isn't it?), <br />
-                 everything else is implemented with <b>Vanilla JavaScript</b>. <br />
-                 <br /> My purpose in doing so was to demonstrate that I am familiar with the fundamentals. <br />
-                 <b> I am open to learning and using new techniques/frameworks/languages. </b>
-                 <br /> <br /> <hr /> <br />
-                 About the games:  <br/> <br />
-                 Games with a star mark (*) following their names indicate that the <b>Platinum Trophy</b> has been obtained. <br />
-                 <br /> Sadly, games with a dash (-) means I gave up in the middle way.`,
-        });
-      };
-
-      const log = document.getElementById("log");
-      log.onclick = function () {
-        Swal.fire({
-          width: "800px",
-          html: `
-                <style>
-                    * { 
-                        font-size: 20px;
-                    }
-                </style>
-
-                <br /><br />
-                <b>May 2024 - </b> I started my journey in <b>Sifu</b>.`,
-        });
-      };
-    </script>
-
-    <script src="./main.js"></script>
+    <script src="./index.js"></script>
   </body>
 </html>
