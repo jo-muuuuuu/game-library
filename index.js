@@ -4,6 +4,14 @@
 
 const items = document.querySelectorAll(".item");
 
+// 设置背景图片的函数
+function setBackgroundImage(imageUrl) {
+  document.body.style.backgroundImage = `url('${imageUrl}')`;
+  document.body.style.backgroundSize = "cover";
+  document.body.style.backgroundPosition = "center";
+  document.body.style.backgroundAttachment = "fixed";
+}
+
 window.addEventListener("scroll", function () {
   var windowHeight = window.innerHeight;
   var closestItem = null;
@@ -19,6 +27,9 @@ window.addEventListener("scroll", function () {
     let itemRectTop = item.getBoundingClientRect().top;
     if (itemRectTop >= 0 && itemRectTop < windowHeight / 2) {
       closestItem = item;
+
+      const img = closestItem.querySelector("img");
+      setBackgroundImage(img.src);
     }
   });
 
