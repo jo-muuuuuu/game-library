@@ -3,6 +3,7 @@
 // element.getBoundingClientRect().top : 元素距离视口顶端的距离（相对）
 
 const items = document.querySelectorAll(".item");
+const hiddenTexts = document.querySelectorAll(".hidden-text");
 
 // 设置背景图片的函数
 function setBackgroundImage(imageUrl) {
@@ -16,10 +17,16 @@ window.addEventListener("scroll", function () {
   var windowHeight = window.innerHeight;
   var closestItem = null;
 
-  items.forEach((item) => {
-    if (item.classList) {
-      item.classList.remove("hidden-text");
+  hiddenTexts.forEach((hiddenText) => {
+    if (hiddenText.classList) {
+      hiddenText.classList.add("hidden");
     }
+  });
+
+  items.forEach((item) => {
+    // if (item.classList) {
+    //   item.classList.remove("hidden-text");
+    // }
     item.querySelector("img").classList.remove("highlight");
     item.querySelector("img").classList.remove("visible");
     item.querySelector(".content-title").classList.remove("visible");
@@ -33,7 +40,8 @@ window.addEventListener("scroll", function () {
     }
   });
 
-  closestItem.classList.add("hidden-text");
+  // closestItem.classList.add("hidden-text");
+  closestItem.querySelector(".hidden-text").classList.remove("hidden");
   closestItem.querySelector("img").classList.add("highlight");
   closestItem.querySelector("img").classList.add("visible");
 
@@ -57,22 +65,16 @@ readMe.onclick = function () {
            <br /> 1. Due to my passion for gaming. <br />
            <br /> 2.To demonstrate that I am familiar with the fundamentals. <br />
            <b> (However, more importantly: I am open to learning and using new techniques/frameworks/languages.) </b> <br />
-
-           <br /> All elements and styles are coded by hand, <br />
-           i.e. <b> no CSS frameworks like Tailwind or Bootstrap used</b>. <br />
-           <br /> Except for the "Alert" windows
-           (which are much better than the default one, isn't it?), <br />
-           everything else is implemented with <b>Vanilla JavaScript</b>. <br />
-           
+         
            <br /> <hr /> <br />
            <h1 style="font-size:20px"> About the games:  </h1> <br />
            Games with a star mark (*) following their names indicate that the <b>Platinum Trophy</b> has been obtained. <br />
-           <br /> Sadly, games with a dash (-) means I gave up in the middle way.`,
+           <br /> Sadly, games starting with a delta (Δ) means I gave up in the middle way.`,
   });
 };
 
-const log = document.getElementById("log");
-log.onclick = function () {
+const cur = document.getElementById("cur");
+cur.onclick = function () {
   Swal.fire({
     width: "800px",
     html: `
@@ -83,8 +85,8 @@ log.onclick = function () {
           </style>
 
           <br /><br />
-          <b>May 2024 - </b> I started my journey in <b>Goat Simulator III</b>. <br />
-          <br /> <img src="./img/goat.jpeg" width=240px/>`,
+          <b>Oct 2024 - Ori and the Will of the Wisps</b>. <br />
+          <br /> <img src="./img/ori-will.jpg" width=240px/>`,
   });
 };
 
@@ -134,22 +136,20 @@ msgBtn.onclick = function () {
     </form>
   `;
 
-  document
-    .querySelector(".submit-button")
-    .addEventListener("click", function () {
-      var content = document.getElementById("content").value;
-      if (content) {
-        Swal.fire({
-          width: "800px",
-          title: "Content Submitted",
-          text: "Thanks for your feedback",
-        });
-      } else {
-        Swal.fire({
-          width: "800px",
-          title: "Failed to Submit",
-          text: "Sorry, the content field is empty.",
-        });
-      }
-    });
+  document.querySelector(".submit-button").addEventListener("click", function () {
+    var content = document.getElementById("content").value;
+    if (content) {
+      Swal.fire({
+        width: "800px",
+        title: "Content Submitted",
+        text: "Thanks for your feedback",
+      });
+    } else {
+      Swal.fire({
+        width: "800px",
+        title: "Failed to Submit",
+        text: "Sorry, the content field is empty.",
+      });
+    }
+  });
 };

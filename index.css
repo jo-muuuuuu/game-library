@@ -27,7 +27,7 @@ body {
 
 /* #region header START */
 .header {
-  height: 280px;
+  height: 210px;
   /* margin: 0 auto; */
   text-align: left;
   position: relative;
@@ -46,7 +46,7 @@ body {
 .buttons {
   display: flex;
   justify-content: right;
-  margin-top: 40px;
+  margin-top: 25px;
 }
 
 .header-button {
@@ -55,7 +55,7 @@ body {
   left: 50%;
   transform: translate(-50%, -50%); */
 
-  margin: 0 30px;
+  margin: 0 25px;
 
   height: 60px;
   width: 260px;
@@ -74,11 +74,51 @@ body {
   background-color: #f53a2d;
 }
 
-#log {
+#cur {
   margin-right: 50px;
   background-color: #00b8ff;
 }
 /* #endregion header END */
+
+/* #region grid START */
+.grid-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.grid-title {
+  margin-top: 20px;
+
+  font-weight: bold;
+  font-size: 32px;
+  color: #ffffff;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.grid-item {
+  margin: 15px 30px;
+  text-align: center;
+}
+
+.grid-text {
+  font-weight: bold;
+  font-size: 20px;
+  color: #ffffff;
+}
+
+.grid-img {
+  width: 240px;
+  /* box-shadow: 0 15px 20px rgba(0, 0, 0, 0.6); */
+  /* transition: width 0.3s ease; */
+}
+
+/* #endregion grid START */
 
 /* #region timeline START */
 .timeline {
@@ -128,11 +168,9 @@ body {
   align-self: flex-end;
 }
 
-.hidden-text:nth-child(odd)::before {
+.item:nth-child(odd) .hidden-text {
   position: absolute;
   left: 50%;
-  content: attr(data-text);
-  /* color: rgba(0, 255, 255, 0.9); */
   color: whitesmoke;
   font-weight: bold;
   font-size: 32px;
@@ -140,10 +178,9 @@ body {
   z-index: 10;
 }
 
-.hidden-text:nth-child(even)::before {
+.item:nth-child(even) .hidden-text {
   position: absolute;
   right: 50%;
-  content: attr(data-text);
   color: whitesmoke;
   font-weight: bold;
   font-size: 36px;
@@ -151,10 +188,14 @@ body {
   z-index: 10;
 }
 
+.hidden {
+  display: none;
+}
+
 .img {
   width: 360px;
   box-shadow: 0 15px 20px rgba(0, 0, 0, 0.6);
-  transition: width 0.3s ease; /* 添加平滑过渡效果 */
+  transition: width 0.3s ease;
 }
 
 .highlight {
