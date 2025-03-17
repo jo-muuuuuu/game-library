@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Johnny's Game Library</title>
+
+    <!-- Fonts and icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="icon" type="image/x-icon" href="./icon/orange.ico" />
+    <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@200..800&display=swap" rel="stylesheet" />
+
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/181c65c1ef.js" crossorigin="anonymous"></script>
+
+    <!-- Alert Library -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <link rel="stylesheet" href="./index.css" />
+  </head>
+
+  <body>
+    <div class="header">
+      <h2 class="title">Johnny's Game Library</h2>
+
+      <div class="buttons">
+        <button class="header-button" id="readme" type="button">README</button>
+        <button class="header-button" id="cur" type="button">CURRENT GAME</button>
+      </div>
+    </div>
+
+    <div class="container" id="container">
+      <div class="grid-container">
+        <div class="ct-grid-title">Childhood & Teenage Games</div>
+
+        <div class="grid">
+          <div class="grid-item">
+            <img src="./img/gta-vc.png" class="grid-img" />
+            <p class="grid-text">Grand Theft Auto: Vice City</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/diablo-2.jpg" class="grid-img" />
+            <p class="grid-text">Diablo II</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/dota.jpg" class="grid-img" />
+            <p class="grid-text">Dota</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/gta-sa.jpg" class="grid-img" />
+            <p class="grid-text">Grand Theft Auto: San Andreas</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/cs1-6.jpg" class="grid-img" />
+            <p class="grid-text">Counter Strike 1.6</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/red-alert.jpg" class="grid-img" />
+            <p class="grid-text">Command and Conquer: Red Alert II</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/aoe2.png" class="grid-img" />
+            <p class="grid-text">Age of Empires II</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/lol.jpg" class="grid-img" />
+            <p class="grid-text">League of Legends</p>
+          </div>
+        </div>
+
+        <div class="grid hidden" id="ct-game-grid">
+          <div class="grid-item">
+            <img src="./img/contra.jpg" class="grid-img" />
+            <p class="grid-text">Contra</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/yuris-revenge.jpg" class="grid-img" />
+            <p class="grid-text">Command and Conquer: Yuri's Revenge</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/kof.jpg" class="grid-img" />
+            <p class="grid-text">The King of Fighters</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/street-fighter.jpg" class="grid-img" />
+            <p class="grid-text">Street Fighter</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/road-rash.jpg" class="grid-img" />
+            <p class="grid-text">Road Rash</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/dnf.jpg" class="grid-img" />
+            <p class="grid-text">Dungeon & Fighter</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/cf.jpeg" class="grid-img" />
+            <p class="grid-text">CrossFire</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/metal-slug.jpeg" class="grid-img" />
+            <p class="grid-text">Metal Slug</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/warcraft3.jpg" class="grid-img" />
+            <p class="grid-text">Warcraft III: Frozen Throne</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/pvz.jpg" class="grid-img" />
+            <p class="grid-text">Plants vs Zombies</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/minecraft.jpg" class="grid-img" />
+            <p class="grid-text">Minecraft</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/prototype.jpg" class="grid-img" />
+            <p class="grid-text">Prototype</p>
+          </div>
+
+          <div class="grid-item">
+            <img src="./img/devil4.jpg" class="grid-img" />
+            <p class="grid-text">Devil May Cry 4</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/cod-mw.jpg" class="grid-img" />
+            <p class="grid-text">Call of Duty: Modern Warfare</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/cod-waw.png" class="grid-img" />
+            <p class="grid-text">Call of Duty: World At War</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/cod-mw2.jpg" class="grid-img" />
+            <p class="grid-text">Call of Duty: Modern Warfare II</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/cod-blackops.jpg" class="grid-img" />
+            <p class="grid-text">Call of Duty: Black Ops</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/cod-mw3.jpg" class="grid-img" />
+            <p class="grid-text">Call of Duty: Modern Warfare III</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/nba2k.png" class="grid-img" />
+            <p class="grid-text">NBA 2K Series</p>
+          </div>
+        </div>
+
+        <div class="grid-button-container">
+          <button class="ct-grid-toggle" id="ct-grid-toggle" type="button">More</button>
+        </div>
+      </div>
+
+      <div class="grid-container" style="margin-top: 20px">
+        <div class="su-grid-title">Games I've Played since University</div>
+
+        <div class="grid">
+          <div class="grid-item">
+            <img src="./img/wukong.jpg" class="grid-img" />
+            <p class="grid-text">Black Myth: Wukong *</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/gta-5.png" class="grid-img" />
+            <p class="grid-text">Grand Theft Auto V</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/sekiro.jpg" class="grid-img" />
+            <p class="grid-text">
+              Sekiro <br />
+              Shadows Die Twice *
+            </p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/cyberpunk.png" class="grid-img" />
+            <p class="grid-text">Cyberpunk 2077 *</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/bloodborne.jpg" class="grid-img" />
+            <p class="grid-text">Bloodborne</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/it-takes-two.jpg" class="grid-img" />
+            <p class="grid-text">It Takes Two *</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/death-stranding.jpg" class="grid-img" />
+            <p class="grid-text">Δ Death Stranding</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/zelda-breath.jpg" class="grid-img" />
+            <p class="grid-text">
+              The Legend of Zelda <br />
+              Breath of the Wild
+            </p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/fist.jpg" class="grid-img" />
+            <p class="grid-text">F.I.S.T. Forged In Shadow Torch</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/inside.jpg" class="grid-img" />
+            <p class="grid-text">Inside</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/hades.png" class="grid-img" />
+            <p class="grid-text">Hades</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/elden-ring.jpg" class="grid-img" />
+            <p class="grid-text">Elden Ring *</p>
+          </div>
+        </div>
+
+        <div class="grid hidden" id="su-game-grid">
+          <div class="grid-item">
+            <img src="./img/gta-vc.png" class="grid-img" />
+            <p class="grid-text">Grand Theft Auto: Vice City</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/gta-sa.jpg" class="grid-img" />
+            <p class="grid-text">Grand Theft Auto: San Andreas</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/gta-3.jpg" class="grid-img" />
+            <p class="grid-text">GTA III</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/gta-4.jpg" class="grid-img" />
+            <p class="grid-text">Grand Theft Auto IV</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/gta-4-dlc.png" class="grid-img" />
+            <p class="grid-text">
+              Grand Theft Auto IV DLCs
+              <br />
+              <small>The Lost and Damned</small>
+              <br />
+              <small>The Ballad of Gay Tony</small>
+            </p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/rdr2.jpg" class="grid-img" />
+            <p class="grid-text">Δ Red Dead Redemption II</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/hearthstone.jpg" class="grid-img" />
+            <p class="grid-text">Hearthstone</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/disco.png" class="grid-img" />
+            <p class="grid-text">Δ Disco Elysium</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/bloodborne-dlc.jpg" class="grid-img" />
+            <p class="grid-text">
+              Bloodborne DLC
+              <br />
+              <small>The Old Hunters</small>
+            </p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/elden-ring-dlc.jpg" class="grid-img" />
+            <p class="grid-text">
+              Elden Ring DLC
+              <br />
+              <small>Shadow of the Erdtree</small>
+            </p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/dark-souls-1.jpg" class="grid-img" />
+            <p class="grid-text">Dark Souls *</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/dark-souls-1-dlc.jpg" class="grid-img" />
+            <p class="grid-text">
+              Dark Souls DLC
+              <br />
+              Artorias of the Abyss
+            </p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/dark-souls-2.png" class="grid-img" />
+            <p class="grid-text">Dark Souls II</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/dark-souls-2-dlc.jpg" class="grid-img" />
+            <p class="grid-text">
+              Dark Souls II DLCs <br />
+              <small>Crown of the Sunken King</small>
+              <br />
+              <small>Crown of the Old Iron King</small>
+              <br />
+              <small>Crown of the Ivory King</small>
+            </p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/dark-souls-3.jpg" class="grid-img" />
+            <p class="grid-text">Dark Souls III *</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/dark-souls-3-dlc.jpg" class="grid-img" />
+            <p class="grid-text">
+              Dark Souls III DLCs
+              <br />
+              <small>Ashes of Ariandel</small>
+              <br />
+              <small>The Ringed City</small>
+            </p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/diablo-2.jpg" class="grid-img" />
+            <p class="grid-text">Diablo II</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/a-way-out.jpg" class="grid-img" />
+            <p class="grid-text">A Way Out</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/split-fiction.jpg" class="grid-img" />
+            <p class="grid-text">Split Fiction</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/slay-the-spire.jpeg" class="grid-img" />
+            <p class="grid-text">Slay the Spire</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/cyberpunk-dlc.jpg" class="grid-img" />
+            <p class="grid-text">
+              Cyberpunk 2077 DLC
+              <br />
+              <small>Phantom Liberty</small>
+            </p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/nioh.jpg" class="grid-img" />
+            <p class="grid-text">Nioh</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/nioh-dlc.jpg" class="grid-img" />
+            <p class="grid-text">
+              Nioh DLCs
+              <br />
+              <small>Drangon of the North</small>
+              <br />
+              <small>Defiant Honour</small>
+              <br />
+              <small>Bloodshed's End</small>
+            </p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/nioh2.jpg" class="grid-img" />
+            <p class="grid-text">Δ Nioh 2</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/ori-will.jpg" class="grid-img" />
+            <p class="grid-text">Ori - The will of the Wisps</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/dmc5.jpg" class="grid-img" />
+            <p class="grid-text">Δ Devil May Cry 5</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/titan-fall-2.jpeg" class="grid-img" />
+            <p class="grid-text">Titanfall 2</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/sifu.jpeg" class="grid-img" />
+            <p class="grid-text">Δ Sifu</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/overcooked.jpg" class="grid-img" />
+            <p class="grid-text">Overcooked!</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/overcooked2.jpeg" class="grid-img" />
+            <p class="grid-text">Overcooked! 2</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/storm.jpg" class="grid-img" />
+            <p class="grid-text">
+              Naruto Shippuden
+              <br />
+              Ultimate Ninja Storm 4
+            </p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/witcher3.jpg" class="grid-img" />
+            <p class="grid-text">Δ The Witcher III: Wild Hunt</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/goose.jpeg" class="grid-img" />
+            <p class="grid-text">Goose Goose Duck</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/limbo.jpeg" class="grid-img" />
+            <p class="grid-text">Δ Limbo</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/nba2k21.jpg" class="grid-img" />
+            <p class="grid-text">NBA 2K 21</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/goat.jpg" class="grid-img" />
+            <p class="grid-text">Δ Goat Simulator 3</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/dota-2.jpeg" class="grid-img" />
+            <p class="grid-text">Dota 2</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/cs-2.jpeg" class="grid-img" />
+            <p class="grid-text">Counter-Strike 2</p>
+          </div>
+          <div class="grid-item">
+            <img src="./img/pubg.jpeg" class="grid-img" />
+            <p class="grid-text">PUBG: Battlegrounds</p>
+          </div>
+        </div>
+
+        <div class="grid-button-container">
+          <button class="su-grid-toggle" id="su-grid-toggle" type="button">More</button>
+        </div>
+      </div>
+
+      <div class="item-container">
+        <div class="timeline-title">
+          My GOTYs <br />
+          <p style="font-size: 1rem; color: #b8b8b8">*Based on the year I played them & Up to 3 Games per Year</p>
+        </div>
+
+        <div class="timeline">
+          <div class="item">
+            <div class="hidden-text hidden">Grand Theft Auto: Vice City</div>
+            <div class="content">
+              <img src="./img/gta-vc.png" alt="" class="img" />
+              <h2 class="content-title">All Time</h2>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="hidden-text hidden">Grand Theft Auto V</div>
+            <div class="content">
+              <img src="./img/gta-5.png" alt="" class="img" />
+              <h2 class="content-title">2018</h2>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="content">
+              <div class="hidden-text hidden">Dark Souls *</div>
+              <img src="./img/dark-souls-1.jpg" alt="" class="img" />
+              <h2 class="content-title">2018</h2>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="hidden-text hidden">Sekiro: Shadows Die Twice *</div>
+            <div class="content">
+              <img src="./img/sekiro.jpg" alt="" class="img" />
+              <h2 class="content-title">2019</h2>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="hidden-text hidden">Dark Souls III *</div>
+            <div class="content">
+              <img src="./img/dark-souls-3.jpg" alt="" class="img" />
+              <h2 class="content-title">2020</h2>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="hidden-text hidden">Hades</div>
+            <div class="content">
+              <img src="./img/hades.png" alt="" class="img" />
+              <h2 class="content-title">2020</h2>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="hidden-text hidden">Inside</div>
+            <div class="content">
+              <img src="./img/inside.jpg" alt="" class="img" />
+              <h2 class="content-title">2021</h2>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="hidden-text hidden">Cyberpunk 2077 *</div>
+            <div class="content">
+              <img src="./img/cyberpunk.png" alt="" class="img" />
+              <h2 class="content-title">2021</h2>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="hidden-text hidden">Bloodborne</div>
+            <div class="content">
+              <img src="./img/bloodborne.jpg" alt="" class="img" />
+              <h2 class="content-title">2022</h2>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="hidden-text hidden">Elden Ring *</div>
+            <div class="content">
+              <img src="./img/elden-ring.jpg" alt="" class="img" />
+              <h2 class="content-title">2022</h2>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="hidden-text hidden">It Takes Two</div>
+            <div class="content">
+              <img src="./img/it-takes-two.jpg" alt="" class="img" />
+              <h2 class="content-title">2023</h2>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="hidden-text hidden">
+              The Legend of Zelda
+              <br />
+              Breath of the Wild
+            </div>
+            <div class="content">
+              <img src="./img/zelda-breath.jpg" alt="" class="img" />
+              <h2 class="content-title">2023</h2>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="hidden-text hidden">F.I.S.T. Forged In Shadow Torch</div>
+            <div class="content">
+              <img src="./img/fist.jpg" alt="" class="img" />
+              <h2 class="content-title">2023</h2>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="hidden-text hidden">Black Myth: Wukong *</div>
+            <div class="content">
+              <img src="./img/wukong.jpg" alt="" class="img" />
+              <h2 class="content-title">2024</h2>
+            </div>
+          </div>
+          <div class="item">
+            <div class="hidden-text hidden">Split Fiction</div>
+            <div class="content">
+              <img src="./img/split-fiction.jpg" alt="" class="img" />
+              <h2 class="content-title">2025</h2>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <h2>Contact Me</h2>
+
+      <div class="footer-button-container">
+        <button class="footer-button">
+          <img class="footer-icon" src="./icon/envelope-solid.svg" />
+          <span class="footer-text">johnnymu0809@gmail.com</span>
+        </button>
+
+        <button class="footer-button">
+          <img class="footer-icon" src="./icon/linkedin.svg" />
+          <span class="footer-text"> https://www.linkedin.com/in/zicheng-mu/ </span>
+        </button>
+      </div>
+
+      <!-- <button class="msg-button" type="button">LEAVE A MESSAGE _</button> -->
+
+      <div id="for-form"></div>
+    </div>
+
+    <script src="./index.js"></script>
+  </body>
+</html>
