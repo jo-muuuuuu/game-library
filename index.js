@@ -6,14 +6,18 @@ const ctGridToggle = document.getElementById("ct-grid-toggle");
 const ctGrid = document.getElementById("ct-game-grid");
 ctGridToggle.onclick = function () {
   ctGrid.classList.toggle("hidden");
-  ctGridToggle.textContent = ctGrid.classList.contains("hidden") ? "More" : "Less";
+  ctGridToggle.textContent = ctGrid.classList.contains("hidden")
+    ? "More"
+    : "Less";
 };
 
 const suGridToggle = document.getElementById("su-grid-toggle");
 const suGrid = document.getElementById("su-game-grid");
 suGridToggle.onclick = function () {
   suGrid.classList.toggle("hidden");
-  suGridToggle.textContent = suGrid.classList.contains("hidden") ? "More" : "Less";
+  suGridToggle.textContent = suGrid.classList.contains("hidden")
+    ? "More"
+    : "Less";
 };
 
 const items = document.querySelectorAll(".item");
@@ -104,8 +108,8 @@ cur.onclick = function () {
           </style>
 
           <br /><br />
-          <b>Mar 2025 - Death Stranding</b>. <br />
-          <br /> <img src="./img/death-stranding.jpg" width=240px/>`,
+          <b>Sep 2025 - Dead Cells</b>. <br />
+          <br /> <img src="./img/dead-cells.jpg" width=240px/>`,
   });
 };
 
