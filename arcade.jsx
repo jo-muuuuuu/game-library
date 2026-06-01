@@ -178,6 +178,8 @@ function Scanlines({ opacity = 0.18 }) {
 
 // ---- CRT cover card (16:9 landscape) ----
 function CRTCover({ g, accent, neon, sticky = "#ffd23e" }) {
+  const [failed, setFailed] = React.useState(false);
+  React.useEffect(() => setFailed(false), [g.img]);
   return (
     <div
       style={{
@@ -213,10 +215,11 @@ function CRTCover({ g, accent, neon, sticky = "#ffd23e" }) {
           boxShadow: "inset 0 0 30px rgba(0,0,0,0.8)",
         }}
       >
-        {g.img ? (
+        {g.img && !failed ? (
           <img
             src={g.img}
             alt={g.title}
+            onError={() => setFailed(true)}
             style={{
               width: "100%",
               height: "100%",
@@ -848,6 +851,8 @@ function ArcTopBar({ accent, neon }) {
 
 // ---- CRT screen (shared) ----
 function CoverScreen({ g, neon }) {
+  const [failed, setFailed] = React.useState(false);
+  React.useEffect(() => setFailed(false), [g.img]);
   return (
     <div
       style={{
@@ -859,10 +864,11 @@ function CoverScreen({ g, neon }) {
         width: "100%",
       }}
     >
-      {g.img ? (
+      {g.img && !failed ? (
         <img
           src={g.img}
           alt={g.title}
+          onError={() => setFailed(true)}
           style={{
             width: "100%",
             height: "100%",
@@ -916,6 +922,25 @@ function CoverScreen({ g, neon }) {
           boxShadow: `inset 0 0 60px ${neon}40`,
         }}
       />
+    </div>
+  );
+}
+
+// ---- Screen bezel (shared by monitor + TV) ----
+function ScreenBezel({ g, neon, accent }) {
+  return (
+    <div
+      style={{
+        background: "#16162b",
+        padding: 0,
+        border: "4px solid #2a2a44",
+        boxShadow: "6px 6px 0 #000",
+        position: "relative",
+      }}
+    >
+      <div style={{ border: "3px solid #0d0d18", boxSizing: "border-box" }}>
+        <CoverScreen g={g} neon={neon} />
+      </div>
     </div>
   );
 }
@@ -1022,21 +1047,7 @@ function PCMonitor({ g, accent, neon, idx }) {
         <div style={{ width: 14, height: 4, background: "#2a2a44" }} />
       </div>
       <div style={{ flex: 1 }}>
-        <div
-          style={{
-            background: "#1a1a2e",
-            padding: 0,
-            border: "4px solid #2a2a44",
-            boxShadow: "6px 6px 0 #000, inset 0 0 0 2px #0d0d18",
-            position: "relative",
-          }}
-        >
-          <CoverScreen g={g} neon={neon} />
-          <div style={{ display: "flex", gap: 5, padding: "6px 10px" }}>
-            <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#3a3a55", boxShadow: "inset 1px 1px 0 #0d0d18" }} />
-            <div style={{ width: 10, height: 10, borderRadius: "50%", background: accent, boxShadow: `inset 1px 1px 0 #0d0d18, 0 0 6px ${accent}` }} />
-          </div>
-        </div>
+        <ScreenBezel g={g} neon={neon} accent={accent} />
         <div
           style={{
             width: 60,
@@ -1065,21 +1076,7 @@ function PCMonitor({ g, accent, neon, idx }) {
 function PS5TVDisplay({ g, accent, neon, idx }) {
   return (
     <div style={{ width: 460 }}>
-      <div
-        style={{
-          background: "#1a1a2e",
-          padding: 0,
-          border: "4px solid #2a2a44",
-          boxShadow: "6px 6px 0 #000, inset 0 0 0 2px #0d0d18",
-          position: "relative",
-        }}
-      >
-        <CoverScreen g={g} neon={neon} />
-        <div style={{ display: "flex", gap: 5, padding: "6px 10px" }}>
-          <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#3a3a55", boxShadow: "inset 1px 1px 0 #0d0d18" }} />
-          <div style={{ width: 10, height: 10, borderRadius: "50%", background: accent, boxShadow: `inset 1px 1px 0 #0d0d18, 0 0 6px ${accent}` }} />
-        </div>
-      </div>
+      <ScreenBezel g={g} neon={neon} accent={accent} />
       <div
         style={{
           width: 140,
@@ -1221,10 +1218,20 @@ function SwitchHandheld({ g, accent, neon, idx }) {
             background: "#1a1a2e",
             borderTop: "4px solid #0a0a1a",
             borderBottom: "4px solid #0a0a1a",
-            padding: "14px 10px 8px",
+            padding: 0,
+            display: "flex",
+            alignItems: "center",
           }}
         >
-          <CoverScreen g={g} neon={neon} />
+          <div
+            style={{
+              width: "100%",
+              border: "3px solid #0d0d18",
+              boxSizing: "border-box",
+            }}
+          >
+            <CoverScreen g={g} neon={neon} />
+          </div>
         </div>
         <div
           style={{
@@ -1327,9 +1334,10 @@ function ArcHero({ accent, neon, tagColor, tagBg, tagFont }) {
       blurb: "Back in Yharnam. The hunt never really ends.",
     },
     {
-      id: "diablo-4",
+      id: "zelda-tears",
       platform: "switch",
-      blurb: "Back in Sanctuary for the seasonal grind. Demons, loot, repeat.",
+      blurb:
+        "Hyrule from the skies down to the depths. Build anything, go anywhere — the sequel that somehow outdid Breath of the Wild.",
     },
   ];
   const [idx, setIdx] = React.useState(0);
@@ -1488,7 +1496,6 @@ function ArcHero({ accent, neon, tagColor, tagBg, tagFont }) {
                     <span>{PLATFORM_DEFS[entry.platform].label}</span>
                   </div>
                   <div style={chip}>
-                    <span>►</span>
                     <span>{(g.tag || "").toUpperCase()}</span>
                   </div>
                   <div style={chip}>
