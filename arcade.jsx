@@ -2,8 +2,6 @@
 // Pixel chrome wrapping real covers, scanlines, neon.
 // All special characters use clean Unicode (no mojibake).
 
-const arcW = 1280;
-
 const PALETTES = [
   { label: "PINK", colors: ["#ff2e88", "#00e5ff", "#fff066"] },
   { label: "ORANGE", colors: ["#ff7e3e", "#3dc8ff", "#ffd23e"] },
@@ -13,7 +11,9 @@ const PALETTES = [
 
 const arcStyles = {
   root: {
-    width: arcW,
+    width: "100%",
+    minHeight: "100vh",
+    boxSizing: "border-box",
     background: "#0d0d18",
     color: "#e8e8f0",
     fontFamily: '"VT323", ui-monospace, "Courier New", monospace',
@@ -416,6 +416,18 @@ function ArcPlayerProfile({
   tagline = "Souls connoisseur · open-world tourist · co-op believer",
   platinum = 7,
 }) {
+  // Which preset palette is active (matched by accent colour) → drives the
+  // player tag (P1–P4) and the avatar's hair colour so they track the theme.
+  const paletteIndex = Math.max(
+    0,
+    PALETTES.findIndex(
+      (p) => p.colors[0].toLowerCase() === String(accent).toLowerCase(),
+    ),
+  );
+  const playerTag = `P${paletteIndex + 1}`;
+  const hairColors = ["#5a3a8a", "#2a5aa0", "#2f7a4a", "#9a5a2a"];
+  const hair = hairColors[paletteIndex];
+
   const pixelAvatar = (
     <div style={{ position: "relative", width: 88, height: 88 }}>
       <div style={{ position: "absolute", inset: 0, background: "#0a0a1a" }} />
@@ -426,7 +438,7 @@ function ArcPlayerProfile({
           left: 16,
           width: 56,
           height: 16,
-          background: "#5a3a8a",
+          background: hair,
         }}
       />
       <div
@@ -436,7 +448,7 @@ function ArcPlayerProfile({
           left: 8,
           width: 72,
           height: 16,
-          background: "#5a3a8a",
+          background: hair,
         }}
       />
       <div
@@ -538,7 +550,7 @@ function ArcPlayerProfile({
             boxShadow: "2px 2px 0 #000",
           }}
         >
-          P1
+          {playerTag}
         </div>
       </div>
 
@@ -1319,23 +1331,108 @@ function PlatformDisplay({ platform, g, accent, neon, idx }) {
   );
 }
 
+// ---- Auto-fitting one-line title ----
+// Shrinks the font (down to `min`) so the title always fits on a single line.
+// Lives inside a fixed-height slot so its vertical position never shifts.
+function FitTitle({
+  text,
+  accent,
+  neon,
+  max = 48,
+  min = 18,
+  height = 64,
+  align = "center",
+}) {
+  const ref = React.useRef(null);
+  const [size, setSize] = React.useState(max);
+
+  React.useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const parent = el.parentElement;
+    if (!parent) return;
+    let s = max;
+    el.style.fontSize = s + "px";
+    // Shrink until the single line fits the available width.
+    while (s > min && el.scrollWidth > parent.clientWidth) {
+      s -= 1;
+      el.style.fontSize = s + "px";
+    }
+    setSize(s);
+  }, [text, max, min]);
+
+  return (
+    <div
+      style={{
+        width: "100%",
+        minWidth: 0,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: align === "left" ? "flex-start" : "center",
+        margin: "0 0 24px 0",
+      }}
+    >
+      <div
+        style={{
+          width: "100%",
+          minWidth: 0,
+          height,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: align === "left" ? "flex-start" : "center",
+          overflow: "hidden",
+        }}
+      >
+        <h1
+          ref={ref}
+          style={{
+            fontFamily: PIXEL,
+            fontSize: size,
+            lineHeight: 1.1,
+            margin: 0,
+            whiteSpace: "nowrap",
+            letterSpacing: "0.02em",
+            textAlign: align,
+            color: "#fff",
+            textShadow: `0 0 10px ${neon || accent}88, 4px 4px 0 ${accent}, 8px 8px 0 #000`,
+          }}
+        >
+          {text}
+        </h1>
+      </div>
+      <div
+        style={{
+          marginTop: 14,
+          width: 80,
+          height: 6,
+          background: accent,
+          boxShadow: `0 0 7px ${neon || accent}99`,
+        }}
+      />
+    </div>
+  );
+}
+
 // ---- Hero / Now Playing carousel ----
 function ArcHero({ accent, neon, tagColor, tagBg, tagFont }) {
   const NOW_PLAYING = [
     {
       id: "brotato",
       platform: "pc",
+      company: "Blobfish",
       blurb:
         "A sentient potato fights waves of aliens. 20-minute runs, absurd builds, the most addictive loop I've found this year.",
     },
     {
       id: "bloodborne",
       platform: "ps5",
+      company: "FromSoftware",
       blurb: "Back in Yharnam. The hunt never really ends.",
     },
     {
       id: "zelda-tears",
       platform: "switch",
+      company: "Nintendo",
       blurb:
         "Hyrule from the skies down to the depths. Build anything, go anywhere — the sequel that somehow outdid Breath of the Wild.",
     },
@@ -1348,6 +1445,9 @@ function ArcHero({ accent, neon, tagColor, tagBg, tagFont }) {
     tag: "",
     img: null,
   };
+  const progressLabel = `${String(idx + 1).padStart(2, "0")}/${String(
+    NOW_PLAYING.length,
+  ).padStart(2, "0")}`;
   const next = () => setIdx((i) => (i + 1) % NOW_PLAYING.length);
   const prev = () => setIdx((i) => (i - 1 + NOW_PLAYING.length) % NOW_PLAYING.length);
 
@@ -1375,7 +1475,7 @@ function ArcHero({ accent, neon, tagColor, tagBg, tagFont }) {
     <div
       style={{
         position: "relative",
-        padding: "50px 40px",
+        padding: "36px 40px 34px",
         background: "linear-gradient(180deg, #1a0a2e 0%, #0d0d18 100%)",
         borderBottom: "3px solid #2a2a44",
         overflow: "hidden",
@@ -1396,31 +1496,49 @@ function ArcHero({ accent, neon, tagColor, tagBg, tagFont }) {
         style={{
           position: "relative",
           display: "grid",
-          gridTemplateColumns: "1fr 540px",
+          gridTemplateColumns: "minmax(0, 1fr) 540px",
           gap: 50,
+          minHeight: 340,
           alignItems: "center",
         }}
       >
         <div
           style={{
-            textAlign: "center",
+            textAlign: "left",
             display: "flex",
             flexDirection: "column",
-            alignItems: "center",
+            alignItems: "flex-start",
+            minWidth: 0,
           }}
         >
           <div
-            style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 22 }}
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 18,
+              minWidth: 320,
+              minHeight: 52,
+              padding: "0 16px",
+              marginBottom: 22,
+              border: `3px solid ${neon}`,
+              background: `linear-gradient(90deg, ${neon}1a, ${accent}12)`,
+              boxShadow: `4px 4px 0 #000, 0 0 16px ${neon}33`,
+              boxSizing: "border-box",
+            }}
           >
             <div
               style={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 10,
                 fontFamily: PIXEL,
-                fontSize: 9,
+                fontSize: 10,
                 color: neon,
-                padding: "8px 14px",
-                border: `2px solid ${neon}`,
-                background: `${neon}11`,
+                padding: 0,
                 letterSpacing: "0.15em",
+                boxSizing: "border-box",
               }}
             >
               ► NOW PLAYING
@@ -1428,45 +1546,33 @@ function ArcHero({ accent, neon, tagColor, tagBg, tagFont }) {
             <div
               style={{
                 fontFamily: PIXEL,
-                fontSize: 8,
-                color: "rgba(232,232,240,0.5)",
+                fontSize: 9,
+                color: "#0d0d18",
+                background: neon,
+                padding: "7px 9px",
                 letterSpacing: "0.15em",
+                boxShadow: "2px 2px 0 #000",
               }}
             >
-              {String(idx + 1).padStart(2, "0")} /{" "}
-              {String(NOW_PLAYING.length).padStart(2, "0")}
+              {progressLabel}
             </div>
           </div>
-          <h1
-            style={{
-              fontFamily: PIXEL,
-              fontSize: 40,
-              lineHeight: 1.15,
-              margin: "0 0 24px 0",
-              letterSpacing: "0.02em",
-              textShadow: `4px 4px 0 ${accent}, 8px 8px 0 #000`,
-            }}
-          >
-            {g.title.toUpperCase()}
-          </h1>
+          <FitTitle
+            text={g.title.toUpperCase()}
+            accent={accent}
+            neon={neon}
+            max={36}
+            min={16}
+            height={50}
+            align="left"
+          />
           <div
             style={{
-              fontSize: 22,
-              lineHeight: 1.4,
-              color: "rgba(232,232,240,0.85)",
-              maxWidth: 540,
-              marginBottom: 32,
-            }}
-          >
-            {entry.blurb}
-          </div>
-          <div
-            style={{
-              display: "flex",
+              display: "grid",
+              gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
               gap: 10,
-              alignItems: "center",
-              flexWrap: "wrap",
-              justifyContent: "center",
+              width: "100%",
+              maxWidth: 430,
             }}
           >
             {(() => {
@@ -1479,27 +1585,47 @@ function ArcHero({ accent, neon, tagColor, tagBg, tagFont }) {
                 justifyContent: "center",
                 gap: 8,
                 padding: "0 12px",
-                height: 30,
-                minWidth: 160,
+                height: 32,
+                width: "100%",
                 background: bg,
                 color: fg,
                 border: `2px dashed ${border}`,
                 fontFamily: PIXEL,
-                fontSize: 9,
+                fontSize: 8,
                 letterSpacing: "0.15em",
                 boxSizing: "border-box",
               };
+              const platformChip = {
+                ...chip,
+                background: "#0a0a1a",
+                color: neon,
+                border: `2px solid ${neon}`,
+                boxShadow: `3px 3px 0 #000, inset 0 0 0 2px #1a1a2e, 0 0 12px ${neon}33`,
+              };
+              const yearChip = {
+                ...chip,
+                gridColumn: "1 / -1",
+                gridRow: 1,
+                height: 42,
+                background: accent,
+                color: "#0d0d18",
+                border: `2px solid ${accent}`,
+                fontSize: 10,
+                boxShadow: `3px 3px 0 #000, 0 0 12px ${accent}55`,
+              };
               return (
                 <React.Fragment>
-                  <div style={chip}>
+                  <div style={yearChip}>
+                    <span>
+                      {(entry.company || "UNKNOWN").toUpperCase()} - {g.year}
+                    </span>
+                  </div>
+                  <div style={platformChip}>
                     <PlatformIcon platform={entry.platform} scale={2} />
                     <span>{PLATFORM_DEFS[entry.platform].label}</span>
                   </div>
                   <div style={chip}>
                     <span>{(g.tag || "").toUpperCase()}</span>
-                  </div>
-                  <div style={chip}>
-                    <span>{g.year}</span>
                   </div>
                 </React.Fragment>
               );
@@ -1517,7 +1643,7 @@ function ArcHero({ accent, neon, tagColor, tagBg, tagFont }) {
       <div
         style={{
           position: "relative",
-          marginTop: 36,
+          marginTop: 18,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -1727,72 +1853,108 @@ function ArcLibrary({ era, kicker, title, accent, neon, sticky }) {
 }
 
 // ---- Footer ----
+function ArcContactLink({ href, external, neon, icon, label }) {
+  const [hover, setHover] = React.useState(false);
+  return (
+    <a
+      href={href}
+      {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 9,
+        textDecoration: "none",
+        fontFamily: PIXEL,
+        fontSize: 8,
+        letterSpacing: "0.1em",
+        color: hover ? neon : "rgba(232,232,240,0.6)",
+        transition: "color 0.15s",
+      }}
+    >
+      {icon}
+      <span>{label}</span>
+    </a>
+  );
+}
+
 function ArcFooter({ accent, neon }) {
+  const mailIcon = (
+    <svg
+      width="15"
+      height="15"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke={neon}
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      style={{ flex: "none" }}
+    >
+      <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+      <path d="m3 6 9 7 9-7"></path>
+    </svg>
+  );
+  const liIcon = (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill={neon} style={{ flex: "none" }}>
+      <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"></path>
+    </svg>
+  );
   return (
     <div
       style={{
         marginTop: 60,
-        padding: "50px 40px",
+        padding: "32px 40px 34px",
         borderTop: `3px solid ${accent}`,
         background: "#1a1a2e",
+        textAlign: "center",
       }}
     >
       <div
         style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "flex-end",
+          fontFamily: PIXEL,
+          fontSize: 30,
+          color: accent,
+          letterSpacing: "0.08em",
+          textShadow: `0 0 18px ${accent}80`,
         }}
       >
-        <div>
-          <div
-            style={{
-              fontFamily: PIXEL,
-              fontSize: 36,
-              color: neon,
-              letterSpacing: "0.04em",
-              marginBottom: 8,
-            }}
-          >
-            ★ {STATS.total} ★
-          </div>
-          <div
-            style={{
-              fontFamily: PIXEL,
-              fontSize: 9,
-              color: "rgba(232,232,240,0.6)",
-              letterSpacing: "0.15em",
-            }}
-          >
-            TITLES UNLOCKED · {STATS.earliest}–{STATS.latest}
-          </div>
-        </div>
-        <div
-          style={{
-            fontFamily: PIXEL,
-            fontSize: 8,
-            color: "rgba(232,232,240,0.5)",
-            textAlign: "right",
-            letterSpacing: "0.1em",
-            lineHeight: 1.8,
-          }}
-        >
-          @ JOHNNYMU0809@GMAIL.COM
-          <br />
-          in LINKEDIN.COM/IN/ZICHENG-MU
-        </div>
+        GAME OVER
       </div>
       <div
         style={{
-          marginTop: 40,
           fontFamily: PIXEL,
-          fontSize: 8,
-          color: "rgba(232,232,240,0.3)",
-          textAlign: "center",
-          letterSpacing: "0.2em",
+          fontSize: 9,
+          color: "#e8e8f0",
+          letterSpacing: "0.18em",
+          marginTop: 20,
         }}
       >
-        ► INSERT COIN TO CONTINUE ◄
+        CONTINUE? - INSERT COIN TO REPLAY
+      </div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          flexWrap: "wrap",
+          gap: 34,
+          marginTop: 24,
+        }}
+      >
+        <ArcContactLink
+          href="mailto:johnnymu0809@gmail.com"
+          neon={neon}
+          icon={mailIcon}
+          label="JOHNNYMU0809@GMAIL.COM"
+        />
+        <ArcContactLink
+          href="https://linkedin.com/in/zicheng-mu"
+          external
+          neon={neon}
+          icon={liIcon}
+          label="LINKEDIN.COM/IN/ZICHENG-MU"
+        />
       </div>
     </div>
   );
@@ -1812,14 +1974,17 @@ function Arcade({
 }) {
   return (
     <div style={arcStyles.root}>
-      <ArcTopBar accent={accent} neon={neon} />
-      <ArcPlayerProfile
-        accent={accent}
-        neon={neon}
-        name={playerName}
-        tagline={tagline}
-        platinum={platinum}
-      />
+      <div className="arc-full-bleed">
+        <ArcTopBar accent={accent} neon={neon} />
+        <ArcPlayerProfile
+          accent={accent}
+          neon={neon}
+          name={playerName}
+          tagline={tagline}
+          platinum={platinum}
+        />
+      </div>
+      <div className="arc-shell">
       <div id="arc-now-playing">
         <ArcHero
           accent={accent}
@@ -1853,7 +2018,10 @@ function Arcade({
           sticky={sticky}
         />
       </div>
-      <ArcFooter accent={accent} neon={neon} />
+      </div>
+      <div className="arc-full-bleed">
+        <ArcFooter accent={accent} neon={neon} />
+      </div>
       <Scanlines opacity={0.12} />
     </div>
   );

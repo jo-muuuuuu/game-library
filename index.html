@@ -15,12 +15,28 @@
       body {
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
         min-height: 100vh;
-        display: flex;
-        justify-content: center;
+        overflow-x: hidden;
       }
       #root {
+        width: 100%;
+        min-height: 100vh;
+      }
+      .arc-full-bleed {
+        width: 100vw;
+        max-width: 100vw;
+        box-sizing: border-box;
+      }
+      .arc-shell {
         width: 1280px;
         max-width: 100%;
+        margin: 0 auto;
+        box-sizing: border-box;
+        background: #0d0d18;
+      }
+      @media (max-width: 1280px) {
+        .arc-shell {
+          width: 100%;
+        }
       }
     </style>
 
