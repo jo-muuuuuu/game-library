@@ -1338,6 +1338,7 @@ function FitTitle({
   text,
   accent,
   neon,
+  meta,
   max = 48,
   min = 18,
   height = 64,
@@ -1400,6 +1401,21 @@ function FitTitle({
           {text}
         </h1>
       </div>
+      {meta && (
+        <div
+          style={{
+            marginTop: 8,
+            color: "#b9b9c9",
+            fontFamily: PIXEL,
+            fontSize: 9,
+            letterSpacing: "0.12em",
+            lineHeight: 1.5,
+            textTransform: "uppercase",
+          }}
+        >
+          {meta}
+        </div>
+      )}
       <div
         style={{
           marginTop: 14,
@@ -1420,6 +1436,7 @@ function ArcHero({ accent, neon, tagColor, tagBg, tagFont }) {
       id: "brotato",
       platform: "pc",
       company: "Blobfish",
+      releaseMonth: "September",
       blurb:
         "A sentient potato fights waves of aliens. 20-minute runs, absurd builds, the most addictive loop I've found this year.",
     },
@@ -1427,12 +1444,14 @@ function ArcHero({ accent, neon, tagColor, tagBg, tagFont }) {
       id: "bloodborne",
       platform: "ps5",
       company: "FromSoftware",
+      releaseMonth: "March",
       blurb: "Back in Yharnam. The hunt never really ends.",
     },
     {
       id: "zelda-tears",
       platform: "switch",
       company: "Nintendo",
+      releaseMonth: "May",
       blurb:
         "Hyrule from the skies down to the depths. Build anything, go anywhere — the sequel that somehow outdid Breath of the Wild.",
     },
@@ -1559,6 +1578,12 @@ function ArcHero({ accent, neon, tagColor, tagBg, tagFont }) {
           </div>
           <FitTitle
             text={g.title.toUpperCase()}
+            meta={
+              <>
+                {(entry.company || "UNKNOWN").toUpperCase()} /{" "}
+                {`${entry.releaseMonth ? `${entry.releaseMonth} ` : ""}${g.year}`.toUpperCase()}
+              </>
+            }
             accent={accent}
             neon={neon}
             max={36}
@@ -1602,24 +1627,8 @@ function ArcHero({ accent, neon, tagColor, tagBg, tagFont }) {
                 border: `2px solid ${neon}`,
                 boxShadow: `3px 3px 0 #000, inset 0 0 0 2px #1a1a2e, 0 0 12px ${neon}33`,
               };
-              const yearChip = {
-                ...chip,
-                gridColumn: "1 / -1",
-                gridRow: 1,
-                height: 42,
-                background: accent,
-                color: "#0d0d18",
-                border: `2px solid ${accent}`,
-                fontSize: 10,
-                boxShadow: `3px 3px 0 #000, 0 0 12px ${accent}55`,
-              };
               return (
                 <React.Fragment>
-                  <div style={yearChip}>
-                    <span>
-                      {(entry.company || "UNKNOWN").toUpperCase()} - {g.year}
-                    </span>
-                  </div>
                   <div style={platformChip}>
                     <PlatformIcon platform={entry.platform} scale={2} />
                     <span>{PLATFORM_DEFS[entry.platform].label}</span>
