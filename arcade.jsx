@@ -177,7 +177,7 @@ function Scanlines({ opacity = 0.18 }) {
 }
 
 // ---- CRT cover card (16:9 landscape) ----
-function CRTCover({ g, accent, neon, sticky = "#ffd23e" }) {
+function CRTCover({ g, accent, neon, sticky = "#ffd23e", hideNote = false }) {
   const [failed, setFailed] = React.useState(false);
   React.useEffect(() => setFailed(false), [g.img]);
   return (
@@ -190,21 +190,6 @@ function CRTCover({ g, accent, neon, sticky = "#ffd23e" }) {
         position: "relative",
       }}
     >
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: 8,
-        }}
-      >
-        <div
-          style={{ fontFamily: PIXEL, fontSize: 6, color: neon, letterSpacing: "0.1em" }}
-        >
-          ► {g.year}
-        </div>
-      </div>
-
       <div
         style={{
           background: "#000",
@@ -315,7 +300,7 @@ function CRTCover({ g, accent, neon, sticky = "#ffd23e" }) {
         )}
       </div>
 
-      {g.personalNote && (
+      {g.personalNote && !hideNote && (
         <div
           style={{
             position: "absolute",
@@ -414,7 +399,7 @@ function ArcPlayerProfile({
   neon,
   name = "JOHNNY",
   tagline = "Souls connoisseur · open-world tourist · co-op believer",
-  platinum = 7,
+  platinum = 8,
 }) {
   // Which preset palette is active (matched by accent colour) → drives the
   // player tag (P1–P4) and the avatar's hair colour so they track the theme.
@@ -674,7 +659,7 @@ function ArcPlayerProfile({
 // ---- Top navigation bar ----
 const NAV_LINKS = [
   { label: "NOW PLAYING", id: "arc-now-playing" },
-  { label: "GOTY", id: "arc-goty" },
+  { label: "CHAMPIONS", id: "arc-goty" },
   { label: "TIMELINE", id: "arc-timeline" },
   { label: "LIBRARY", id: "arc-library" },
 ];
@@ -1494,23 +1479,12 @@ function ArcHero({ accent, neon, tagColor, tagBg, tagFont }) {
     <div
       style={{
         position: "relative",
-        padding: "36px 40px 34px",
         background: "linear-gradient(180deg, #1a0a2e 0%, #0d0d18 100%)",
-        borderBottom: "3px solid #2a2a44",
         overflow: "hidden",
       }}
     >
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          opacity: 0.15,
-          backgroundImage: `linear-gradient(${neon}40 1px, transparent 1px), linear-gradient(90deg, ${neon}40 1px, transparent 1px)`,
-          backgroundSize: "40px 40px",
-          maskImage:
-            "linear-gradient(180deg, transparent 0%, black 30%, black 60%, transparent 100%)",
-        }}
-      />
+
+      <div style={{ maxWidth: 1280, margin: "0 auto", padding: "36px 40px 34px", position: "relative" }}>
       <div
         style={{
           position: "relative",
@@ -1680,6 +1654,7 @@ function ArcHero({ accent, neon, tagColor, tagBg, tagFont }) {
         </div>
         <Arrow dir="next" onClick={next} />
       </div>
+      </div>
     </div>
   );
 }
@@ -1715,69 +1690,251 @@ function ArcSectionHead({ kicker, title, accent }) {
   );
 }
 
-// ---- GOTY section ----
-function ArcGOTY({ accent, neon, sticky }) {
-  const featured = [
-    { year: "ALL-TIME", game: GAMES_BY_ID["gta-5"] },
-    { year: "2022", game: GAMES_BY_ID["elden-ring"] },
-    { year: "2024", game: GAMES_BY_ID["wukong"] },
-  ];
+// ---- Stacked card carousel (for multi-game years) ----
+function StackedCards({ gameIds, accent, neon, sticky }) {
+  const [activeIdx, setActiveIdx] = React.useState(0);
+  const n = gameIds.length;
+
+  if (n === 1) {
+    const g = GAMES_BY_ID[gameIds[0]];
+    return g ? <CRTCover g={g} accent={accent} neon={neon} sticky={sticky} /> : null;
+  }
+
+  const CARD_H = 222; // approx card height for 234px wide CRTCover
+  const PEEK = 72; // fixed strip visible for each card below
+  const containerH = CARD_H + (n - 1) * PEEK;
+
+  const prev = () => setActiveIdx((activeIdx - 1 + n) % n);
+  const next = () => setActiveIdx((activeIdx + 1) % n);
+
+  const arrowStyle = (disabled) => ({
+    background: disabled ? "#16162a" : "#1a1a2e",
+    border: `2px solid ${disabled ? "#2a2a44" : accent}`,
+    boxShadow: disabled ? "none" : `2px 2px 0 #000, 0 0 8px ${accent}44`,
+    color: disabled ? "#3a3a55" : accent,
+    fontFamily: PIXEL,
+    fontSize: 8,
+    padding: "5px 14px",
+    cursor: disabled ? "default" : "pointer",
+    letterSpacing: "0.1em",
+  });
+
   return (
     <div>
-      <ArcSectionHead kicker="HIGH SCORES" title="GAMES OF THE YEAR" accent={accent} />
+      <div style={{ position: "relative", height: containerH }}>
+        {gameIds.map((id, i) => {
+          const g = GAMES_BY_ID[id];
+          if (!g) return null;
+          const pos = (i - activeIdx + n) % n;
+          return (
+            <div
+              key={id}
+              style={{
+                position: "absolute",
+                left: 0,
+                right: 0,
+                top: pos * PEEK,
+                zIndex: n - pos,
+                ...(pos !== 0 ? { height: CARD_H, overflow: "hidden" } : {}),
+                transition: "top 0.25s cubic-bezier(0.4,0,0.2,1)",
+              }}
+            >
+              <CRTCover g={g} accent={accent} neon={neon} sticky={sticky} hideNote={pos !== 0} />
+            </div>
+          );
+        })}
+      </div>
+
+      <div style={{ display: "flex", justifyContent: "center", gap: 10, marginTop: 4, marginBottom: -6 }}>
+        <button onClick={prev} style={arrowStyle(false)}>▲</button>
+        <div style={{ fontFamily: PIXEL, fontSize: 7, color: "rgba(232,232,240,0.4)", display: "flex", alignItems: "center", letterSpacing: "0.1em" }}>
+          {activeIdx + 1}/{n}
+        </div>
+        <button onClick={next} style={arrowStyle(false)}>▼</button>
+      </div>
+    </div>
+  );
+}
+
+// ---- GOTY section (horizontal champions timeline) ----
+function ArcGOTY({ accent, neon, sticky }) {
+  const scrollRef = React.useRef(null);
+  const [atStart, setAtStart] = React.useState(true);
+  const [atEnd, setAtEnd] = React.useState(false);
+
+  // Build year stations sorted chronologically; "All-Time" pinned at the front.
+  const stations = React.useMemo(() => {
+    const allTime = GOTYS.filter((y) => isNaN(parseInt(y.year, 10)));
+    const dated = GOTYS.filter((y) => !isNaN(parseInt(y.year, 10))).sort(
+      (a, b) => parseInt(a.year, 10) - parseInt(b.year, 10),
+    );
+    return [...allTime, ...dated];
+  }, []);
+
+  const STATION_W = 248; // column width + gap, used for arrow stepping
+
+  const updateEdges = React.useCallback(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    setAtStart(el.scrollLeft <= 2);
+    setAtEnd(el.scrollLeft + el.clientWidth >= el.scrollWidth - 2);
+  }, []);
+
+  React.useEffect(() => {
+    updateEdges();
+    const el = scrollRef.current;
+    if (!el) return;
+    el.addEventListener("scroll", updateEdges, { passive: true });
+    window.addEventListener("resize", updateEdges);
+    return () => {
+      el.removeEventListener("scroll", updateEdges);
+      window.removeEventListener("resize", updateEdges);
+    };
+  }, [updateEdges]);
+
+  const slide = (dir) => {
+    const el = scrollRef.current;
+    if (!el) return;
+    el.scrollBy({ left: dir * STATION_W * 2, behavior: "smooth" });
+  };
+
+  const arrowBtn = (dir, disabled) => (
+    <button
+      onClick={() => slide(dir)}
+      disabled={disabled}
+      aria-label={dir < 0 ? "Previous years" : "Next years"}
+      style={{
+        flex: "none",
+        width: 40,
+        height: 52,
+        background: disabled ? "#16162a" : "#1a1a2e",
+        border: `3px solid ${disabled ? "#2a2a44" : accent}`,
+        boxShadow: disabled ? "none" : `4px 4px 0 #000, 0 0 12px ${accent}44`,
+        color: disabled ? "#3a3a55" : accent,
+        fontFamily: PIXEL,
+        fontSize: 14,
+        cursor: disabled ? "default" : "pointer",
+        transition: "transform 0.08s",
+      }}
+    >
+      {dir < 0 ? "◄" : "►"}
+    </button>
+  );
+
+  return (
+    <div>
+      <ArcSectionHead kicker="HALL OF FAME" title="GAME OF THE YEAR" accent={accent} />
       <div
         style={{
           padding: "0 40px",
-          display: "grid",
-          gridTemplateColumns: "repeat(3, 1fr)",
-          gap: 20,
-          marginBottom: 36,
+          marginTop: -8,
+          marginBottom: 18,
+          fontFamily: PIXEL,
+          fontSize: 8,
+          color: "rgba(232,232,240,0.5)",
+          letterSpacing: "0.12em",
         }}
       >
-        {featured.map((f) => (
-          <div key={f.year} style={{ position: "relative", paddingTop: 14 }}>
-            <div
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 14,
-                zIndex: 5,
-                fontFamily: PIXEL,
-                fontSize: 9,
-                color: "#0d0d18",
-                background: accent,
-                padding: "4px 8px",
-                boxShadow: "3px 3px 0 #000",
-              }}
-            >
-              ★ {f.year}
-            </div>
-            <CRTCover g={f.game} accent={accent} neon={neon} sticky={sticky} />
-          </div>
-        ))}
+        ► RANKED BY THE YEAR I PLAYED THEM
       </div>
-      <div style={{ padding: "0 40px" }}>
+
+      <div
+        style={{
+          display: "flex",
+          alignItems: "stretch",
+          gap: 14,
+          padding: "0 40px 8px",
+        }}
+      >
+        {arrowBtn(-1, atStart)}
+
         <div
+          ref={scrollRef}
           style={{
-            fontFamily: PIXEL,
-            fontSize: 8,
-            color: "rgba(232,232,240,0.5)",
-            letterSpacing: "0.15em",
-            marginBottom: 14,
+            flex: 1,
+            minWidth: 0,
+            overflowX: "auto",
+            scrollSnapType: "x mandatory",
+            scrollbarWidth: "none",
+            position: "relative",
           }}
         >
-          ► FULL ROLL · {GOTYS.reduce((a, y) => a + y.games.length, 0)} ENTRIES
+          {/* continuous timeline rail running behind the year nodes */}
+          <div
+            style={{
+              position: "absolute",
+              left: 0,
+              right: 0,
+              top: 17,
+              height: 4,
+              background: `repeating-linear-gradient(90deg, ${accent} 0 8px, transparent 8px 16px)`,
+              opacity: 0.5,
+              zIndex: 0,
+            }}
+          />
+          <div style={{ display: "flex", gap: 22, paddingBottom: 6, alignItems: "flex-start" }}>
+            {stations.map((y) => {
+              const isAllTime = isNaN(parseInt(y.year, 10));
+              return (
+                <div
+                  key={y.year}
+                  style={{
+                    flex: "none",
+                    width: 234,
+                    scrollSnapAlign: "start",
+                    position: "relative",
+                    zIndex: 1,
+                  }}
+                >
+                  {/* year node on the rail */}
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      marginBottom: 16,
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontFamily: PIXEL,
+                        fontSize: isAllTime ? 9 : 11,
+                        color: "#0d0d18",
+                        background: isAllTime ? sticky : accent,
+                        padding: "6px 10px",
+                        boxShadow: `3px 3px 0 #000${isAllTime ? `, 0 0 14px ${sticky}66` : ""}`,
+                        letterSpacing: "0.06em",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {isAllTime ? "★ ALL-TIME" : y.year}
+                    </div>
+                    <div
+                      style={{
+                        width: 3,
+                        height: 14,
+                        background: accent,
+                        opacity: 0.6,
+                      }}
+                    />
+                  </div>
+
+                  {/* winner cover(s) for this year */}
+                  <StackedCards
+                    gameIds={y.games}
+                    accent={accent}
+                    neon={neon}
+                    sticky={sticky}
+                  />
+                </div>
+              );
+            })}
+          </div>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14 }}>
-          {GOTYS.flatMap((y) =>
-            y.games.map((id) => ({ year: y.year, g: GAMES_BY_ID[id] })),
-          )
-            .slice(0, 12)
-            .map((row, i) => (
-              <CRTCover key={i} g={row.g} accent={accent} neon={neon} sticky={sticky} />
-            ))}
-        </div>
+
+        {arrowBtn(1, atEnd)}
       </div>
+
     </div>
   );
 }
@@ -1841,7 +1998,7 @@ function ArcTimeline({ accent, neon, sticky }) {
 
 // ---- Library grid (by era) ----
 function ArcLibrary({ era, kicker, title, accent, neon, sticky }) {
-  const games = GAMES.filter((g) => g.era === era).slice(0, 12);
+  const games = GAMES.filter((g) => g.era === era);
   return (
     <div>
       <ArcSectionHead kicker={kicker} title={title} accent={accent} />
@@ -1975,7 +2132,7 @@ function Arcade({
   neon = "#7ee787",
   playerName = "JOHNNY",
   tagline = "Souls connoisseur · open-world tourist · co-op believer",
-  platinum = 7,
+  platinum = 8,
   sticky = "#ffd23e",
   tagColor,
   tagBg,
@@ -1983,6 +2140,18 @@ function Arcade({
 }) {
   return (
     <div style={arcStyles.root}>
+      {/* Full-page grid overlay — z-index above section backgrounds, below content */}
+      <div
+        style={{
+          position: "fixed",
+          inset: 0,
+          pointerEvents: "none",
+          zIndex: 9,
+          opacity: 0.07,
+          backgroundImage: `linear-gradient(${neon}60 1px, transparent 1px), linear-gradient(90deg, ${neon}60 1px, transparent 1px)`,
+          backgroundSize: "40px 40px",
+        }}
+      />
       <div className="arc-full-bleed">
         <ArcTopBar accent={accent} neon={neon} />
         <ArcPlayerProfile
@@ -1993,8 +2162,7 @@ function Arcade({
           platinum={platinum}
         />
       </div>
-      <div className="arc-shell">
-      <div id="arc-now-playing">
+      <div className="arc-full-bleed" id="arc-now-playing">
         <ArcHero
           accent={accent}
           neon={neon}
@@ -2003,6 +2171,7 @@ function Arcade({
           tagFont={tagFont}
         />
       </div>
+      <div className="arc-shell">
       <div id="arc-goty">
         <ArcGOTY accent={accent} neon={neon} sticky={sticky} />
       </div>
