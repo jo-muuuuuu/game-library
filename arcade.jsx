@@ -660,7 +660,6 @@ function ArcPlayerProfile({
 const NAV_LINKS = [
   { label: "NOW PLAYING", id: "arc-now-playing" },
   { label: "CHAMPIONS", id: "arc-goty" },
-  { label: "TIMELINE", id: "arc-timeline" },
   { label: "LIBRARY", id: "arc-library" },
 ];
 
@@ -1660,9 +1659,12 @@ function ArcHero({ accent, neon, tagColor, tagBg, tagFont }) {
 }
 
 // ---- Section heading ----
-function ArcSectionHead({ kicker, title, accent }) {
+function ArcSectionHead({ kicker, title, accent, collapsed, onToggle, count }) {
   return (
-    <div style={{ padding: "50px 40px 24px" }}>
+    <div
+      style={{ padding: "50px 40px 24px", cursor: onToggle ? "pointer" : "default", userSelect: "none" }}
+      onClick={onToggle}
+    >
       <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 14 }}>
         <div style={{ width: 12, height: 12, background: accent }} />
         <div
@@ -1682,6 +1684,18 @@ function ArcSectionHead({ kicker, title, accent }) {
             background: `repeating-linear-gradient(90deg, ${accent} 0 8px, transparent 8px 14px)`,
           }}
         />
+        {onToggle && (
+          <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
+            {count !== undefined && (
+              <span style={{ fontFamily: PIXEL, fontSize: 7, color: "rgba(232,232,240,0.4)", letterSpacing: "0.1em" }}>
+                {count} GAMES
+              </span>
+            )}
+            <span style={{ fontFamily: PIXEL, fontSize: 9, color: accent, letterSpacing: "0.1em" }}>
+              {collapsed ? "[ + ]" : "[ − ]"}
+            </span>
+          </div>
+        )}
       </div>
       <h2 style={{ fontFamily: PIXEL, fontSize: 22, margin: 0, letterSpacing: "0.04em" }}>
         {title}
@@ -1700,8 +1714,8 @@ function StackedCards({ gameIds, accent, neon, sticky }) {
     return g ? <CRTCover g={g} accent={accent} neon={neon} sticky={sticky} /> : null;
   }
 
-  const CARD_H = 222; // approx card height for 234px wide CRTCover
-  const PEEK = 72; // fixed strip visible for each card below
+  const CARD_H = 252; // approx card height for the wider CRTCover
+  const PEEK = 80; // fixed strip visible for each card below
   const containerH = CARD_H + (n - 1) * PEEK;
 
   const prev = () => setActiveIdx((activeIdx - 1 + n) % n);
@@ -1771,7 +1785,7 @@ function ArcGOTY({ accent, neon, sticky }) {
     return [...allTime, ...dated];
   }, []);
 
-  const STATION_W = 248; // column width + gap, used for arrow stepping
+  const STATION_W = 322; // column width + gap, used for arrow stepping
 
   const updateEdges = React.useCallback(() => {
     const el = scrollRef.current;
@@ -1856,23 +1870,22 @@ function ArcGOTY({ accent, neon, sticky }) {
             overflowX: "auto",
             scrollSnapType: "x mandatory",
             scrollbarWidth: "none",
-            position: "relative",
           }}
         >
-          {/* continuous timeline rail running behind the year nodes */}
-          <div
-            style={{
-              position: "absolute",
-              left: 0,
-              right: 0,
-              top: 17,
-              height: 4,
-              background: `repeating-linear-gradient(90deg, ${accent} 0 8px, transparent 8px 16px)`,
-              opacity: 0.5,
-              zIndex: 0,
-            }}
-          />
-          <div style={{ display: "flex", gap: 22, paddingBottom: 6, alignItems: "flex-start" }}>
+          <div style={{ display: "flex", gap: 22, paddingBottom: 6, alignItems: "flex-start", position: "relative", width: "max-content" }}>
+            {/* continuous timeline rail running behind the year nodes */}
+            <div
+              style={{
+                position: "absolute",
+                left: 0,
+                right: 0,
+                top: 17,
+                height: 4,
+                background: `repeating-linear-gradient(90deg, ${accent} 0 8px, transparent 8px 16px)`,
+                opacity: 0.5,
+                zIndex: 0,
+              }}
+            />
             {stations.map((y) => {
               const isAllTime = isNaN(parseInt(y.year, 10));
               return (
@@ -1880,7 +1893,7 @@ function ArcGOTY({ accent, neon, sticky }) {
                   key={y.year}
                   style={{
                     flex: "none",
-                    width: 234,
+                    width: 300,
                     scrollSnapAlign: "start",
                     position: "relative",
                     zIndex: 1,
@@ -1996,24 +2009,341 @@ function ArcTimeline({ accent, neon, sticky }) {
   );
 }
 
-// ---- Library grid (by era) ----
-function ArcLibrary({ era, kicker, title, accent, neon, sticky }) {
-  const games = GAMES.filter((g) => g.era === era);
+// ---- Cartridge shelf (genre-coded spines that eject their cover) ----
+const ARC_MONO = '"VT323", ui-monospace, "Courier New", monospace';
+const ARC_GENRE_COLOR = {
+  soulslike: "#ff2e88",
+  "open-world": "#00e5ff",
+  roguelite: "#a3e635",
+  shooter: "#ff7e3e",
+  "co-op": "#ffd23e",
+  action: "#ee4266",
+  rpg: "#9b6cff",
+  card: "#3dc8ff",
+  moba: "#06d6a0",
+  puzzle: "#ff6ec7",
+  metroidvania: "#f7b801",
+  sports: "#7ee787",
+  racing: "#ff5470",
+  sandbox: "#62d2ff",
+  strategy: "#c792ea",
+  adventure: "#ffd166",
+  "beat-em-up": "#ff8fab",
+  arcade: "#ffd23e",
+  "tower-defense": "#a3e635",
+  fighting: "#ee4266",
+};
+const arcGenreColor = (tag) => ARC_GENRE_COLOR[tag] || "#00e5ff";
+
+function CartridgeSpine({ g, neon, edge = "center" }) {
+  const [on, setOn] = React.useState(false);
+  const col = arcGenreColor(g.tag);
   return (
-    <div>
-      <ArcSectionHead kicker={kicker} title={title} accent={accent} />
+    <div
+      onMouseEnter={() => setOn(true)}
+      onMouseLeave={() => setOn(false)}
+      style={{
+        width: 48,
+        height: on ? 222 : 204,
+        marginBottom: on ? 18 : 0,
+        position: "relative",
+        cursor: "pointer",
+        transition: "all 0.18s cubic-bezier(0.4,0,0.2,1)",
+        flexShrink: 0,
+      }}
+    >
+      {/* cover ejects above the spine on hover */}
       <div
         style={{
-          padding: "0 40px",
-          display: "grid",
-          gridTemplateColumns: "repeat(4, 1fr)",
-          gap: 14,
+          position: "absolute",
+          bottom: "100%",
+          ...(edge === "start"
+            ? { left: 0 }
+            : edge === "end"
+              ? { right: 0 }
+              : { left: "50%", transform: "translateX(-50%)" }),
+          marginBottom: 8,
+          width: 178,
+          border: `3px solid ${col}`,
+          background: "#000",
+          boxShadow: `4px 4px 0 #000, 0 0 20px ${col}66`,
+          overflow: "hidden",
+          opacity: on ? 1 : 0,
+          pointerEvents: "none",
+          transition: "opacity 0.15s",
+          zIndex: 30,
         }}
       >
-        {games.map((g) => (
-          <CRTCover key={g.id} g={g} accent={accent} neon={neon} sticky={sticky} />
-        ))}
+        <CoverScreen g={g} neon={col} />
+        <div
+          style={{
+            padding: "5px 7px 4px",
+            background: "#0a0a1a",
+            borderTop: `2px solid ${col}`,
+            fontFamily: PIXEL,
+            fontSize: 6,
+            color: "#e8e8f0",
+            letterSpacing: "0.04em",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <span style={{ color: neon }}>{g.year}</span>
+          <span style={{ color: col, textTransform: "uppercase" }}>{g.tag}</span>
+        </div>
       </div>
+      {/* the spine */}
+      <div
+        style={{
+          width: "100%",
+          height: "100%",
+          background: on ? "#22223c" : "#1a1a2e",
+          border: "2px solid #2a2a44",
+          borderTop: `6px solid ${col}`,
+          boxShadow: on
+            ? `0 0 14px ${col}55, inset 0 0 0 1px ${col}55`
+            : "inset -3px 0 6px rgba(0,0,0,0.4)",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "10px 0 8px",
+          boxSizing: "border-box",
+        }}
+      >
+        <div
+          style={{
+            width: 24,
+            height: 8,
+            background: "#0a0a1a",
+            border: "1px solid #2a2a44",
+          }}
+        />
+        <div
+          style={{
+            writingMode: "vertical-rl",
+            transform: "rotate(180deg)",
+            fontFamily: ARC_MONO,
+            fontSize: 18,
+            lineHeight: 1,
+            color: on ? "#fff" : "#e8e8f0",
+            letterSpacing: "0.02em",
+            maxHeight: 150,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {g.title}
+        </div>
+        <div
+          style={{
+            fontFamily: PIXEL,
+            fontSize: 6,
+            color: g.platinum ? neon : "rgba(232,232,240,0.32)",
+          }}
+        >
+          {g.platinum ? "◆" : g.goty ? "★" : "·"}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CartridgeShelfRows({ games, accent, neon, perRow = 11 }) {
+  const rows = [];
+  for (let i = 0; i < games.length; i += perRow) rows.push(games.slice(i, i + perRow));
+  return (
+    <div style={{ padding: "0 40px 40px" }}>
+      {rows.map((row, ri) => (
+        <div key={ri} style={{ marginTop: ri === 0 ? 56 : 60 }}>
+          <div style={{ display: "flex", alignItems: "flex-end", gap: 8 }}>
+            {row.map((g, gi) => (
+              <CartridgeSpine key={g.id} g={g} neon={neon}
+                edge={gi === 0 ? "start" : gi === row.length - 1 ? "end" : "center"} />
+            ))}
+          </div>
+          <div
+            style={{
+              height: 16,
+              background: `linear-gradient(180deg, ${accent}cc, #16162b)`,
+              border: "3px solid #2a2a44",
+              boxShadow: "6px 6px 0 #000",
+            }}
+          />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ---- Cover wall (image-forward poster gallery) ----
+function CoverWallCard({ g, neon }) {
+  const [on, setOn] = React.useState(false);
+  const col = arcGenreColor(g.tag);
+  return (
+    <div
+      onMouseEnter={() => setOn(true)}
+      onMouseLeave={() => setOn(false)}
+      style={{
+        position: "relative",
+        aspectRatio: "16 / 9",
+        overflow: "hidden",
+        border: `3px solid ${on ? neon : "#3a3a5c"}`,
+        background: "#000",
+        boxShadow: on ? `0 0 20px ${neon}55, 5px 5px 0 #000` : "4px 4px 0 #000",
+        cursor: "pointer",
+        transition: "border-color 0.15s, box-shadow 0.15s",
+      }}
+    >
+      <CoverScreen g={g} neon={neon} />
+      {g.goty && (
+        <div
+          style={{
+            position: "absolute",
+            opacity: on ? 1 : 0,
+            transition: "opacity 0.18s",
+            top: 12,
+            left: -36,
+            transform: "rotate(-45deg)",
+            width: 130,
+            textAlign: "center",
+            background: "#ffd23e",
+            color: "#0d0d18",
+            fontFamily: PIXEL,
+            fontSize: 7,
+            padding: "4px 0",
+            letterSpacing: "0.1em",
+            boxShadow: "0 2px 6px rgba(0,0,0,0.6)",
+          }}
+        >
+          ★ GOTY
+        </div>
+      )}
+      {g.platinum && (
+        <div
+          style={{
+            position: "absolute",
+            opacity: on ? 1 : 0,
+            transition: "opacity 0.18s",
+            top: 9,
+            right: 9,
+            fontFamily: PIXEL,
+            fontSize: 7,
+            color: neon,
+            background: "#0a0a1a",
+            border: `2px solid ${neon}`,
+            padding: "4px 5px",
+            boxShadow: `0 0 8px ${neon}55`,
+          }}
+        >
+          PLAT
+        </div>
+      )}
+      <div
+        style={{
+          position: "absolute",
+          left: 0,
+          right: 0,
+          bottom: 0,
+          padding: "14px 12px 12px",
+          background: `linear-gradient(180deg, rgba(10,10,26,0.55), rgba(10,10,26,0.95))`,
+          borderTop: `2px solid ${neon}`,
+          opacity: on ? 1 : 0,
+          transform: on ? "translateY(0)" : "translateY(100%)",
+          transition: "opacity 0.18s, transform 0.18s",
+          pointerEvents: "none",
+        }}
+      >
+        <div
+          style={{
+            fontFamily: PIXEL,
+            fontSize: g.title.length > 34 ? 8 : g.title.length > 24 ? 9 : 11,
+            lineHeight: 1.4,
+            color: "#fff",
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
+            overflowWrap: "break-word",
+            textShadow: "0 2px 4px rgba(0,0,0,0.8)",
+          }}
+        >
+          {g.title}
+        </div>
+        <div
+          style={{
+            marginTop: 9,
+            display: "flex",
+            alignItems: "center",
+            gap: 9,
+            fontFamily: PIXEL,
+            fontSize: 7,
+            letterSpacing: "0.1em",
+          }}
+        >
+          <span style={{ color: neon }}>{g.year}</span>
+          <span style={{ color: col, textTransform: "uppercase" }}>{g.tag}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CoverWallGrid({ games, neon }) {
+  return (
+    <div
+      style={{
+        padding: "0 40px 40px",
+        display: "grid",
+        gridTemplateColumns: "repeat(4, 1fr)",
+        gap: 12,
+      }}
+    >
+      {games.map((g) => (
+        <CoverWallCard key={g.id} g={g} neon={neon} />
+      ))}
+    </div>
+  );
+}
+
+// ---- Library grid (by era) ----
+function ArcLibrary({ era, kicker, title, accent, neon, sticky, defaultCollapsed = false, layout = "grid" }) {
+  const [collapsed, setCollapsed] = React.useState(defaultCollapsed);
+  const games = era === 'online'
+    ? GAMES.filter((g) => g.online)
+    : GAMES.filter((g) => g.era === era && !g.online && !g.goty);
+  return (
+    <div>
+      <ArcSectionHead
+        kicker={kicker}
+        title={title}
+        accent={accent}
+        collapsed={collapsed}
+        onToggle={() => setCollapsed((c) => !c)}
+        count={games.length}
+      />
+      {!collapsed && (
+        layout === "shelf" ? (
+          <CartridgeShelfRows games={games} accent={accent} neon={neon} />
+        ) : layout === "wall" ? (
+          <CoverWallGrid games={games} neon={neon} />
+        ) : (
+          <div
+            style={{
+              padding: "0 40px 40px",
+              display: "grid",
+              gridTemplateColumns: "repeat(4, 1fr)",
+              gap: 14,
+            }}
+          >
+            {games.map((g) => (
+              <CRTCover key={g.id} g={g} accent={accent} neon={neon} sticky={sticky} />
+            ))}
+          </div>
+        )
+      )}
     </div>
   );
 }
@@ -2172,28 +2502,38 @@ function Arcade({
         />
       </div>
       <div className="arc-shell">
-      <div id="arc-goty">
+      <div id="arc-goty" style={{ marginBottom: -40 }}>
         <ArcGOTY accent={accent} neon={neon} sticky={sticky} />
       </div>
-      <div id="arc-timeline">
-        <ArcTimeline accent={accent} neon={neon} sticky={sticky} />
-      </div>
+
       <div id="arc-library">
         <ArcLibrary
-          era="childhood"
-          kicker="ERA 01"
-          title="CHILDHOOD & TEENAGE"
+          era="uni"
+          kicker="MAIN QUEST"
+          title="UNI → PRESENT DAY"
           accent={accent}
           neon={neon}
           sticky={sticky}
+          layout="wall"
         />
         <ArcLibrary
-          era="uni"
-          kicker="ERA 02"
-          title="UNIVERSITY — NOW"
+          era="childhood"
+          kicker="ORIGIN STORY"
+          title="WHERE IT BEGAN"
           accent={accent}
           neon={neon}
           sticky={sticky}
+          defaultCollapsed={true}
+          layout="shelf"
+        />
+        <ArcLibrary
+          era="online"
+          kicker="VERSUS MODE"
+          title="ONLINE ARENA"
+          accent={accent}
+          neon={neon}
+          sticky={sticky}
+          defaultCollapsed={true}
         />
       </div>
       </div>

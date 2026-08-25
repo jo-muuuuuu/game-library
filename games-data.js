@@ -3,12 +3,12 @@
 // goty: year string if it won GOTY (e.g. '2018', 'All-Time'); null/undefined otherwise
 // platinum: true if Platinum trophy obtained
 
-const IMG = './img';
+const IMG = (typeof window !== 'undefined' && window.__IMG_BASE) || './img';
 
 const GAMES = [
   // ============ CURRENT ============
   { id: 'brotato',        title: 'Brotato',                             img: `${IMG}/brotato.png`,         year: 2022, era: 'current',   tag: 'roguelite',    platinum: true, goty: '2026', personalNote: 'CURRENT OBSESSION.\nCommute fuel.' },
-  { id: 'diablo-4',       title: 'Diablo IV',                           img: `${IMG}/diablo-4.jpg`,        year: 2023, era: 'current',   tag: 'arpg' },
+  { id: 'diablo-4',       title: 'Diablo IV',                           img: `${IMG}/diablo-4.jpg`,        year: 2023, era: 'uni',      tag: 'arpg' },
 
   // ============ CHILDHOOD & TEENAGE ============
   { id: 'aoe2',           title: 'Age of Empires II',                   img: `${IMG}/aoe2.png`,            year: 1999, era: 'childhood', tag: 'strategy',     personalNote: 'LAN parties at the cafe.' },
@@ -17,17 +17,17 @@ const GAMES = [
   { id: 'yuris-revenge',  title: "C&C: Yuri's Revenge",                 img: `${IMG}/yuris-revenge.jpg`,   year: 2001, era: 'childhood', tag: 'strategy' },
   { id: 'gta-vc',         title: 'Grand Theft Auto: Vice City',         img: `${IMG}/gta-vc.png`,          year: 2002, era: 'childhood', tag: 'open-world',   goty: 'All-Time', personalNote: 'FIRST GAME I EVER OWNED.\nThis is where it all began.' },
   { id: 'warcraft3',      title: 'Warcraft III: Frozen Throne',         img: `${IMG}/warcraft3.jpg`,       year: 2003, era: 'childhood', tag: 'strategy' },
-  { id: 'cs1-6',          title: 'Counter-Strike 1.6',                  img: `${IMG}/cs1-6.jpg`,           year: 2003, era: 'childhood', tag: 'shooter',      personalNote: 'de_dust2 is home.' },
-  { id: 'dota',           title: 'Dota',                                img: `${IMG}/dota.jpg`,            year: 2003, era: 'childhood', tag: 'moba' },
+  { id: 'cs1-6',          title: 'Counter-Strike 1.6',                  img: `${IMG}/cs1-6.jpg`,           year: 2003, era: 'childhood', tag: 'shooter',      online: true, personalNote: 'de_dust2 is home.' },
+  { id: 'dota',           title: 'Dota',                                img: `${IMG}/dota.jpg`,            year: 2003, era: 'childhood', tag: 'moba',         online: true },
   { id: 'gta-sa',         title: 'Grand Theft Auto: San Andreas',       img: `${IMG}/gta-sa.jpg`,          year: 2004, era: 'childhood', tag: 'open-world' },
-  { id: 'dnf',            title: 'Dungeon & Fighter',                   img: `${IMG}/dnf.jpg`,             year: 2005, era: 'childhood', tag: 'beat-em-up' },
-  { id: 'cf',             title: 'CrossFire',                           img: `${IMG}/cf.jpeg`,             year: 2007, era: 'childhood', tag: 'shooter' },
+  { id: 'dnf',            title: 'Dungeon & Fighter',                   img: `${IMG}/dnf.jpg`,             year: 2005, era: 'childhood', tag: 'beat-em-up',   online: true },
+  { id: 'cf',             title: 'CrossFire',                           img: `${IMG}/cf.jpeg`,             year: 2007, era: 'childhood', tag: 'shooter',      online: true },
   { id: 'cod-mw',         title: 'Call of Duty: Modern Warfare',        img: `${IMG}/cod-mw.jpg`,          year: 2007, era: 'childhood', tag: 'shooter' },
   { id: 'devil4',         title: 'Devil May Cry 4',                     img: `${IMG}/devil4.jpg`,          year: 2008, era: 'childhood', tag: 'action' },
   { id: 'cod-waw',        title: 'Call of Duty: World at War',          img: `${IMG}/cod-waw.png`,         year: 2008, era: 'childhood', tag: 'shooter' },
   { id: 'cod-mw2',        title: 'Call of Duty: Modern Warfare II',     img: `${IMG}/cod-mw2.jpg`,         year: 2009, era: 'childhood', tag: 'shooter' },
   { id: 'pvz',            title: 'Plants vs Zombies',                   img: `${IMG}/pvz.jpg`,             year: 2009, era: 'childhood', tag: 'tower-defense' },
-  { id: 'lol',            title: 'League of Legends',                   img: `${IMG}/lol.jpg`,             year: 2009, era: 'childhood', tag: 'moba' },
+  { id: 'lol',            title: 'League of Legends',                   img: `${IMG}/lol.jpg`,             year: 2009, era: 'childhood', tag: 'moba',         online: true },
   { id: 'prototype',      title: 'Prototype',                           img: `${IMG}/prototype.jpg`,       year: 2009, era: 'childhood', tag: 'action' },
   { id: 'minecraft',      title: 'Minecraft',                           img: `${IMG}/minecraft.jpg`,       year: 2009, era: 'childhood', tag: 'sandbox' },
   { id: 'cod-blackops',   title: 'Call of Duty: Black Ops',             img: `${IMG}/cod-blackops.jpg`,    year: 2010, era: 'childhood', tag: 'shooter' },
@@ -45,8 +45,8 @@ const GAMES = [
   { id: 'limbo',          title: 'Limbo',                                   img: `${IMG}/limbo.jpeg`,          year: 2010, era: 'uni', tag: 'puzzle' },
   { id: 'dark-souls-1',   title: 'Dark Souls',                          img: `${IMG}/dark-souls-1.jpg`,    year: 2011, era: 'uni', tag: 'soulslike',    platinum: true, goty: '2018', personalNote: 'The boss that broke me,\nthen made me.' },
   { id: 'gta-5',          title: 'Grand Theft Auto V',                  img: `${IMG}/gta-5.png`,           year: 2013, era: 'uni', tag: 'open-world',   goty: '2018' },
-  { id: 'dota-2',         title: 'Dota 2',                              img: `${IMG}/dota-2.jpeg`,         year: 2013, era: 'uni', tag: 'moba' },
-  { id: 'hearthstone',    title: 'Hearthstone',                         img: `${IMG}/hearthstone.jpg`,     year: 2014, era: 'uni', tag: 'card' },
+  { id: 'dota-2',         title: 'Dota 2',                              img: `${IMG}/dota-2.jpeg`,         year: 2013, era: 'uni', tag: 'moba',         online: true },
+  { id: 'hearthstone',    title: 'Hearthstone',                         img: `${IMG}/hearthstone.jpg`,     year: 2014, era: 'uni', tag: 'card',         online: true },
   { id: 'dark-souls-2',   title: 'Dark Souls II',                       img: `${IMG}/dark-souls-2-dlc.jpg`,    year: 2014, era: 'uni', tag: 'soulslike' },
   { id: 'goat',           title: 'Goat Simulator',                          img: `${IMG}/goat.jpg`,            year: 2014, era: 'uni', tag: 'sandbox' },
   { id: 'bloodborne',     title: 'Bloodborne',                          img: `${IMG}/bloodborne.jpg`,      year: 2015, era: 'uni', tag: 'soulslike',    goty: '2022', personalNote: 'Yharnam haunts me still.' },
@@ -58,7 +58,7 @@ const GAMES = [
   { id: 'storm',          title: 'Naruto: Ultimate Ninja Storm 4',      img: `${IMG}/storm.jpg`,           year: 2016, era: 'uni', tag: 'fighting' },
   { id: 'zelda-breath',   title: 'Zelda: Breath of the Wild',           img: `${IMG}/zelda-breath.jpg`,    year: 2017, era: 'uni', tag: 'open-world',   goty: '2023' },
   { id: 'nioh',           title: 'Nioh',                                img: `${IMG}/nioh.jpg`,            year: 2017, era: 'uni', tag: 'soulslike' },
-  { id: 'pubg',           title: 'PUBG: Battlegrounds',                 img: `${IMG}/pubg.jpeg`,           year: 2017, era: 'uni', tag: 'battle-royale' },
+  { id: 'pubg',           title: 'PUBG: Battlegrounds',                 img: `${IMG}/pubg.jpeg`,           year: 2017, era: 'uni', tag: 'battle-royale', online: true },
   { id: 'overcooked2',    title: 'Overcooked! 2',                       img: `${IMG}/overcooked2.jpeg`,    year: 2018, era: 'uni', tag: 'co-op' },
   { id: 'a-way-out',      title: 'A Way Out',                           img: `${IMG}/a-way-out.jpg`,       year: 2018, era: 'uni', tag: 'co-op' },
   { id: 'rdr2',           title: 'Red Dead Redemption 2',                   img: `${IMG}/rdr2.jpg`,            year: 2018, era: 'uni', tag: 'open-world' },
@@ -73,12 +73,12 @@ const GAMES = [
   { id: 'cyberpunk',      title: 'Cyberpunk 2077',                      img: `${IMG}/cyberpunk-dlc.jpg`,       year: 2020, era: 'uni', tag: 'open-world',   platinum: true, goty: '2021' },
   { id: 'nba2k21',        title: 'NBA 2K21',                            img: `${IMG}/nba2k21.jpg`,         year: 2020, era: 'uni', tag: 'sports' },
   { id: 'nioh2',          title: 'Nioh 2',                                  img: `${IMG}/nioh2.jpg`,           year: 2020, era: 'uni', tag: 'soulslike' },
-  { id: 'goose',          title: 'Goose Goose Duck',                    img: `${IMG}/goose.jpeg`,          year: 2021, era: 'uni', tag: 'social' },
+  { id: 'goose',          title: 'Goose Goose Duck',                    img: `${IMG}/goose.jpeg`,          year: 2021, era: 'uni', tag: 'social',       online: true },
   { id: 'fist',           title: 'F.I.S.T. Forged In Shadow Torch',     img: `${IMG}/fist.jpg`,            year: 2021, era: 'uni', tag: 'metroidvania', goty: '2023' },
   { id: 'it-takes-two',   title: 'It Takes Two',                        img: `${IMG}/it-takes-two.jpg`,    year: 2021, era: 'uni', tag: 'co-op',        platinum: true, goty: '2023', personalNote: 'Co-op nights. Every level.' },
   { id: 'elden-ring',     title: 'Elden Ring',                          img: `${IMG}/elden-ring.jpg`,      year: 2022, era: 'uni', tag: 'soulslike',    goty: '2022', platinum: true, personalNote: '200+ hrs. Still my GOAT.' },
   { id: 'sifu',           title: 'Sifu',                                    img: `${IMG}/sifu.jpeg`,           year: 2022, era: 'uni', tag: 'action' },
-  { id: 'cs-2',           title: 'Counter-Strike 2',                    img: `${IMG}/cs-2.jpeg`,           year: 2023, era: 'uni', tag: 'shooter' },
+  { id: 'cs-2',           title: 'Counter-Strike 2',                    img: `${IMG}/cs-2.jpeg`,           year: 2023, era: 'uni', tag: 'shooter',      online: true },
   { id: 'zelda-tears',    title: 'Zelda: Tears of the Kingdom',         img: `${IMG}/zelda-tears.jpg`,     year: 2023, era: 'uni', tag: 'open-world' },
   { id: 'zelda-echo',     title: 'Zelda: Echoes of Wisdom',             img: `${IMG}/zelda-echo.jpg`,                         year: 2024, era: 'uni', tag: 'adventure' },
   { id: 'balatro',        title: 'Balatro',                             img: `${IMG}/balatro.jpg`,                         year: 2024, era: 'uni', tag: 'card' },
@@ -104,8 +104,9 @@ const GOTYS = [
 
 const STATS = {
   total:    GAMES.length,
-  childhood: GAMES.filter(g => g.era === 'childhood').length,
-  uni:      GAMES.filter(g => g.era === 'uni').length,
+  childhood: GAMES.filter(g => g.era === 'childhood' && !g.online).length,
+  uni:      GAMES.filter(g => g.era === 'uni' && !g.online).length,
+  online:   GAMES.filter(g => g.online).length,
   goty:     GOTYS.reduce((a, y) => a + y.games.length, 0),
   earliest: Math.min(...GAMES.map(g => g.year)),
   latest:   Math.max(...GAMES.map(g => g.year)),
