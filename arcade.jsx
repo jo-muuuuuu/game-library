@@ -34,36 +34,48 @@ if (typeof document !== "undefined" && !document.getElementById("arc-fonts")) {
 const PIXEL = '"Press Start 2P", ui-monospace, monospace';
 
 // ---- Pixel art primitives ----
+// Drawn as SVG rects in a 1-unit-per-pixel viewBox rather than box-shadow
+// clones: shadow offsets round to device pixels independently, so on any
+// element sitting at a fractional offset the art breaks into dots.
 function PixelArt({ pixels, palette, scale = 5 }) {
   const w = pixels[0].length,
     h = pixels.length;
-  const shadows = [];
+  const rects = [];
   for (let y = 0; y < h; y++) {
-    for (let x = 0; x < w; x++) {
-      if (x === 0 && y === 0) continue;
+    let x = 0;
+    while (x < w) {
       const ch = pixels[y][x];
-      if (ch !== "." && ch !== " ") {
-        shadows.push(`${x * scale}px ${y * scale}px 0 ${palette[ch] || "#fff"}`);
+      if (ch === "." || ch === " ") {
+        x++;
+        continue;
       }
+      // Merge horizontal runs of the same colour into a single rect.
+      let run = 1;
+      while (x + run < w && pixels[y][x + run] === ch) run++;
+      rects.push(
+        <rect
+          key={`${x}-${y}`}
+          x={x}
+          y={y}
+          width={run}
+          height={1}
+          fill={palette[ch] || "#fff"}
+        />,
+      );
+      x += run;
     }
   }
-  const firstCh = pixels[0][0];
-  const baseBg =
-    firstCh !== "." && firstCh !== " " ? palette[firstCh] || "#fff" : "transparent";
   return (
-    <div style={{ position: "relative", width: w * scale, height: h * scale }}>
-      <div
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: scale,
-          height: scale,
-          background: baseBg,
-          boxShadow: shadows.join(", "),
-        }}
-      />
-    </div>
+    <svg
+      width={w * scale}
+      height={h * scale}
+      viewBox={`0 0 ${w} ${h}`}
+      shapeRendering="crispEdges"
+      style={{ display: "block", flex: "none" }}
+      aria-hidden="true"
+    >
+      {rects}
+    </svg>
   );
 }
 
@@ -176,8 +188,49 @@ function Scanlines({ opacity = 0.18 }) {
   );
 }
 
+// ---- Single-line auto-fitting caption ----
+// Shrinks the font until the title fits one line, so cards need only one
+// line's worth of space no matter how long the name is.
+function FitCaption({ text, max = 8.5, min = 4.5, style }) {
+  const ref = React.useRef(null);
+  const [size, setSize] = React.useState(max);
+  React.useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const parent = el.parentElement;
+    if (!parent) return;
+    const fit = () => {
+      let s = max;
+      el.style.fontSize = s + "px";
+      while (s > min && el.scrollWidth > parent.clientWidth) {
+        s -= 0.25;
+        el.style.fontSize = s + "px";
+      }
+      setSize(s);
+    };
+    fit();
+    // The pixel webfont loads lazily and is wider than the fallback face, so
+    // the first pass can measure too small — re-fit after each font swap.
+    if (document.fonts) {
+      document.fonts.ready.then(fit);
+      document.fonts.addEventListener("loadingdone", fit);
+    }
+    const ro = new ResizeObserver(fit);
+    ro.observe(parent);
+    return () => {
+      ro.disconnect();
+      if (document.fonts) document.fonts.removeEventListener("loadingdone", fit);
+    };
+  }, [text, max, min]);
+  return (
+    <div ref={ref} style={{ ...style, fontSize: size, whiteSpace: "nowrap" }}>
+      {text}
+    </div>
+  );
+}
+
 // ---- CRT cover card (16:9 landscape) ----
-function CRTCover({ g, accent, neon, sticky = "#ffd23e", hideNote = false }) {
+function CRTCover({ g, accent, neon, sticky = "#ffd23e", hideNote = false, hideTrophy = false, bigTitle = false }) {
   const [failed, setFailed] = React.useState(false);
   React.useEffect(() => setFailed(false), [g.img]);
   return (
@@ -279,12 +332,13 @@ function CRTCover({ g, accent, neon, sticky = "#ffd23e", hideNote = false }) {
             ★ GOTY
           </div>
         )}
-        {g.platinum && (
+        {g.platinum && !hideTrophy && (
           <div
             style={{
               position: "absolute",
               bottom: 6,
               left: 6,
+              zIndex: 3,
               padding: "4px 5px 2px",
               background: "#0a0a1a",
               border: `2px solid ${neon}`,
@@ -326,16 +380,24 @@ function CRTCover({ g, accent, neon, sticky = "#ffd23e", hideNote = false }) {
 
       <div
         style={{
-          marginTop: 8,
-          fontFamily: PIXEL,
-          fontSize: 7,
-          lineHeight: 1.5,
-          color: "#e8e8f0",
-          letterSpacing: "0.02em",
-          minHeight: 22,
+          marginTop: 7,
+          minWidth: 0,
+          minHeight: 14,
+          display: "flex",
+          alignItems: "center",
         }}
       >
-        {g.title}
+        <FitCaption
+          text={g.title}
+          max={bigTitle ? 8.5 : 7}
+          min={4.5}
+          style={{
+            fontFamily: PIXEL,
+            lineHeight: 1.45,
+            color: "#e8e8f0",
+            letterSpacing: "0.02em",
+          }}
+        />
       </div>
 
       <div
@@ -658,7 +720,7 @@ function ArcPlayerProfile({
 // ---- Story diary ----
 // ---- Top navigation bar ----
 const NAV_LINKS = [
-  { label: "NOW PLAYING", id: "arc-now-playing" },
+  { label: "ON ROTATION", id: "arc-now-playing" },
   { label: "CHAMPIONS", id: "arc-goty" },
   { label: "LIBRARY", id: "arc-library" },
 ];
@@ -918,6 +980,26 @@ function CoverScreen({ g, neon }) {
           boxShadow: `inset 0 0 60px ${neon}40`,
         }}
       />
+      {g.platinum && (
+        <div
+          style={{
+            position: "absolute",
+            bottom: 10,
+            left: 10,
+            zIndex: 3,
+            padding: "6px 7px 4px",
+            background: "#0a0a1a",
+            border: `3px solid ${neon}`,
+            boxShadow: `3px 3px 0 #000, 0 0 14px ${neon}55`,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+          title="PLATINUM"
+        >
+          <PlatinumTrophy scale={3} />
+        </div>
+      )}
     </div>
   );
 }
@@ -1300,24 +1382,48 @@ function PlatformDisplay({ platform, g, accent, neon, idx }) {
     ) : (
       <PCMonitor g={g} accent={accent} neon={neon} idx={idx} />
     );
+  // The console art is drawn at a fixed 540×340; scale it down to whatever
+  // width the hero's art column actually gets so it never overflows.
+  const wrapRef = React.useRef(null);
+  const [scale, setScale] = React.useState(1);
+  React.useLayoutEffect(() => {
+    const el = wrapRef.current;
+    if (!el) return;
+    const measure = () => setScale(Math.min(1, el.clientWidth / 540));
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
   return (
     <div
-      style={{
-        width: 540,
-        height: 340,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-      }}
+      ref={wrapRef}
+      style={{ width: "100%", maxWidth: 540, height: 340 * scale, position: "relative" }}
     >
-      {chrome}
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: 540,
+          height: 340,
+          transform: `scale(${scale})`,
+          transformOrigin: "top left",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        {chrome}
+      </div>
     </div>
   );
 }
 
-// ---- Auto-fitting one-line title ----
-// Shrinks the font (down to `min`) so the title always fits on a single line.
-// Lives inside a fixed-height slot so its vertical position never shifts.
+// ---- Auto-fitting title ----
+// Shrinks the font (down to `min`) so each line fits the available width.
+// Titles with a subtitle ("The Legend of Zelda: Tears of the Kingdom") break
+// after the colon onto a second line; everything else stays on one line.
 function FitTitle({
   text,
   accent,
@@ -1330,20 +1436,57 @@ function FitTitle({
 }) {
   const ref = React.useRef(null);
   const [size, setSize] = React.useState(max);
+  // When a line can't fit even at `min`, let it wrap instead of clipping.
+  const [wrap, setWrap] = React.useState(false);
+  const ci = text.indexOf(":");
+  const lines =
+    ci > 0 && ci < text.length - 1
+      ? [text.slice(0, ci + 1).trim(), text.slice(ci + 1).trim()]
+      : [text];
 
   React.useLayoutEffect(() => {
     const el = ref.current;
     if (!el) return;
     const parent = el.parentElement;
     if (!parent) return;
-    let s = max;
-    el.style.fontSize = s + "px";
-    // Shrink until the single line fits the available width.
-    while (s > min && el.scrollWidth > parent.clientWidth) {
-      s -= 1;
+    // Two-line titles start smaller so they don't tower over short one-liners.
+    const maxSize = lines.length > 1 ? Math.round(max * 0.66) : max;
+    let lastW = -1;
+    const widest = () =>
+      Math.max(...Array.from(el.children).map((c) => c.scrollWidth), 0);
+    const fit = (force) => {
+      const pw = parent.clientWidth;
+      // Re-fit only when the available width actually changed — otherwise the
+      // wrap fallback's own reflow would retrigger this and cancel itself out.
+      // `force` bypasses the guard for font-swap re-measures.
+      if (!force && pw === lastW) return;
+      lastW = pw;
+      el.style.whiteSpace = "nowrap";
+      let s = maxSize;
       el.style.fontSize = s + "px";
+      while (s > min && widest() > pw) {
+        s -= 1;
+        el.style.fontSize = s + "px";
+      }
+      setSize(s);
+      const needsWrap = widest() > pw + 1;
+      el.style.whiteSpace = needsWrap ? "normal" : "nowrap";
+      setWrap(needsWrap);
+    };
+    fit(true);
+    // The pixel webfont is wider than the fallback face, so the first pass can
+    // measure too small — re-fit once fonts settle.
+    const refit = () => fit(true);
+    if (document.fonts) {
+      document.fonts.ready.then(refit);
+      document.fonts.addEventListener("loadingdone", refit);
     }
-    setSize(s);
+    const ro = new ResizeObserver(() => fit(false));
+    ro.observe(parent);
+    return () => {
+      ro.disconnect();
+      if (document.fonts) document.fonts.removeEventListener("loadingdone", refit);
+    };
   }, [text, max, min]);
 
   return (
@@ -1361,11 +1504,10 @@ function FitTitle({
         style={{
           width: "100%",
           minWidth: 0,
-          height,
+          minHeight: height,
           display: "flex",
           alignItems: "center",
           justifyContent: align === "left" ? "flex-start" : "center",
-          overflow: "hidden",
         }}
       >
         <h1
@@ -1373,16 +1515,19 @@ function FitTitle({
           style={{
             fontFamily: PIXEL,
             fontSize: size,
-            lineHeight: 1.1,
+            lineHeight: 1.16,
             margin: 0,
-            whiteSpace: "nowrap",
+            whiteSpace: wrap ? "normal" : "nowrap",
+            overflowWrap: "anywhere",
             letterSpacing: "0.02em",
             textAlign: align,
             color: "#fff",
             textShadow: `0 0 10px ${neon || accent}88, 4px 4px 0 ${accent}, 8px 8px 0 #000`,
           }}
         >
-          {text}
+          {lines.map((l, n) => (
+            <div key={n} style={{ minWidth: 0 }}>{l}</div>
+          ))}
         </h1>
       </div>
       {meta && (
@@ -1414,23 +1559,8 @@ function FitTitle({
 }
 
 // ---- Hero / Now Playing carousel ----
-function ArcHero({ accent, neon, tagColor, tagBg, tagFont }) {
+function ArcHero({ accent, neon, sticky, tagColor, tagBg, tagFont }) {
   const NOW_PLAYING = [
-    {
-      id: "brotato",
-      platform: "pc",
-      company: "Blobfish",
-      releaseMonth: "September",
-      blurb:
-        "A sentient potato fights waves of aliens. 20-minute runs, absurd builds, the most addictive loop I've found this year.",
-    },
-    {
-      id: "bloodborne",
-      platform: "ps5",
-      company: "FromSoftware",
-      releaseMonth: "March",
-      blurb: "Back in Yharnam. The hunt never really ends.",
-    },
     {
       id: "zelda-tears",
       platform: "switch",
@@ -1438,6 +1568,23 @@ function ArcHero({ accent, neon, tagColor, tagBg, tagFont }) {
       releaseMonth: "May",
       blurb:
         "Hyrule from the skies down to the depths. Build anything, go anywhere — the sequel that somehow outdid Breath of the Wild.",
+    },
+    {
+      id: "bloodborne",
+      platform: "ps5",
+      company: "FromSoftware",
+      releaseMonth: "March",
+      status: "LAST PLAYED",
+      blurb: "Back in Yharnam. The hunt never really ends.",
+    },
+    {
+      id: "brotato",
+      platform: "pc",
+      company: "Blobfish",
+      releaseMonth: "September",
+      status: "JUST FINISHED",
+      blurb:
+        "A sentient potato fights waves of aliens. 20-minute runs, absurd builds — ran it until the platinum popped.",
     },
   ];
   const [idx, setIdx] = React.useState(0);
@@ -1451,6 +1598,10 @@ function ArcHero({ accent, neon, tagColor, tagBg, tagFont }) {
   const progressLabel = `${String(idx + 1).padStart(2, "0")}/${String(
     NOW_PLAYING.length,
   ).padStart(2, "0")}`;
+  // Each status gets its own colour scheme: live = cyan, finished = gold, dormant = muted violet.
+  const STATUS_COLORS = { "NOW PLAYING": neon, "JUST FINISHED": sticky || "#fff066", "LAST PLAYED": "#9a8cc7" };
+  const statusLabel = entry.status || "NOW PLAYING";
+  const statusColor = STATUS_COLORS[statusLabel] || neon;
   const next = () => setIdx((i) => (i + 1) % NOW_PLAYING.length);
   const prev = () => setIdx((i) => (i - 1 + NOW_PLAYING.length) % NOW_PLAYING.length);
 
@@ -1483,12 +1634,12 @@ function ArcHero({ accent, neon, tagColor, tagBg, tagFont }) {
       }}
     >
 
-      <div style={{ maxWidth: 1280, margin: "0 auto", padding: "36px 40px 34px", position: "relative" }}>
+      <div style={{ maxWidth: 1280, margin: "0 auto", padding: "34px 40px 34px", position: "relative" }}>
       <div
         style={{
           position: "relative",
           display: "grid",
-          gridTemplateColumns: "minmax(0, 1fr) 540px",
+          gridTemplateColumns: "minmax(min(100%, 400px), 1fr) minmax(0, 540px)",
           gap: 50,
           minHeight: 340,
           alignItems: "center",
@@ -1513,9 +1664,9 @@ function ArcHero({ accent, neon, tagColor, tagBg, tagFont }) {
               minHeight: 52,
               padding: "0 16px",
               marginBottom: 22,
-              border: `3px solid ${neon}`,
-              background: `linear-gradient(90deg, ${neon}1a, ${accent}12)`,
-              boxShadow: `4px 4px 0 #000, 0 0 16px ${neon}33`,
+              border: `3px solid ${statusColor}`,
+              background: `linear-gradient(90deg, ${statusColor}1a, ${accent}12)`,
+              boxShadow: `4px 4px 0 #000, 0 0 16px ${statusColor}33`,
               boxSizing: "border-box",
             }}
           >
@@ -1527,20 +1678,20 @@ function ArcHero({ accent, neon, tagColor, tagBg, tagFont }) {
                 gap: 10,
                 fontFamily: PIXEL,
                 fontSize: 10,
-                color: neon,
+                color: statusColor,
                 padding: 0,
                 letterSpacing: "0.15em",
                 boxSizing: "border-box",
               }}
             >
-              ► NOW PLAYING
+              ► {statusLabel}
             </div>
             <div
               style={{
                 fontFamily: PIXEL,
                 fontSize: 9,
                 color: "#0d0d18",
-                background: neon,
+                background: statusColor,
                 padding: "7px 9px",
                 letterSpacing: "0.15em",
                 boxShadow: "2px 2px 0 #000",
@@ -1559,9 +1710,9 @@ function ArcHero({ accent, neon, tagColor, tagBg, tagFont }) {
             }
             accent={accent}
             neon={neon}
-            max={36}
-            min={16}
-            height={50}
+            max={34}
+            min={14}
+            height={88}
             align="left"
           />
           <div
@@ -1711,10 +1862,10 @@ function StackedCards({ gameIds, accent, neon, sticky }) {
 
   if (n === 1) {
     const g = GAMES_BY_ID[gameIds[0]];
-    return g ? <CRTCover g={g} accent={accent} neon={neon} sticky={sticky} /> : null;
+    return g ? <CRTCover g={g} accent={accent} neon={neon} sticky={sticky} bigTitle /> : null;
   }
 
-  const CARD_H = 252; // approx card height for the wider CRTCover
+  const CARD_H = 236; // approx card height for the wider CRTCover
   const PEEK = 80; // fixed strip visible for each card below
   const containerH = CARD_H + (n - 1) * PEEK;
 
@@ -1753,7 +1904,7 @@ function StackedCards({ gameIds, accent, neon, sticky }) {
                 transition: "top 0.25s cubic-bezier(0.4,0,0.2,1)",
               }}
             >
-              <CRTCover g={g} accent={accent} neon={neon} sticky={sticky} hideNote={pos !== 0} />
+              <CRTCover g={g} accent={accent} neon={neon} sticky={sticky} hideNote={pos !== 0} hideTrophy={pos !== 0} bigTitle />
             </div>
           );
         })}
@@ -2496,6 +2647,7 @@ function Arcade({
         <ArcHero
           accent={accent}
           neon={neon}
+          sticky={sticky}
           tagColor={tagColor}
           tagBg={tagBg}
           tagFont={tagFont}
