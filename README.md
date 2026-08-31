@@ -7,8 +7,8 @@ platform-shaped chrome (PC tower + monitor, PS5 + TV, Switch handheld), a horizo
 Game-of-the-Year champions timeline, and three collapsible library sections rendered in
 three different visual modes (poster wall, cartridge shelf, card grid).
 
-Repo: `jo-muuuuuu/game-library` (branch `main`). **The project files here are ahead of
-that repo** — treat this bundle, not the repo, as current.
+Repo: `jo-muuuuuu/game-library` (branch `main`), synced as of 2026-08-31 except for the
+GOTY ad-board work below. Treat this bundle as current.
 
 ## About the design files
 Unlike a pure mock, this bundle **is a working static site**, not a throwaway prototype:
@@ -95,15 +95,36 @@ behind a `ScreenBezel` with `Scanlines` and a colored CRT glow.
 
 **4. GOTY champions** (`ArcGOTY`) — horizontal scroller with left/right controls that
 disable at each end (`atStart` / `atEnd` state). Multi-winner years use `StackedCards`, a
-small fan-out stack with its own `activeIdx`.
+small fan-out stack with its own `activeIdx` (`CARD_H` 195 / `PEEK` 68 drive the stack
+geometry — retune both together if the card height changes).
+
+Each champion renders as a **neon ad-board** (`GOTYAdBoard`): a `#101022` housing with a
+`2px solid #2a2a44` border and 7px padding, two `#15152a` mounting struts pinned at
+`top/bottom: 32%` on the outer edges, 2px glowing tube strips inset 10px along the top and
+bottom, four 5px corner bolts, and a 1px inner tube liner at `inset: 3`. Frame color is
+per-game and deterministic: `cyberFrame(g.id)` hashes the id into `CYBER_FRAMES`
+(`#ff2e88` `#00e5ff` `#a3e635` `#ff7e3e` `#b06cff` `#ffd23e` `#00ffa3` `#ff4d6d`). Housing
+shadow `0 0 18px ${frame}33, 0 0 3px ${frame}66, 6px 6px 0 #000`; a 7s `arcFlicker`
+keyframe (injected once as `#arc-adboard-css`) staggers per card by `(g.id.length % 7) * 0.9s`.
+The ★ GOTY ribbon takes the same frame color. Borders and the platinum chip are always
+visible; title, year, and genre tag stay hidden until hover.
+
+The platinum marker is one combined chip in the card's top-right (`top/right: 7`, 6px pixel
+type, `PlatinumTrophy scale={1.25}`, 1px neon border, `#0a0a1acc` background): trophy on the
+left, "PLATINUM" on the right. `CoverScreen` takes `hidePlatinum` so the old oversized
+bottom-left trophy is suppressed on these cards.
 
 **5. Library** (`ArcLibrary` ×3) — each has a collapsible `ArcSectionHead` (kicker,
 title, count, toggle) and one of three layouts via the `layout` prop:
 | Section | kicker / title | era | layout | default |
 | --- | --- | --- | --- | --- |
-| Main | `MAIN QUEST` / `UNI → PRESENT DAY` | `uni` | `wall` (`CoverWallGrid`) | expanded |
-| Origin | `ORIGIN STORY` / `WHERE IT BEGAN` | `childhood` | `shelf` (`CartridgeShelfRows`, 11 per row) | collapsed |
+| Main | `MAIN QUEST` / `UNI → PRESENT DAY` | `uni` | `grid` (`CRTCover` + sticky notes) | expanded |
+| Origin | `ORIGIN STORY` / `CRT CHILDHOOD` | `childhood` | `shelf` (`CartridgeShelfRows`, 11 per row) | collapsed |
 | Online | `VERSUS MODE` / `ONLINE ARENA` | `online` | `grid` (default `CRTCover`) | collapsed |
+
+The GOTY champions row uses a different card: `GOTYAdBoard` wrapping `CoverWallCard` (see
+below). The `uni` and GOTY card styles were swapped from an earlier revision — GOTY got
+the image-forward cover card, `uni` got the CRT cover with sticky notes.
 
 **6. Footer** (`ArcFooter`) — contact links via `ArcContactLink` (inline SVG mail icon +
 external links, hover-lift).

@@ -33,6 +33,13 @@ if (typeof document !== "undefined" && !document.getElementById("arc-fonts")) {
 
 const PIXEL = '"Press Start 2P", ui-monospace, monospace';
 
+if (typeof document !== "undefined" && !document.getElementById("arc-adboard-css")) {
+  const s = document.createElement("style");
+  s.id = "arc-adboard-css";
+  s.textContent = "@keyframes arcFlicker{0%,100%{opacity:1}44%{opacity:1}46%{opacity:.55}48%{opacity:1}72%{opacity:.78}74%{opacity:1}}";
+  document.head.appendChild(s);
+}
+
 // ---- Pixel art primitives ----
 // Drawn as SVG rects in a 1-unit-per-pixel viewBox rather than box-shadow
 // clones: shadow offsets round to device pixels independently, so on any
@@ -908,7 +915,7 @@ function ArcTopBar({ accent, neon }) {
 }
 
 // ---- CRT screen (shared) ----
-function CoverScreen({ g, neon }) {
+function CoverScreen({ g, neon, hidePlatinum = false }) {
   const [failed, setFailed] = React.useState(false);
   React.useEffect(() => setFailed(false), [g.img]);
   return (
@@ -980,7 +987,7 @@ function CoverScreen({ g, neon }) {
           boxShadow: `inset 0 0 60px ${neon}40`,
         }}
       />
-      {g.platinum && (
+      {g.platinum && !hidePlatinum && (
         <div
           style={{
             position: "absolute",
@@ -1862,11 +1869,11 @@ function StackedCards({ gameIds, accent, neon, sticky }) {
 
   if (n === 1) {
     const g = GAMES_BY_ID[gameIds[0]];
-    return g ? <CRTCover g={g} accent={accent} neon={neon} sticky={sticky} bigTitle /> : null;
+    return g ? <GOTYAdBoard g={g} neon={neon} frame={cyberFrame(g.id)} /> : null;
   }
 
-  const CARD_H = 236; // approx card height for the wider CRTCover
-  const PEEK = 80; // fixed strip visible for each card below
+  const CARD_H = 195; // cover-wall card + ad-board housing at station width
+  const PEEK = 68; // fixed strip visible for each card below
   const containerH = CARD_H + (n - 1) * PEEK;
 
   const prev = () => setActiveIdx((activeIdx - 1 + n) % n);
@@ -1904,7 +1911,7 @@ function StackedCards({ gameIds, accent, neon, sticky }) {
                 transition: "top 0.25s cubic-bezier(0.4,0,0.2,1)",
               }}
             >
-              <CRTCover g={g} accent={accent} neon={neon} sticky={sticky} hideNote={pos !== 0} hideTrophy={pos !== 0} bigTitle />
+              <GOTYAdBoard g={g} neon={neon} frame={cyberFrame(g.id)} />
             </div>
           );
         })}
@@ -2138,7 +2145,7 @@ function ArcTimeline({ accent, neon, sticky }) {
             </div>
           ))}
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: 14 }}>
           {sorted.slice(0, 8).map((g) => (
             <CRTCover key={g.id} g={g} accent={accent} neon={neon} sticky={sticky} />
           ))}
@@ -2330,9 +2337,16 @@ function CartridgeShelfRows({ games, accent, neon, perRow = 11 }) {
 }
 
 // ---- Cover wall (image-forward poster gallery) ----
-function CoverWallCard({ g, neon }) {
+const CYBER_FRAMES = ["#ff2e88", "#00e5ff", "#a3e635", "#ff7e3e", "#b06cff", "#ffd23e", "#00ffa3", "#ff4d6d"];
+function cyberFrame(id) {
+  let h = 0;
+  for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
+  return CYBER_FRAMES[h % CYBER_FRAMES.length];
+}
+function CoverWallCard({ g, neon, frame }) {
   const [on, setOn] = React.useState(false);
   const col = arcGenreColor(g.tag);
+  const edge = frame || (on ? neon : "#3a3a5c");
   return (
     <div
       onMouseEnter={() => setOn(true)}
@@ -2341,14 +2355,23 @@ function CoverWallCard({ g, neon }) {
         position: "relative",
         aspectRatio: "16 / 9",
         overflow: "hidden",
-        border: `3px solid ${on ? neon : "#3a3a5c"}`,
+        border: `3px solid ${edge}`,
         background: "#000",
-        boxShadow: on ? `0 0 20px ${neon}55, 5px 5px 0 #000` : "4px 4px 0 #000",
+        boxShadow: frame
+          ? on
+            ? `0 0 24px ${edge}88, 0 0 4px ${edge}, 5px 5px 0 #000`
+            : `0 0 12px ${edge}55, 4px 4px 0 #000`
+          : on
+            ? `0 0 20px ${neon}55, 5px 5px 0 #000`
+            : "4px 4px 0 #000",
         cursor: "pointer",
         transition: "border-color 0.15s, box-shadow 0.15s",
       }}
     >
-      <CoverScreen g={g} neon={neon} />
+      {frame && (
+        <div style={{ position: "absolute", inset: 3, border: `1px solid ${frame}`, opacity: 0.5, pointerEvents: "none", zIndex: 4 }} />
+      )}
+      <CoverScreen g={g} neon={neon} hidePlatinum />
       {g.goty && (
         <div
           style={{
@@ -2360,13 +2383,13 @@ function CoverWallCard({ g, neon }) {
             transform: "rotate(-45deg)",
             width: 130,
             textAlign: "center",
-            background: "#ffd23e",
+            background: frame || "#ffd23e",
             color: "#0d0d18",
             fontFamily: PIXEL,
             fontSize: 7,
             padding: "4px 0",
             letterSpacing: "0.1em",
-            boxShadow: "0 2px 6px rgba(0,0,0,0.6)",
+            boxShadow: frame ? `0 2px 6px rgba(0,0,0,0.6), 0 0 12px ${frame}88` : "0 2px 6px rgba(0,0,0,0.6)",
           }}
         >
           ★ GOTY
@@ -2376,20 +2399,24 @@ function CoverWallCard({ g, neon }) {
         <div
           style={{
             position: "absolute",
-            opacity: on ? 1 : 0,
-            transition: "opacity 0.18s",
-            top: 9,
-            right: 9,
+            top: 7,
+            right: 7,
+            display: "flex",
+            alignItems: "center",
+            gap: 5,
             fontFamily: PIXEL,
-            fontSize: 7,
+            fontSize: 6,
+            letterSpacing: "0.08em",
             color: neon,
-            background: "#0a0a1a",
-            border: `2px solid ${neon}`,
-            padding: "4px 5px",
-            boxShadow: `0 0 8px ${neon}55`,
+            background: "#0a0a1acc",
+            border: `1px solid ${neon}`,
+            padding: "3px 5px",
+            boxShadow: `0 0 6px ${neon}44`,
           }}
+          title="PLATINUM"
         >
-          PLAT
+          <PlatinumTrophy scale={1.25} />
+          <span>PLATINUM</span>
         </div>
       )}
       <div
@@ -2442,13 +2469,45 @@ function CoverWallCard({ g, neon }) {
   );
 }
 
+// ---- GOTY ad-board (neon billboard housing around a cover) ----
+function GOTYAdBoard({ g, neon, frame }) {
+  const tube = { position: "absolute", left: 10, right: 10, height: 2, background: frame, boxShadow: `0 0 8px ${frame}, 0 0 16px ${frame}88` };
+  const strut = (side) => (
+    <div style={{ position: "absolute", top: "32%", bottom: "32%", width: 5, background: "#15152a", border: "1px solid #2a2a44", [side]: 0 }} />
+  );
+  return (
+    <div style={{ position: "relative", padding: "0 9px" }}>
+      {strut("left")}
+      {strut("right")}
+      <div
+        style={{
+          position: "relative",
+          background: "#101022",
+          padding: 7,
+          border: "2px solid #2a2a44",
+          boxShadow: `0 0 18px ${frame}33, 0 0 3px ${frame}66, 6px 6px 0 #000`,
+          animation: "arcFlicker 7s infinite steps(1,end)",
+          animationDelay: `${(g.id.length % 7) * 0.9}s`,
+        }}
+      >
+        <div style={{ ...tube, top: 2 }} />
+        <div style={{ ...tube, bottom: 2 }} />
+        {[{ top: 2, left: 2 }, { top: 2, right: 2 }, { bottom: 2, left: 2 }, { bottom: 2, right: 2 }].map((p, i) => (
+          <div key={i} style={{ position: "absolute", width: 5, height: 5, background: frame, boxShadow: `0 0 6px ${frame}`, ...p }} />
+        ))}
+        <CoverWallCard g={g} neon={neon} frame={frame} />
+      </div>
+    </div>
+  );
+}
+
 function CoverWallGrid({ games, neon }) {
   return (
     <div
       style={{
         padding: "0 40px 40px",
         display: "grid",
-        gridTemplateColumns: "repeat(4, 1fr)",
+        gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
         gap: 12,
       }}
     >
@@ -2485,7 +2544,7 @@ function ArcLibrary({ era, kicker, title, accent, neon, sticky, defaultCollapsed
             style={{
               padding: "0 40px 40px",
               display: "grid",
-              gridTemplateColumns: "repeat(4, 1fr)",
+              gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
               gap: 14,
             }}
           >
@@ -2666,12 +2725,11 @@ function Arcade({
           accent={accent}
           neon={neon}
           sticky={sticky}
-          layout="wall"
         />
         <ArcLibrary
           era="childhood"
           kicker="ORIGIN STORY"
-          title="WHERE IT BEGAN"
+          title="CRT CHILDHOOD"
           accent={accent}
           neon={neon}
           sticky={sticky}

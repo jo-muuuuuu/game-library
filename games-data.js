@@ -70,7 +70,7 @@ const GAMES = [
   { id: 'dmc5',           title: 'Devil May Cry 5',                         img: `${IMG}/dmc5.jpg`,            year: 2019, era: 'uni', tag: 'action' },
   { id: 'ori-will',       title: 'Ori and the Will of the Wisps',       img: `${IMG}/ori-will.jpg`,        year: 2020, era: 'uni', tag: 'metroidvania' },
   { id: 'hades',          title: 'Hades',                               img: `${IMG}/hades.png`,           year: 2020, era: 'uni', tag: 'roguelite',    goty: '2020', personalNote: 'One more run... one more.' },
-  { id: 'cyberpunk',      title: 'Cyberpunk 2077',                      img: `${IMG}/cyberpunk-dlc.jpg`,       year: 2020, era: 'uni', tag: 'open-world',   platinum: true, goty: '2021' },
+  { id: 'cyberpunk',      title: 'Cyberpunk 2077',                      img: `${IMG}/cyberpunk.png`,       year: 2020, era: 'uni', tag: 'open-world',   platinum: true, goty: '2021' },
   { id: 'nba2k21',        title: 'NBA 2K21',                            img: `${IMG}/nba2k21.jpg`,         year: 2020, era: 'uni', tag: 'sports' },
   { id: 'nioh2',          title: 'Nioh 2',                                  img: `${IMG}/nioh2.jpg`,           year: 2020, era: 'uni', tag: 'soulslike' },
   { id: 'goose',          title: 'Goose Goose Duck',                    img: `${IMG}/goose.jpeg`,          year: 2021, era: 'uni', tag: 'social',       online: true },
