@@ -27,7 +27,7 @@ if (typeof document !== "undefined" && !document.getElementById("arc-fonts")) {
   l.id = "arc-fonts";
   l.rel = "stylesheet";
   l.href =
-    "https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Caveat:wght@600;700&display=swap";
+    "https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Silkscreen:wght@400;700&family=Caveat:wght@600;700&display=swap";
   document.head.appendChild(l);
 }
 
@@ -230,7 +230,7 @@ function FitCaption({ text, max = 8.5, min = 4.5, style }) {
     };
   }, [text, max, min]);
   return (
-    <div ref={ref} style={{ ...style, fontSize: size, whiteSpace: "nowrap" }}>
+    <div ref={ref} style={{ ...style, fontSize: size, whiteSpace: "nowrap", minWidth: 0, overflow: "hidden", textOverflow: "ellipsis" }}>
       {text}
     </div>
   );
@@ -248,6 +248,7 @@ function CRTCover({ g, accent, neon, sticky = "#ffd23e", hideNote = false, hideT
         border: "3px solid #2a2a44",
         boxShadow: "inset 0 0 0 2px #0d0d18, 4px 4px 0 #000",
         position: "relative",
+        zIndex: g.personalNote && !hideNote ? 6 : undefined,
       }}
     >
       <div
@@ -339,6 +340,27 @@ function CRTCover({ g, accent, neon, sticky = "#ffd23e", hideNote = false, hideT
             ★ GOTY
           </div>
         )}
+        {g.dlc && (
+          <div
+            style={{
+              position: "absolute",
+              top: 6,
+              left: 6,
+              zIndex: 3,
+              fontFamily: PIXEL,
+              fontSize: 6,
+              letterSpacing: "0.12em",
+              color: neon,
+              background: "#0a0a1acc",
+              border: `1px solid ${neon}`,
+              padding: "3px 5px",
+              boxShadow: "2px 2px 0 #000",
+            }}
+            title="EXPANSION"
+          >
+            DLC
+          </div>
+        )}
         {g.platinum && !hideTrophy && (
           <div
             style={{
@@ -406,6 +428,11 @@ function CRTCover({ g, accent, neon, sticky = "#ffd23e", hideNote = false, hideT
           }}
         />
       </div>
+      {g.parts && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 3, marginTop: 5, fontFamily: '"Silkscreen",monospace', fontSize: 9, lineHeight: 1.35, color: neon }}>
+          {g.parts.map((p) => <span key={p}>{p}</span>)}
+        </div>
+      )}
 
       <div
         style={{
@@ -730,6 +757,7 @@ const NAV_LINKS = [
   { label: "ON ROTATION", id: "arc-now-playing" },
   { label: "CHAMPIONS", id: "arc-goty" },
   { label: "LIBRARY", id: "arc-library" },
+  { label: "UNFINISHED", id: "arc-unfinished" },
 ];
 
 function ArcTopBar({ accent, neon }) {
@@ -2189,11 +2217,12 @@ const ARC_GENRE_COLOR = {
   "beat-em-up": "#ff8fab",
   arcade: "#ffd23e",
   "tower-defense": "#a3e635",
+  mmorpg: "#b98cff",
   fighting: "#ee4266",
 };
 const arcGenreColor = (tag) => ARC_GENRE_COLOR[tag] || "#00e5ff";
 
-function CartridgeSpine({ g, neon, edge = "center" }) {
+function CartridgeSpine({ g, neon, edge = "center", flex = false }) {
   const [on, setOn] = React.useState(false);
   const col = arcGenreColor(g.tag);
   return (
@@ -2201,13 +2230,12 @@ function CartridgeSpine({ g, neon, edge = "center" }) {
       onMouseEnter={() => setOn(true)}
       onMouseLeave={() => setOn(false)}
       style={{
-        width: 48,
-        height: on ? 222 : 204,
+        ...(flex ? { flex: "0 0 44px" } : { width: 40, flexShrink: 0 }),
+        height: on ? 190 : 174,
         marginBottom: on ? 18 : 0,
         position: "relative",
         cursor: "pointer",
         transition: "all 0.18s cubic-bezier(0.4,0,0.2,1)",
-        flexShrink: 0,
       }}
     >
       {/* cover ejects above the spine on hover */}
@@ -2243,12 +2271,15 @@ function CartridgeSpine({ g, neon, edge = "center" }) {
             color: "#e8e8f0",
             letterSpacing: "0.04em",
             display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
+            flexDirection: "column",
+            gap: 5,
           }}
         >
-          <span style={{ color: neon }}>{g.year}</span>
-          <span style={{ color: col, textTransform: "uppercase" }}>{g.tag}</span>
+          <span style={{ fontSize: 7, lineHeight: 1.4, color: "#fff", letterSpacing: "0.02em" }}>{g.title}</span>
+          <span style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span style={{ color: neon }}>{g.year}</span>
+            <span style={{ color: col, textTransform: "uppercase" }}>{g.tag}</span>
+          </span>
         </div>
       </div>
       {/* the spine */}
@@ -2283,11 +2314,11 @@ function CartridgeSpine({ g, neon, edge = "center" }) {
             writingMode: "vertical-rl",
             transform: "rotate(180deg)",
             fontFamily: ARC_MONO,
-            fontSize: 18,
+            fontSize: 16,
             lineHeight: 1,
             color: on ? "#fff" : "#e8e8f0",
             letterSpacing: "0.02em",
-            maxHeight: 150,
+            maxHeight: 126,
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
@@ -2302,25 +2333,226 @@ function CartridgeSpine({ g, neon, edge = "center" }) {
             color: g.platinum ? neon : "rgba(232,232,240,0.32)",
           }}
         >
-          {g.platinum ? "◆" : g.goty ? "★" : "·"}
+          {g.dlc ? "DLC" : g.platinum ? "◆" : g.goty ? "★" : "·"}
         </div>
       </div>
     </div>
   );
 }
 
-function CartridgeShelfRows({ games, accent, neon, perRow = 11 }) {
-  const rows = [];
-  for (let i = 0; i < games.length; i += perRow) rows.push(games.slice(i, i + perRow));
+// Pixel-art desk objects stand between studio groups instead of a rule.
+// Sizes are read off the case itself: a spine is ~19 cm tall = 174 px.
+const spr = (x, y, w, h, c) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${c}"/>`;
+const SHELF_PROPS = {
+  controller: { w: 22, h: 14, pxW: 108, art:
+    spr(1,4,20,8,'#2a2a44')+spr(0,6,3,5,'#2a2a44')+spr(19,6,3,5,'#2a2a44')+
+    spr(2,3,18,2,'#3a3a5c')+
+    spr(4,6,2,4,'#0f0f1e')+spr(3,7,4,2,'#0f0f1e')+
+    spr(15,6,2,2,'#ff2e88')+spr(17,8,2,2,'#00e5ff')+spr(13,8,2,2,'#a3e635')+spr(15,10,2,2,'#ffd23e')+
+    spr(2,1,4,2,'#3a3a5c')+spr(16,1,4,2,'#3a3a5c') },
+  deer: { w: 32, h: 30, px: 122, art:
+    spr(7,27,3,3,'#5a3b22')+spr(11,27,3,3,'#5a3b22')+spr(16,27,3,3,'#5a3b22')+spr(20,27,3,3,'#5a3b22')+
+    spr(7,29,3,1,'#2a1a10')+spr(11,29,3,1,'#2a1a10')+spr(16,29,3,1,'#2a1a10')+spr(20,29,3,1,'#2a1a10')+
+    spr(6,17,18,10,'#8a5a34')+spr(6,17,18,2,'#a06b3f')+
+    spr(8,22,3,2,'#c99a6a')+spr(14,21,3,2,'#c99a6a')+spr(19,23,2,2,'#c99a6a')+
+    spr(6,24,18,3,'#6f4526')+
+    spr(21,14,4,6,'#8a5a34')+spr(22,12,3,3,'#a06b3f')+
+    spr(20,7,7,6,'#a06b3f')+spr(26,9,4,3,'#8a5a34')+
+    spr(29,10,2,2,'#2a1a10')+spr(27,10,2,1,'#6f4526')+
+    spr(23,8,2,2,'#0f0f1e')+spr(23,8,1,1,'#ffffff')+
+    spr(18,6,3,3,'#a06b3f')+spr(19,7,1,1,'#6f4526')+
+    spr(21,2,2,6,'#c9a06a')+spr(25,2,2,6,'#c9a06a')+
+    spr(19,1,2,3,'#c9a06a')+spr(23,0,2,3,'#c9a06a')+spr(27,1,2,3,'#c9a06a')+
+    spr(17,2,2,2,'#c9a06a')+spr(29,2,2,2,'#c9a06a')+
+    spr(4,18,3,6,'#8a5a34')+spr(4,17,2,2,'#a06b3f') },
+  egg: { w: 20, h: 24, px: 96, art:
+    spr(8,0,4,1,'#eddcbe')+spr(7,1,6,1,'#eddcbe')+spr(6,2,8,1,'#eddcbe')+
+    spr(5,3,10,2,'#eddcbe')+spr(4,5,12,3,'#eddcbe')+spr(3,8,14,6,'#eddcbe')+
+    spr(4,14,12,2,'#eddcbe')+spr(5,16,10,1,'#eddcbe')+spr(6,17,8,1,'#eddcbe')+
+    spr(7,18,6,1,'#eddcbe')+
+    spr(9,0,1,1,'#f7ecd8')+spr(8,1,1,1,'#f7ecd8')+spr(7,2,2,1,'#f7ecd8')+
+    spr(6,3,4,2,'#f7ecd8')+spr(5,5,5,1,'#f7ecd8')+spr(5,6,4,2,'#f7ecd8')+
+    spr(4,8,5,1,'#f7ecd8')+spr(4,9,4,5,'#f7ecd8')+spr(5,14,3,2,'#f7ecd8')+
+    spr(6,16,2,1,'#f7ecd8')+spr(7,17,1,1,'#f7ecd8')+
+    spr(7,2,2,1,'#fffaf0')+spr(7,3,3,2,'#fffaf0')+spr(6,5,2,1,'#fffaf0')+
+    spr(10,0,2,1,'#d9c3a0')+spr(10,1,3,1,'#d9c3a0')+spr(10,2,4,1,'#d9c3a0')+
+    spr(11,3,4,2,'#d9c3a0')+spr(11,5,5,1,'#d9c3a0')+spr(10,6,6,2,'#d9c3a0')+
+    spr(10,8,7,1,'#d9c3a0')+spr(9,9,8,5,'#d9c3a0')+spr(9,14,7,2,'#d9c3a0')+
+    spr(9,16,6,1,'#d9c3a0')+spr(9,17,5,1,'#d9c3a0')+spr(9,18,4,1,'#d9c3a0')+
+    spr(13,6,2,2,'#bfa77f')+spr(13,8,3,6,'#bfa77f')+spr(12,14,2,2,'#bfa77f')+
+    spr(11,16,2,1,'#bfa77f')+spr(11,17,1,1,'#bfa77f')+
+    spr(4,15,1,1,'#e5d4b4')+spr(5,16,1,1,'#e5d4b4')+spr(6,17,2,1,'#e5d4b4')+
+    spr(7,18,2,1,'#e5d4b4')+
+    spr(10,3,1,1,'#cba97a')+spr(12,7,1,1,'#cba97a')+spr(6,9,1,1,'#cba97a')+
+    spr(5,11,1,1,'#cba97a')+spr(14,11,1,1,'#cba97a')+spr(8,13,1,1,'#cba97a')+
+    spr(11,15,1,1,'#cba97a')+spr(9,17,1,1,'#cba97a')+
+    spr(6,19,8,2,'#3a3a5c')+spr(7,19,6,1,'#4a4a70')+
+    spr(4,21,12,2,'#2a2a44')+spr(5,23,10,1,'#1a1a2e') },
+  'figure-shanks': { w: 22, h: 32, px: 140, art:
+    spr(6,29,10,3,'#2a2a44')+spr(5,31,12,1,'#3a3a5c')+spr(7,30,8,1,'#1a1a2e')+
+    spr(6,26,4,3,'#3b2a1d')+spr(12,26,4,3,'#3b2a1d')+spr(5,28,6,1,'#14141f')+spr(11,28,6,1,'#14141f')+
+    spr(7,20,8,7,'#2b2b3a')+
+    spr(4,13,14,10,'#14141f')+spr(3,14,3,10,'#14141f')+spr(18,14,2,8,'#14141f')+
+    spr(4,22,14,2,'#0a0a12')+spr(6,13,2,10,'#22222e')+spr(14,13,2,10,'#22222e')+
+    spr(8,13,6,8,'#e8e8f0')+spr(9,14,4,7,'#d8d8e4')+
+    spr(8,18,6,3,'#ffd23e')+spr(8,19,6,1,'#e0a800')+
+    spr(7,21,8,1,'#8a5a2a')+spr(10,21,2,1,'#c9a227')+
+    spr(3,19,3,5,'#22222e')+spr(3,23,3,2,'#e8c9a0')+
+    spr(17,15,3,7,'#14141f')+spr(16,16,2,2,'#22222e')+
+    spr(15,13,6,4,'#c8102e')+spr(17,16,4,8,'#8a0b20')+
+    spr(8,11,6,2,'#e8c9a0')+
+    spr(6,3,10,9,'#f0d2ab')+
+    spr(5,1,12,4,'#c8102e')+spr(4,3,2,5,'#c8102e')+spr(16,3,2,5,'#c8102e')+spr(6,5,3,2,'#a80d24')+
+    spr(7,6,2,2,'#0f0f1e')+spr(12,6,2,2,'#0f0f1e')+spr(7,6,1,1,'#ffffff')+spr(12,6,1,1,'#ffffff')+
+    spr(6,4,3,1,'#8a0b20')+spr(6,5,1,4,'#a83a3a')+spr(7,4,1,1,'#a83a3a')+
+    spr(10,8,2,1,'#d9b487')+spr(8,10,5,1,'#c98a7a') },
+  tapes: { w: 22, h: 16, pxW: 96, art:
+    spr(1,9,18,7,'#2a2a44')+spr(2,10,16,2,'#3a3a5c')+spr(6,13,8,2,'#0f0f1e')+
+    spr(7,13,2,2,'#8a8aa0')+spr(11,13,2,2,'#8a8aa0')+
+    spr(3,2,18,6,'#b06cff')+spr(4,3,16,2,'#d3aaff')+spr(8,5,8,2,'#0f0f1e')+
+    spr(9,5,2,2,'#e8e8f0')+spr(13,5,2,2,'#e8e8f0')+spr(3,7,18,1,'#7d3fd0') },
+  keyboard: { w: 46, h: 15, pxW: 176, art:
+    spr(0,3,46,12,'#2a2a44')+spr(1,2,44,2,'#3a3a5c')+spr(1,13,44,2,'#22223c')+
+    [...Array(20)].map((_,i)=>spr(2+i*2.2,4,1.4,1.4,'#00e5ff')).join('')+
+    [...Array(20)].map((_,i)=>spr(2+i*2.2,6,1.4,1.4,'#e8e8f0')).join('')+
+    [...Array(19)].map((_,i)=>spr(2.6+i*2.2,8,1.4,1.4,'#e8e8f0')).join('')+
+    [...Array(18)].map((_,i)=>spr(3.2+i*2.2,10,1.4,1.4,'#e8e8f0')).join('')+
+    spr(3,12,4,1.4,'#8a8aa8')+spr(8,12,3,1.4,'#8a8aa8')+spr(12,12,18,1.4,'#8a8aa8')+
+    spr(31,12,3,1.4,'#8a8aa8')+spr(35,12,3,1.4,'#8a8aa8')+spr(39,12,4,1.4,'#ff2e88') },
+  headphones: { w: 18, h: 26, px: 186, art:
+    spr(4,24,10,2,'#3a3a5c')+spr(6,22,6,2,'#2a2a44')+
+    spr(8,6,2,17,'#2a2a44')+spr(7,5,4,2,'#3a3a5c')+
+    spr(4,3,10,2,'#e8e8f0')+spr(3,4,2,4,'#e8e8f0')+spr(13,4,2,4,'#e8e8f0')+
+    spr(2,7,4,7,'#ff2e88')+spr(12,7,4,7,'#ff2e88')+spr(3,9,2,3,'#0f0f1e')+spr(13,9,2,3,'#0f0f1e') },
+  mug: { w: 16, h: 16, pxW: 70, art:
+    spr(2,4,10,11,'#e8e8f0')+spr(2,4,10,2,'#ffffff')+spr(3,5,8,2,'#3b2a1d')+
+    spr(2,14,10,1,'#c9c9d8')+spr(11,5,1,10,'#c9c9d8')+
+    spr(12,7,3,2,'#e8e8f0')+spr(14,8,2,4,'#e8e8f0')+spr(12,12,3,2,'#e8e8f0')+
+    spr(5,1,1,2,'#3a3a5c')+spr(8,0,1,3,'#3a3a5c') },
+};
+// Each explicit break in the section list gets the next prop, so no two
+// dividers on a shelf repeat.
+const SHELF_PROP_ORDER = ["controller", "deer", "keyboard", "headphones", "egg", "figure-shanks", "tapes"];
+// authored size, identical on every shelf (never flex-shrunk)
+const shelfPropSize = (name) => {
+  const p = SHELF_PROPS[name];
+  const scale = p.pxW ? p.pxW / p.w : p.px / p.h;
+  return { w: Math.round(p.w * scale), h: Math.round(p.h * scale) };
+};
+const SHELF_SPINE_W = 44;
+const SHELF_GAP = 6;
+
+function ShelfDivider({ name }) {
+  const p = SHELF_PROPS[name];
+  const { w, h } = shelfPropSize(name);
+  return (
+    <div style={{ flex: `0 0 ${w + 10}px`, display: "flex", justifyContent: "center", alignItems: "flex-end" }}>
+      <svg width={w} height={h} viewBox={`0 0 ${p.w} ${p.h}`} shapeRendering="crispEdges" aria-hidden="true"
+        style={{ display: "block", flex: "none", filter: "drop-shadow(3px 3px 0 rgba(0,0,0,0.55))" }}
+        dangerouslySetInnerHTML={{ __html: p.art }} />
+    </div>
+  );
+}
+
+// Rows are packed to the measured shelf width so nothing has to shrink:
+// spines keep their 44 px basis and props keep their authored size.
+function CartridgeShelfRows({ items, games, accent, neon }) {
+  const hostRef = React.useRef(null);
+  const [avail, setAvail] = React.useState(0);
+  React.useEffect(() => {
+    const el = hostRef.current;
+    if (!el) return undefined;
+    const measure = () => setAvail(el.clientWidth);
+    measure();
+    if (typeof ResizeObserver === "undefined") return undefined;
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  // Curated order straight from the list: every break becomes a prop divider.
+  const cells = React.useMemo(() => {
+    const src = items && items.length ? items : games;
+    let n = 0;
+    const list = [];
+    src.forEach((it) => {
+      if (!it) list.push({ prop: SHELF_PROP_ORDER[n++ % SHELF_PROP_ORDER.length] });
+      else list.push({ g: it });
+    });
+    while (list.length && list[0].prop) list.shift();
+    while (list.length && list[list.length - 1].prop) list.pop();
+    return list;
+  }, [items, games]);
+
+  const rows = React.useMemo(() => {
+    const width = avail || 820;
+    const cellW = (c) => (c.prop ? shelfPropSize(c.prop).w + 10 : SHELF_SPINE_W);
+    // A break-delimited run and the prop that closes it move as one unit, so a
+    // group never splits across shelves while its divider strands elsewhere.
+    const groups = [];
+    let cur = [];
+    cells.forEach((c) => {
+      cur.push(c);
+      if (c.prop) { groups.push(cur); cur = []; }
+    });
+    if (cur.length) groups.push(cur);
+    const span = (g) => g.reduce((a, c, i) => a + cellW(c) + (i ? SHELF_GAP : 0), 0);
+    const out = [];
+    let row = [];
+    let used = 0;
+    const flush = () => { if (row.length) { out.push(row); row = []; used = 0; } };
+    groups.forEach((g) => {
+      const gw = span(g);
+      if (row.length && used + SHELF_GAP + gw > width) flush();
+      if (gw > width) {
+        // A run longer than one shelf still has to wrap somewhere.
+        g.forEach((c) => {
+          const w = cellW(c);
+          if (row.length && used + SHELF_GAP + w > width) flush();
+          used += w + (used ? SHELF_GAP : 0);
+          row.push(c);
+        });
+        return;
+      }
+      used += gw + (used ? SHELF_GAP : 0);
+      row.push(...g);
+    });
+    flush();
+    // A shelf that ends on a divider may borrow spines from the next run — but
+    // only from a long run (4+), so short groups like the CS/WC3/PvZ trio stay
+    // intact instead of being orphaned across two shelves.
+    for (let i = 0; i < out.length - 1; i += 1) {
+      let w = span(out[i]);
+      const runLen = out[i + 1].findIndex((c) => c.prop);
+      let left = (runLen < 0 ? out[i + 1].length : runLen) - 3;
+      const endsOnProp = !!out[i][out[i].length - 1].prop;
+      while (
+        endsOnProp &&
+        left > 0 &&
+        !out[i + 1][0].prop &&
+        w + SHELF_GAP + SHELF_SPINE_W <= width
+      ) {
+        out[i].push(out[i + 1].shift());
+        w += SHELF_GAP + SHELF_SPINE_W;
+        left -= 1;
+      }
+    }
+    return out.filter((r) => r.some((c) => c.g));
+  }, [cells, avail]);
+
   return (
     <div style={{ padding: "0 40px 40px" }}>
+      <div ref={hostRef}>
       {rows.map((row, ri) => (
         <div key={ri} style={{ marginTop: ri === 0 ? 56 : 60 }}>
-          <div style={{ display: "flex", alignItems: "flex-end", gap: 8 }}>
-            {row.map((g, gi) => (
-              <CartridgeSpine key={g.id} g={g} neon={neon}
-                edge={gi === 0 ? "start" : gi === row.length - 1 ? "end" : "center"} />
+          <div style={{ display: "flex", alignItems: "flex-end", gap: SHELF_GAP }}>
+            {row.map((c, gi) => (
+              c.prop
+                ? <ShelfDivider key={`p${gi}`} name={c.prop} />
+                : <CartridgeSpine key={c.g.id} g={c.g} neon={neon} flex
+                    edge={gi === 0 ? "start" : gi === row.length - 1 ? "end" : "center"} />
             ))}
+            <div style={{ flex: "1 0 0", minWidth: 0 }} />
           </div>
           <div
             style={{
@@ -2332,6 +2564,7 @@ function CartridgeShelfRows({ games, accent, neon, perRow = 11 }) {
           />
         </div>
       ))}
+      </div>
     </div>
   );
 }
@@ -2393,6 +2626,26 @@ function CoverWallCard({ g, neon, frame }) {
           }}
         >
           ★ GOTY
+        </div>
+      )}
+      {g.dlc && (
+        <div
+          style={{
+            position: "absolute",
+            bottom: 7,
+            left: 7,
+            zIndex: 5,
+            fontFamily: PIXEL,
+            fontSize: 6,
+            letterSpacing: "0.12em",
+            color: frame || neon,
+            background: "#0a0a1acc",
+            border: `1px solid ${frame || neon}`,
+            padding: "3px 5px",
+          }}
+          title="EXPANSION"
+        >
+          DLC
         </div>
       )}
       {g.platinum && (
@@ -2518,12 +2771,261 @@ function CoverWallGrid({ games, neon }) {
   );
 }
 
-// ---- Library grid (by era) ----
-function ArcLibrary({ era, kicker, title, accent, neon, sticky, defaultCollapsed = false, layout = "grid" }) {
+// ---- Mosaic hover grid (library layout) ----
+// Mixed square / wide / hero tiles on a dense 8-col grid; hover lifts a
+// 16:9 preview so covers are never cropped. Shapes are seeded per game id,
+// so the wall is identical on every load.
+if (typeof document !== "undefined" && !document.getElementById("arc-mosaic-css")) {
+  const st = document.createElement("style");
+  st.id = "arc-mosaic-css";
+  st.textContent = `
+.arcm{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));grid-auto-rows:var(--arcm-u,132px);gap:10px;padding:4px 0 40px}
+.arcm-groups{position:relative}
+.arcm-t{position:relative;padding:0;border:0;background:none;font:inherit;color:inherit;text-align:left;cursor:pointer;-webkit-appearance:none;appearance:none;z-index:1}
+.arcm-box{position:relative;width:100%;height:100%;background:#0a0a1a;border:2px solid #2a2a44;box-shadow:3px 3px 0 #000;overflow:hidden;transition:border-color .16s,box-shadow .16s}
+.arcm-t.cend .arcm-box{border-right:2px dashed rgba(232,232,240,.45)}
+.arcm-box img{width:100%;height:100%;object-fit:cover;filter:saturate(.7) brightness(.6);transition:filter .16s}
+.arcm-box::after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.28) 0 1px,transparent 1px 3px)}
+.arcm-ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:8px;font-family:"Press Start 2P",monospace;font-size:7px;line-height:1.5;color:var(--arcm-neon);background:#0a0a1a}
+.arcm-trophy{position:relative;display:block}
+.arcm-plat{position:absolute;bottom:4px;left:4px;padding:3px 4px 1px;background:#0a0a1a;border:2px solid var(--arcm-neon);box-shadow:2px 2px 0 #000,0 0 10px var(--arcm-glow);line-height:0;z-index:3}
+.arcm-goty{position:absolute;bottom:4px;right:4px;background:var(--arcm-accent);color:#0d0d18;font-family:"Press Start 2P",monospace;font-size:6px;padding:3px 5px;box-shadow:2px 2px 0 #000;z-index:3}
+.arcm-dlc{position:absolute;top:4px;left:4px;background:#1a1a2e;color:var(--arcm-neon);border:1px solid var(--arcm-neon);font-family:"Press Start 2P",monospace;font-size:5px;padding:2px 4px;letter-spacing:.1em;z-index:3}
+.arcm-parts{display:flex;flex-direction:column;gap:3px;margin-top:7px;font-family:"Silkscreen",monospace;font-size:10px;line-height:1.35;color:var(--arcm-neon)}
+.arcm-t:hover,.arcm-t:focus-visible{z-index:60;outline:none}
+.arcm-t:hover .arcm-box,.arcm-t:focus-visible .arcm-box{border-color:var(--arcm-neon);box-shadow:3px 3px 0 #000,0 0 22px var(--arcm-glow)}
+.arcm-t:hover .arcm-box img,.arcm-t:focus-visible .arcm-box img{filter:saturate(1.05) brightness(.85)}
+.arcm-pop{position:absolute;left:50%;top:50%;width:340px;transform:translate(-50%,-50%) scale(.94);background:#1a1a2e;border:3px solid var(--arcm-neon);box-shadow:inset 0 0 0 2px #0d0d18,6px 6px 0 #000,0 0 30px var(--arcm-glow);padding:10px 10px 11px;opacity:0;pointer-events:none;transition:opacity .13s,transform .13s cubic-bezier(.3,0,.2,1);z-index:70}
+.arcm-t:hover .arcm-pop,.arcm-t:focus-visible .arcm-pop{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.arcm-scr{position:relative;aspect-ratio:16/9;width:100%;background:#000;overflow:hidden;box-shadow:inset 0 0 30px rgba(0,0,0,.8)}
+.arcm-scr img{width:100%;height:100%;object-fit:cover;filter:saturate(1.15) contrast(1.05)}
+.arcm-scr::after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.22) 0 1px,transparent 1px 3px),radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.55) 100%)}
+.arcm-pop .arcm-ttl{font-family:"Silkscreen",monospace;font-size:15px;letter-spacing:.02em;line-height:1.25;margin-top:11px}
+.arcm-pop .arcm-plat{bottom:6px;left:6px;padding:4px 5px 2px}
+.arcm-pop .arcm-goty{bottom:6px;right:6px;font-size:7px;padding:4px 6px}
+.arcm-pop .arcm-dlc{top:6px;left:6px;font-size:6px;padding:3px 5px}
+.arcm-note{position:absolute;top:-12px;right:-12px;transform:rotate(4deg);background:var(--arcm-sticky);color:#1a1a1a;padding:7px 10px;max-width:130px;font-family:Caveat,"Comic Sans MS",cursive;font-weight:700;font-size:14px;line-height:1.25;box-shadow:3px 3px 0 rgba(0,0,0,.7);white-space:pre-line;z-index:5}
+.arcm-prog{margin-top:8px;font-family:"Press Start 2P",monospace;font-size:6px;line-height:1.5;letter-spacing:.12em;color:var(--arcm-neon);border:1px solid var(--arcm-neon);padding:5px 6px;text-align:center}
+.arcm-t.edge-l .arcm-pop{left:0;transform:translate(0,-50%) scale(.94)}
+.arcm-t.edge-l:hover .arcm-pop,.arcm-t.edge-l:focus-visible .arcm-pop{transform:translate(0,-50%) scale(1)}
+.arcm-t.edge-r .arcm-pop{left:auto;right:0;transform:translate(0,-50%) scale(.94)}
+.arcm-t.edge-r:hover .arcm-pop,.arcm-t.edge-r:focus-visible .arcm-pop{transform:translate(0,-50%) scale(1)}
+`;
+  document.head.appendChild(st);
+}
+
+function arcmGlow(hex, alpha) {
+  const m = /^#?([\da-f]{6})$/i.exec(String(hex || "").trim());
+  if (!m) return `rgba(0,229,255,${alpha})`;
+  const n = parseInt(m[1], 16);
+  return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${alpha})`;
+}
+
+function arcmHash(str, salt) {
+  let h = 2166136261 ^ salt;
+  for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return (h >>> 0) / 4294967295;
+}
+// Lay every tile out in strict list order on one 8-column grid. All tiles are
+// exactly one row tall and spans are capped at 2, so a row of k tiles fills
+// exactly when 4 <= k <= 8 (k singles + (8-k) doubles). Row boundaries are
+// therefore chosen to keep k in that range — which both guarantees 100% fill
+// and keeps every tile at 1:1 or 2:1, never a cropped strip. Width carries
+// emphasis and tracks the GAME (GOTY winners take the double cells first), so
+// prominence never depends on how the list happens to be grouped.
+const ARCM_COLS = 8;
+const ARCM_TARGET = 6; // tiles per row; leaves 2 double-width cells to award
+
+// Ordered packer: keeps the curated sequence exactly (so DLC tiles stay
+// beside their base game) and picks each tile's size from the free slot,
+// placing everything explicitly so no holes are left behind.
+const ARCM_HERO = new Set(['wukong', 'gta-vc', 'bloodborne', 'sekiro', 'cyberpunk', 'it-takes-two']);
+// Letterbox-prone wide art that must never be cropped to a square.
+const ARCM_WIDE = new Set(['diablo-2-dlc']);
+function arcmPack(items) {
+  const occ = [];
+  const free = (r, c, w, h) => {
+    for (let y = r; y < r + h; y++) for (let x = c; x < c + w; x++) if ((occ[y] || [])[x]) return false;
+    return true;
+  };
+  const fill = (r, c, w, h) => {
+    for (let y = r; y < r + h; y++) { occ[y] = occ[y] || []; for (let x = c; x < c + w; x++) occ[y][x] = 1; }
+  };
+  const out = [];
+  const holes = [];
+  let r = 0, c = 0;
+  items.forEach((it, i) => {
+    const hero = ARCM_HERO.has(it.g.id);
+    let w = hero ? 2 : (ARCM_WIDE.has(it.g.id) || (!it.g.dlc && i % 4 === 1) ? 2 : 1);
+    const h = hero ? 2 : 1;
+    const nx = items[i + 1];
+    const paired = it.g.dlc || (nx && nx.g.dlc && nx.g.baseOf === it.g.id);
+    // Backfill a cell an oversized tile had to skip, but never with half of a
+    // base+DLC pair (that would split them).
+    if (w === 1 && h === 1 && !paired && holes.length) {
+      const hole = holes.shift();
+      fill(hole.r, hole.c, 1, 1);
+      out.push({ ...it, cs: 1, rs: 1, col: hole.c, row: hole.r });
+      return;
+    }
+    while (true) {
+      if (c >= ARCM_COLS) { c = 0; r++; }
+      if ((occ[r] || [])[c]) { c++; continue; }
+      if (c + w > ARCM_COLS || !free(r, c, w, h)) {
+        // Heroes keep their 2x2 footprint: advance instead of shrinking.
+        if (w > 1 && !hero) { w = 1; continue; }
+        holes.push({ r, c });
+        c++; continue;
+      }
+      break;
+    }
+    fill(r, c, w, h);
+    out.push({ ...it, cs: w, rs: h, col: c, row: r });
+    c += w;
+  });
+  return out;
+}
+
+function arcmLayout(items, salt) {  const n = items.length;
+  if (!n) return [];
+  // Fewest rows that keeps every row within [4, 8] tiles.
+  let r = Math.max(1, Math.ceil(n / ARCM_TARGET));
+  while (r > 1 && n < 4 * r) r--;
+  while (n > ARCM_COLS * r) r++;
+  const base = Math.floor(n / r), extra = n % r;
+
+  const out = [];
+  let i = 0;
+  for (let row = 0; row < r; row++) {
+    const k = base + (row < extra ? 1 : 0);
+    const slice = items.slice(i, i + k);
+    i += k;
+    // k tiles need (COLS - k) of them widened to span 2.
+    const wideCount = Math.max(0, Math.min(k, ARCM_COLS - k));
+    const wide = new Set(
+      slice
+        .map((it, j) => ({ j, rank: (it.g.goty ? 1 : 0) + arcmHash(it.g.id, salt) }))
+        .sort((a, b) => b.rank - a.rank)
+        .slice(0, wideCount)
+        .map((x) => x.j),
+    );
+    const start = out.length;
+    slice.forEach((it, j) => out.push({ ...it, cs: wide.has(j) ? 2 : 1 }));
+    // Only reachable when the whole list is shorter than 4 tiles.
+    let left = ARCM_COLS - out.slice(start).reduce((a, t) => a + t.cs, 0);
+    for (let q = 0; left > 0; q++, left--) out[start + (q % k)].cs += 1;
+  }
+  return out;
+}
+
+// DLC badge label: the expansion's own name, with the base game's title
+// stripped so the badge reads "LORD OF DESTRUCTION", not the whole thing.
+function arcmDlcName(g) {
+  const t = g.title || "";
+  const cut = t.indexOf(": ");
+  return (cut > 0 ? t.slice(cut + 2) : t).toUpperCase();
+}
+
+function MosaicTile({ g, cs, rs, col, row, cend, note }) {
+  const [failed, setFailed] = React.useState(false);
+  const fail = (e) => { if (!e.target.naturalWidth) setFailed(true); };
+  const art = g.img && !failed
+    ? <img src={g.img} alt="" loading="lazy" onError={() => setFailed(true)} onLoad={fail} style={g.fit ? { objectFit: g.fit } : undefined} />
+    : <div className="arcm-ph">{g.title.toUpperCase()}</div>;
+  const popArt = g.img && !failed
+    ? <img src={g.img} alt="" loading="lazy" onError={() => setFailed(true)} onLoad={fail} style={g.fit ? { objectFit: g.fit } : undefined} />
+    : <div className="arcm-ph" style={{ fontSize: 12 }}>{g.title.toUpperCase()}</div>;
+  return (
+    <button
+      type="button"
+      className={"arcm-t" + (cend ? " cend" : "")}
+      title={g.title}
+      style={{
+        gridColumn: col == null ? `span ${cs}` : `${col + 1} / span ${cs}`,
+        gridRow: row == null ? `span ${rs || 1}` : `${row + 1} / span ${rs || 1}`,
+      }}
+    >
+      <div className="arcm-box">
+        {art}
+        {g.dlc && <div className="arcm-dlc">DLC</div>}
+        {g.platinum && <div className="arcm-plat"><PlatinumTrophy scale={1} /></div>}
+      </div>
+      <div className="arcm-pop">
+        <div className="arcm-scr">
+          {popArt}
+          {g.dlc && <div className="arcm-dlc">DLC</div>}
+          {g.platinum && <div className="arcm-plat"><PlatinumTrophy scale={2} /></div>}
+          {g.goty && <div className="arcm-goty">★ GOTY</div>}
+        </div>
+        <div className="arcm-ttl">{g.title}</div>
+        {g.parts && <div className="arcm-parts">{g.parts.map((p) => <span key={p}>{p}</span>)}</div>}
+        {note && <div className="arcm-prog">{note}</div>}
+        {g.personalNote && <div className="arcm-note">{g.personalNote}</div>}
+      </div>
+    </button>
+  );
+}
+
+function MosaicGrid({ items, accent, neon, sticky, salt = 7, notes }) {
+  const ref = React.useRef(null);
+  // Flatten the curated list into one ordered run, flagging the last tile of
+  // each cluster so group boundaries read as an inline rule (no row break).
+  const tiles = React.useMemo(() => {
+    const out = [];
+    items.forEach((g) => {
+      if (g === null) { if (out.length) out[out.length - 1].cend = true; return; }
+      if (g) out.push({ g, cend: false });
+    });
+    if (out.length) out[out.length - 1].cend = false;
+    // Pack in curated order (so a DLC always lands next to its base game),
+    // sizing each cell to whatever slot is actually free — no dense reflow.
+    return arcmPack(out);
+  }, [items, salt]);
+  React.useEffect(() => {
+    const host = ref.current;
+    if (!host) return;
+    const run = () => {
+      const gap = 10, w = host.clientWidth;
+      if (w) host.style.setProperty("--arcm-u", (w - gap * (ARCM_COLS - 1)) / ARCM_COLS + "px");
+      const hb = host.getBoundingClientRect();
+      host.querySelectorAll(".arcm-t").forEach((t) => {
+        const r = t.getBoundingClientRect();
+        t.classList.toggle("edge-l", r.left - hb.left < 4);
+        t.classList.toggle("edge-r", hb.right - r.right < 4);
+      });
+    };
+    run();
+    const ro = new ResizeObserver(run);
+    ro.observe(host);
+    window.addEventListener("resize", run);
+    return () => { ro.disconnect(); window.removeEventListener("resize", run); };
+  }, [tiles]);
+  return (
+    <div
+      className="arcm"
+      ref={ref}
+      style={{
+        "--arcm-accent": accent,
+        "--arcm-neon": neon,
+        "--arcm-glow": arcmGlow(neon, 0.32),
+        "--arcm-sticky": sticky || "#fff066",
+      }}
+    >
+      {tiles.map(({ g, cs, rs, col, row, cend }, i) => (
+        <MosaicTile key={g.id + "-" + i} g={g} cs={cs} rs={rs} col={col} row={row} cend={cend} note={notes && notes[g.id]} />
+      ))}
+    </div>
+  );
+}
+
+// ---- Library grid (explicit curated order from game-list.txt) ----
+function ArcLibrary({ section, kicker, title, accent, neon, sticky, defaultCollapsed = false, layout = "grid" }) {
   const [collapsed, setCollapsed] = React.useState(defaultCollapsed);
-  const games = era === 'online'
-    ? GAMES.filter((g) => g.online)
-    : GAMES.filter((g) => g.era === era && !g.online && !g.goty);
+  const items = React.useMemo(
+    () => (window.sectionGames ? window.sectionGames(section) : []).filter((g) => g !== undefined),
+    [section],
+  );
+  const games = React.useMemo(() => items.filter(Boolean), [items]);
   return (
     <div>
       <ArcSectionHead
@@ -2535,8 +3037,12 @@ function ArcLibrary({ era, kicker, title, accent, neon, sticky, defaultCollapsed
         count={games.length}
       />
       {!collapsed && (
-        layout === "shelf" ? (
-          <CartridgeShelfRows games={games} accent={accent} neon={neon} />
+        layout === "mosaic" ? (
+          <div style={{ padding: "0 40px" }}>
+            <MosaicGrid items={items} accent={accent} neon={neon} sticky={sticky} />
+          </div>
+        ) : layout === "shelf" ? (
+          <CartridgeShelfRows items={items} games={games} accent={accent} neon={neon} />
         ) : layout === "wall" ? (
           <CoverWallGrid games={games} neon={neon} />
         ) : (
@@ -2553,6 +3059,99 @@ function ArcLibrary({ era, kicker, title, accent, neon, sticky, defaultCollapsed
             ))}
           </div>
         )
+      )}
+    </div>
+  );
+}
+
+// ---- Unfinished business (started, stalled, may resume) ----
+// Case-file card: stamped cover + dossier rows. Status tag: PAUSED (amber) / DROPPED (red).
+function ArcCaseFile({ u, accent, neon, sticky }) {
+  const g = u.g;
+  const [failed, setFailed] = React.useState(false);
+  const dropped = u.status === "dropped";
+  const tagBg = dropped ? "#e0344f" : sticky;
+  const tagInk = dropped ? "#fff2f4" : "#0d0d18";
+  const rows = [
+    ["REASON", u.reason],
+    ["VERDICT", u.verdict],
+  ].filter((r) => r[1]);
+  return (
+    <div style={{ background: "#14141f", padding: "10px 10px 8px", border: "3px solid #3a3a2f", boxShadow: "inset 0 0 0 2px #0d0d18, 4px 4px 0 #000", position: "relative" }}>
+      <div style={{ position: "relative", background: "#000", overflow: "hidden", aspectRatio: "16 / 9", width: "100%", boxShadow: "inset 0 0 30px rgba(0,0,0,0.8)" }}>
+        {g.img && !failed ? (
+          <img src={g.img} alt={g.title} onError={() => setFailed(true)} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", filter: dropped ? "saturate(0.85) contrast(1.05) brightness(0.9)" : "saturate(1.15) contrast(1.05)" }} />
+        ) : (
+          <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: PIXEL, fontSize: 8, color: neon, textAlign: "center", padding: 10, background: "#0a0a1a" }}>{g.title.toUpperCase()}</div>
+        )}
+        <div style={{ position: "absolute", inset: 0, pointerEvents: "none", background: "repeating-linear-gradient(0deg, rgba(0,0,0,0.22) 0 1px, transparent 1px 3px)" }} />
+        <div style={{ position: "absolute", inset: 0, pointerEvents: "none", background: "radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,0.55) 100%)" }} />
+        <div style={{ position: "absolute", top: 8, left: 8, zIndex: 3, fontFamily: PIXEL, fontSize: 7, letterSpacing: "0.14em", color: tagInk, background: tagBg, padding: "4px 6px", boxShadow: dropped ? "2px 2px 0 #000, 0 0 12px rgba(224,52,79,0.5)" : "2px 2px 0 #000" }}>
+          {dropped ? "DROPPED" : "PAUSED"}
+        </div>
+      </div>
+      <div style={{ marginTop: 8, minWidth: 0, minHeight: 14, display: "flex", alignItems: "center" }}>
+        <FitCaption text={g.title} max={7} min={4.5} style={{ fontFamily: PIXEL, lineHeight: 1.45, color: "#e8e8f0", letterSpacing: "0.02em" }} />
+      </div>
+      {rows.length > 0 && (
+        <div style={{ marginTop: 9, background: "#26261c", border: "1px solid #4a4a37", padding: "9px 10px" }}>
+          {rows.map(([k, v], i) => (
+            <div key={k} style={{ display: "grid", gap: 3, fontSize: 17, lineHeight: 1.3, marginTop: i ? 7 : 0, paddingTop: i ? 7 : 0, borderTop: i ? "1px solid #3a3a2c" : "none" }}>
+              <span style={{ fontFamily: PIXEL, fontSize: 6, letterSpacing: "0.1em", color: "#c9b872" }}>{k}</span>
+              <span style={{ color: k === "VERDICT" && dropped ? "#f0a3ad" : "#e6e4d3" }}>{v}</span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ArcUnfinished({ accent, neon, sticky }) {
+  const [collapsed, setCollapsed] = React.useState(false);
+  const entries = React.useMemo(
+    () => (window.UNFINISHED || []).map((u) => ({ ...u, g: GAMES_BY_ID[u.id] })).filter((u) => u.g),
+    [],
+  );
+  if (!entries.length) return null;
+  return (
+    <div>
+      <ArcSectionHead
+        kicker="SHELVED · NOT DONE"
+        title="UNFINISHED BUSINESS"
+        accent={accent}
+        collapsed={collapsed}
+        onToggle={() => setCollapsed((c) => !c)}
+        count={entries.length}
+      />
+      {!collapsed && (
+        <>
+          <div
+            style={{
+              padding: "0 40px",
+              marginTop: -8,
+              marginBottom: 18,
+              fontFamily: PIXEL,
+              fontSize: 8,
+              color: "rgba(232,232,240,0.5)",
+              letterSpacing: "0.12em",
+            }}
+          >
+            ► PUT DOWN, NOT GIVEN UP — SAVE FILES STILL WARM
+          </div>
+          <div
+            style={{
+              padding: "0 40px 40px",
+              display: "grid",
+              gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
+              gap: 14,
+            }}
+          >
+            {entries.map((u) => (
+              <ArcCaseFile key={u.id} u={u} accent={accent} neon={neon} sticky={sticky} />
+            ))}
+          </div>
+        </>
       )}
     </div>
   );
@@ -2719,33 +3318,36 @@ function Arcade({
 
       <div id="arc-library">
         <ArcLibrary
-          era="uni"
+          section="uni"
           kicker="MAIN QUEST"
           title="UNI → PRESENT DAY"
           accent={accent}
           neon={neon}
           sticky={sticky}
+          layout="mosaic"
         />
+        <div id="arc-unfinished">
+          <ArcUnfinished accent={accent} neon={neon} sticky={sticky} />
+        </div>
         <ArcLibrary
-          era="childhood"
+          section="childhood"
           kicker="ORIGIN STORY"
           title="CRT CHILDHOOD"
           accent={accent}
           neon={neon}
           sticky={sticky}
-          defaultCollapsed={true}
           layout="shelf"
         />
         <ArcLibrary
-          era="online"
+          section="online"
           kicker="VERSUS MODE"
           title="ONLINE ARENA"
           accent={accent}
           neon={neon}
           sticky={sticky}
-          defaultCollapsed={true}
         />
       </div>
+
       </div>
       <div className="arc-full-bleed">
         <ArcFooter accent={accent} neon={neon} />
