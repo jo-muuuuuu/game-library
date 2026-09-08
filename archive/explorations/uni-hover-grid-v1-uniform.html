@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en"><head><meta charset="UTF-8" /><title>UNI → PRESENT DAY · hover grid study</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Caveat:wght@600;700&display=swap" />
+<style>
+:root{--accent:#ff2e88;--neon:#00e5ff;--ink:#e8e8f0;--bg:#0d0d18}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:VT323,ui-monospace,monospace}
+.shell{width:1280px;max-width:100%;margin:0 auto;padding:0 40px 90px}
+.head{padding:46px 0 20px}
+.krow{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.krow .sq{width:12px;height:12px;background:var(--accent)}
+.kick{font-family:"Press Start 2P",monospace;font-size:8px;color:var(--accent);letter-spacing:.2em}
+.rule{flex:1;height:2px;background:repeating-linear-gradient(90deg,var(--accent) 0 8px,transparent 8px 14px)}
+.count{font-family:"Press Start 2P",monospace;font-size:7px;color:rgba(232,232,240,.4);letter-spacing:.1em}
+h2{font-family:"Press Start 2P",monospace;font-size:22px;margin:0;letter-spacing:.04em}
+.sub{font-family:"Press Start 2P",monospace;font-size:8px;color:rgba(232,232,240,.5);letter-spacing:.12em;margin-top:14px}
+.variant{font-family:"Press Start 2P",monospace;font-size:8px;color:#0d0d18;background:var(--neon);display:inline-block;padding:6px 9px;letter-spacing:.1em;box-shadow:3px 3px 0 #000;margin:52px 0 6px}
+.vnote{font-family:VT323,monospace;font-size:19px;color:rgba(232,232,240,.55);margin-bottom:22px}
+
+/* ---- grid ---- */
+.grid{display:grid;gap:10px;padding:26px 0}
+.grid--sq{grid-template-columns:repeat(8,minmax(0,1fr))}
+.grid--rect{grid-template-columns:repeat(6,minmax(0,1fr))}
+.tile{position:relative;background:#12122400;border:0;padding:0;cursor:pointer;-webkit-appearance:none;appearance:none;font:inherit;color:inherit;text-align:left}
+.tile .box{position:relative;background:#0a0a1a;border:2px solid #2a2a44;box-shadow:3px 3px 0 #000;overflow:hidden;transition:transform .16s cubic-bezier(.3,0,.2,1),border-color .16s,box-shadow .16s}
+.grid--sq .box{aspect-ratio:1/1}
+.grid--rect .box{aspect-ratio:16/9}
+.tile .box img{width:100%;height:100%;object-fit:cover;filter:saturate(.7) brightness(.62);transition:filter .16s}
+.tile .box::after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.28) 0 1px,transparent 1px 3px)}
+.tile .plat{position:absolute;top:4px;right:4px;width:8px;height:8px;background:var(--neon);box-shadow:0 0 7px var(--neon)}
+
+/* hover: lift out of the grid, scale up, reveal details */
+.tile{z-index:1}
+.tile:hover,.tile:focus-visible{z-index:60;outline:none}
+.tile:hover .box,.tile:focus-visible .box{transform:scale(1.75);border-color:var(--neon);box-shadow:6px 6px 0 #000,0 0 26px rgba(0,229,255,.35)}
+.tile:hover .box img,.tile:focus-visible .box img{filter:saturate(1.08) brightness(.95)}
+.tile .info{position:absolute;left:50%;top:100%;transform:translate(-50%,10px);width:216px;background:#14142a;border:2px solid var(--neon);box-shadow:5px 5px 0 #000;padding:11px 12px 12px;opacity:0;pointer-events:none;transition:opacity .14s;z-index:70}
+.grid--sq .tile .info{margin-top:calc(37.5% + 4px)}
+.grid--rect .tile .info{margin-top:calc(21% + 4px)}
+.tile:hover .info,.tile:focus-visible .info{opacity:1}
+.info .t{font-family:VT323,monospace;font-size:23px;line-height:1.05;margin-bottom:7px}
+.info .m{font-family:"Press Start 2P",monospace;font-size:6px;letter-spacing:.14em;color:rgba(232,232,240,.5);display:flex;gap:8px;flex-wrap:wrap}
+.info .m .y{color:var(--neon)}
+.info .m .g{color:var(--accent)}
+.info .note{font-family:Caveat,cursive;font-weight:700;font-size:15px;color:#fff066;margin-top:9px;line-height:1.2}
+/* edge columns: keep the enlarged tile and its panel on screen */
+.grid--sq .tile:nth-child(8n+1) .box,.grid--rect .tile:nth-child(6n+1) .box{transform-origin:left center}
+.grid--sq .tile:nth-child(8n) .box,.grid--rect .tile:nth-child(6n) .box{transform-origin:right center}
+.grid--sq .tile:nth-child(8n+1) .info,.grid--rect .tile:nth-child(6n+1) .info{left:0;transform:translate(0,10px)}
+.grid--sq .tile:nth-child(8n) .info,.grid--rect .tile:nth-child(6n) .info{left:auto;right:0;transform:translate(0,10px)}
+.scan{position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.12) 0 1px,transparent 1px 3px);z-index:99}
+</style></head>
+<body>
+<div class="shell">
+  <div class="head">
+    <div class="krow"><div class="sq"></div><div class="kick">MAIN QUEST</div><div class="rule"></div><div class="count" id="count"></div></div>
+    <h2>UNI → PRESENT DAY</h2>
+    <div class="sub">► HOVER ANY TILE TO ENLARGE IT AND READ THE DETAILS</div>
+  </div>
+
+  <div class="variant">A · SQUARE TILES · 8 UP</div>
+  <div class="vnote">Densest option — the whole era reads as one mosaic wall.</div>
+  <div class="grid grid--sq" id="gridA"></div>
+
+  <div class="variant">B · 16:9 TILES · 6 UP</div>
+  <div class="vnote">Matches the CRT cover proportion, so the art is never cropped square.</div>
+  <div class="grid grid--rect" id="gridB"></div>
+</div>
+<div class="scan"></div>
+
+<script src="../games-data.js"></script>
+<script>
+window.__IMG_BASE = '../img';
+const uni = (window.GAMES || []).filter(g => (g.era === 'uni' || g.alsoEra === 'uni') && !g.online);
+document.getElementById('count').textContent = uni.length + ' GAMES';
+
+function tile(g) {
+  const el = document.createElement('button');
+  el.className = 'tile';
+  el.type = 'button';
+  const img = (g.img || '').replace('./img', '../img');
+  el.innerHTML =
+    '<div class="box"><img src="' + img + '" alt="" loading="lazy" />' +
+    (g.platinum ? '<div class="plat" title="PLATINUM"></div>' : '') + '</div>' +
+    '<div class="info"><div class="t">' + g.title + '</div>' +
+    '<div class="m"><span class="y">' + g.year + '</span><span>' + (g.tag || '').toUpperCase() + '</span>' +
+    (g.goty ? '<span class="g">★ GOTY</span>' : '') + (g.dlc ? '<span>DLC</span>' : '') + '</div>' +
+    (g.personalNote ? '<div class="note">' + g.personalNote + '</div>' : '') + '</div>';
+  return el;
+}
+for (const id of ['gridA', 'gridB']) {
+  const host = document.getElementById(id);
+  uni.forEach(g => host.appendChild(tile(g)));
+}
+</script>
+</body></html>

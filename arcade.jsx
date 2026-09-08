@@ -755,7 +755,7 @@ function ArcPlayerProfile({
 // ---- Top navigation bar ----
 const NAV_LINKS = [
   { label: "ON ROTATION", id: "arc-now-playing" },
-  { label: "CHAMPIONS", id: "arc-goty" },
+  { label: "GOTYS", id: "arc-goty" },
   { label: "LIBRARY", id: "arc-library" },
   { label: "UNFINISHED", id: "arc-unfinished" },
 ];
@@ -2222,12 +2222,30 @@ const ARC_GENRE_COLOR = {
 };
 const arcGenreColor = (tag) => ARC_GENRE_COLOR[tag] || "#00e5ff";
 
+const ARC_CARD_W = 250;
 function CartridgeSpine({ g, neon, edge = "center", flex = false }) {
   const [on, setOn] = React.useState(false);
+  const [dx, setDx] = React.useState(0);
+  const rootRef = React.useRef(null);
   const col = arcGenreColor(g.tag);
+  // Keep the ejected card inside the viewport: shift it sideways when a spine
+  // sits closer to either edge than half the card width.
+  const enter = () => {
+    setOn(true);
+    const el = rootRef.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    const centre = r.left + r.width / 2;
+    const half = ARC_CARD_W / 2;
+    const pad = 10;
+    const min = half + pad;
+    const max = window.innerWidth - half - pad;
+    setDx(centre < min ? min - centre : centre > max ? max - centre : 0);
+  };
   return (
     <div
-      onMouseEnter={() => setOn(true)}
+      ref={rootRef}
+      onMouseEnter={enter}
       onMouseLeave={() => setOn(false)}
       style={{
         ...(flex ? { flex: "0 0 44px" } : { width: 40, flexShrink: 0 }),
@@ -2243,13 +2261,10 @@ function CartridgeSpine({ g, neon, edge = "center", flex = false }) {
         style={{
           position: "absolute",
           bottom: "100%",
-          ...(edge === "start"
-            ? { left: 0 }
-            : edge === "end"
-              ? { right: 0 }
-              : { left: "50%", transform: "translateX(-50%)" }),
-          marginBottom: 8,
-          width: 178,
+          left: "50%",
+          transform: `translateX(calc(-50% + ${dx}px))`,
+          marginBottom: 10,
+          width: ARC_CARD_W,
           border: `3px solid ${col}`,
           background: "#000",
           boxShadow: `4px 4px 0 #000, 0 0 20px ${col}66`,
@@ -2263,11 +2278,11 @@ function CartridgeSpine({ g, neon, edge = "center", flex = false }) {
         <CoverScreen g={g} neon={col} />
         <div
           style={{
-            padding: "5px 7px 4px",
+            padding: "7px 9px 6px",
             background: "#0a0a1a",
             borderTop: `2px solid ${col}`,
             fontFamily: PIXEL,
-            fontSize: 6,
+            fontSize: 8,
             color: "#e8e8f0",
             letterSpacing: "0.04em",
             display: "flex",
@@ -2275,7 +2290,7 @@ function CartridgeSpine({ g, neon, edge = "center", flex = false }) {
             gap: 5,
           }}
         >
-          <span style={{ fontSize: 7, lineHeight: 1.4, color: "#fff", letterSpacing: "0.02em" }}>{g.title}</span>
+          <span style={{ fontSize: 10, lineHeight: 1.4, color: "#fff", letterSpacing: "0.02em" }}>{g.title}</span>
           <span style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <span style={{ color: neon }}>{g.year}</span>
             <span style={{ color: col, textTransform: "uppercase" }}>{g.tag}</span>
@@ -2966,11 +2981,29 @@ function MosaicTile({ g, cs, rs, col, row, cend, note }) {
   );
 }
 
-function MosaicGrid({ items, accent, neon, sticky, salt = 7, notes }) {
+function MosaicGrid({ items, accent, neon, sticky, salt = 7, notes, layoutId }) {
   const ref = React.useRef(null);
+  // A layout saved from "Uni Layout Editor.html" overrides the auto packer.
+  const saved = React.useMemo(
+    () => (layoutId === "uni" && window.uniLoadLayout ? window.uniLoadLayout() : null),
+    [layoutId],
+  );
   // Flatten the curated list into one ordered run, flagging the last tile of
   // each cluster so group boundaries read as an inline rule (no row break).
   const tiles = React.useMemo(() => {
+    if (saved && window.uniPack) {
+      const list = saved
+        .map((e) => ({ ...e, g: (window.GAMES_BY_ID || {})[e.id] }))
+        .filter((e) => e.g);
+      return window.uniPack(list, ARCM_COLS).tiles.map((t, i) => ({
+        g: list[i].g,
+        cs: t.w,
+        rs: t.h,
+        col: t.col,
+        row: t.row,
+        cend: t.brk,
+      }));
+    }
     const out = [];
     items.forEach((g) => {
       if (g === null) { if (out.length) out[out.length - 1].cend = true; return; }
@@ -2980,7 +3013,7 @@ function MosaicGrid({ items, accent, neon, sticky, salt = 7, notes }) {
     // Pack in curated order (so a DLC always lands next to its base game),
     // sizing each cell to whatever slot is actually free — no dense reflow.
     return arcmPack(out);
-  }, [items, salt]);
+  }, [items, salt, saved]);
   React.useEffect(() => {
     const host = ref.current;
     if (!host) return;
@@ -3039,7 +3072,7 @@ function ArcLibrary({ section, kicker, title, accent, neon, sticky, defaultColla
       {!collapsed && (
         layout === "mosaic" ? (
           <div style={{ padding: "0 40px" }}>
-            <MosaicGrid items={items} accent={accent} neon={neon} sticky={sticky} />
+            <MosaicGrid items={items} accent={accent} neon={neon} sticky={sticky} layoutId={section} />
           </div>
         ) : layout === "shelf" ? (
           <CartridgeShelfRows items={items} games={games} accent={accent} neon={neon} />
@@ -3077,7 +3110,7 @@ function ArcCaseFile({ u, accent, neon, sticky }) {
     ["VERDICT", u.verdict],
   ].filter((r) => r[1]);
   return (
-    <div style={{ background: "#14141f", padding: "10px 10px 8px", border: "3px solid #3a3a2f", boxShadow: "inset 0 0 0 2px #0d0d18, 4px 4px 0 #000", position: "relative" }}>
+    <div style={{ background: "#14141f", padding: "10px 10px 8px", border: "3px solid #3a3a2f", boxShadow: "inset 0 0 0 2px #0d0d18, 4px 4px 0 #000", position: "relative", height: "100%", display: "flex", flexDirection: "column" }}>
       <div style={{ position: "relative", background: "#000", overflow: "hidden", aspectRatio: "16 / 9", width: "100%", boxShadow: "inset 0 0 30px rgba(0,0,0,0.8)" }}>
         {g.img && !failed ? (
           <img src={g.img} alt={g.title} onError={() => setFailed(true)} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", filter: dropped ? "saturate(0.85) contrast(1.05) brightness(0.9)" : "saturate(1.15) contrast(1.05)" }} />
@@ -3089,14 +3122,17 @@ function ArcCaseFile({ u, accent, neon, sticky }) {
         <div style={{ position: "absolute", top: 8, left: 8, zIndex: 3, fontFamily: PIXEL, fontSize: 7, letterSpacing: "0.14em", color: tagInk, background: tagBg, padding: "4px 6px", boxShadow: dropped ? "2px 2px 0 #000, 0 0 12px rgba(224,52,79,0.5)" : "2px 2px 0 #000" }}>
           {dropped ? "DROPPED" : "PAUSED"}
         </div>
+        {g.goty && (
+          <div style={{ position: "absolute", bottom: 8, right: 8, zIndex: 3, fontFamily: PIXEL, fontSize: 6, letterSpacing: "0.1em", color: "#0d0d18", background: accent, padding: "3px 5px", boxShadow: "2px 2px 0 #000" }}>★ GOTY</div>
+        )}
       </div>
-      <div style={{ marginTop: 8, minWidth: 0, minHeight: 14, display: "flex", alignItems: "center" }}>
+      <div style={{ marginTop: 8, minWidth: 0, minHeight: 14, display: "flex", alignItems: "center", flexShrink: 0 }}>
         <FitCaption text={g.title} max={7} min={4.5} style={{ fontFamily: PIXEL, lineHeight: 1.45, color: "#e8e8f0", letterSpacing: "0.02em" }} />
       </div>
       {rows.length > 0 && (
-        <div style={{ marginTop: 9, background: "#26261c", border: "1px solid #4a4a37", padding: "9px 10px" }}>
+        <div style={{ marginTop: 9, background: "#26261c", border: "1px solid #4a4a37", padding: "9px 10px", flex: 1, display: "flex", flexDirection: "column" }}>
           {rows.map(([k, v], i) => (
-            <div key={k} style={{ display: "grid", gap: 3, fontSize: 17, lineHeight: 1.3, marginTop: i ? 7 : 0, paddingTop: i ? 7 : 0, borderTop: i ? "1px solid #3a3a2c" : "none" }}>
+            <div key={k} style={{ display: "grid", gap: 3, fontSize: 17, lineHeight: 1.3, marginTop: k === "VERDICT" ? "auto" : i ? 7 : 0, paddingTop: i ? 7 : 0, borderTop: i ? "1px solid #3a3a2c" : "none" }}>
               <span style={{ fontFamily: PIXEL, fontSize: 6, letterSpacing: "0.1em", color: "#c9b872" }}>{k}</span>
               <span style={{ color: k === "VERDICT" && dropped ? "#f0a3ad" : "#e6e4d3" }}>{v}</span>
             </div>
@@ -3144,6 +3180,7 @@ function ArcUnfinished({ accent, neon, sticky }) {
               padding: "0 40px 40px",
               display: "grid",
               gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
+              gridAutoRows: "1fr",
               gap: 14,
             }}
           >
@@ -3254,11 +3291,11 @@ function ArcFooter({ accent, neon }) {
           label="JOHNNYMU0809@GMAIL.COM"
         />
         <ArcContactLink
-          href="https://linkedin.com/in/zicheng-mu"
+          href="https://www.linkedin.com/in/johnny-mu/"
           external
           neon={neon}
           icon={liIcon}
-          label="LINKEDIN.COM/IN/ZICHENG-MU"
+          label="LINKEDIN.COM/IN/JOHNNY-MU"
         />
       </div>
     </div>

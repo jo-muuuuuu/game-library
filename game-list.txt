@@ -1,0 +1,345 @@
+JOHNNY'S GAME LIBRARY — SECTION WORKSHEET
+Generated 2026-09-02
+
+HOW TO USE THIS FILE
+  Sections below match the live site, top to bottom.
+  Move / copy any line into whatever section you want it in.
+  DUPLICATES ARE FINE — the same game can live in several sections.
+  Delete a line to drop that game from a section.
+  Add a line anywhere using: [ ] <id>  <year>  <title>
+  Mark [x] if you want me to feature / emphasise that entry.
+
+  Row format:  [ ] ID  YEAR  TITLE  GENRE  [FLAGS]
+  Flags: DLC = expansion · GOTY = game of the year · PLAT = platinum · ONLINE = live service
+
+  Library total: 94 entries
+
+============================================================================
+1. NOW PLAYING
+  hero carousel · currently on the shelf
+============================================================================
+3 entries. Order = carousel order.
+
+  [ ] zelda-tears                 2023  The Legend of Zelda: Tears of the Kingdom   open-world     
+  [ ] bloodborne                  2015  Bloodborne                                  soulslike      [GOTY 2022]
+  [ ] brotato                     2022  Brotato                                     roguelite      [GOTY 2026 PLAT]
+
+============================================================================
+2. GAME OF THE YEAR
+  hall of fame · one pick per year
+============================================================================
+
+  All-Time
+  [ ] gta-vc                      2002  Grand Theft Auto: Vice City                 open-world     [GOTY All-Time]
+
+  2018
+  [ ] gta-5                       2013  Grand Theft Auto V                          open-world     [GOTY 2018]
+  [ ] dark-souls-1                2011  Dark Souls                                  soulslike      [GOTY 2018 PLAT]
+
+  2019
+  [ ] sekiro                      2019  Sekiro: Shadows Die Twice                   soulslike      [GOTY 2019 PLAT]
+
+  2020
+  [ ] dark-souls-3                2016  Dark Souls III                              soulslike      [GOTY 2020 PLAT]
+  [ ] hades                       2020  Hades                                       roguelite      [GOTY 2020]
+
+  2021
+  [ ] inside                      2016  Inside                                      puzzle         [GOTY 2021]
+  [ ] cyberpunk                   2020  Cyberpunk 2077                              open-world     [GOTY 2021 PLAT]
+
+  2022
+  [ ] bloodborne                  2015  Bloodborne                                  soulslike      [GOTY 2022]
+  [ ] elden-ring                  2022  Elden Ring                                  soulslike      [GOTY 2022 PLAT]
+
+  2023
+  [ ] it-takes-two                2021  It Takes Two                                co-op          [GOTY 2023 PLAT]
+  [ ] zelda-breath                2017  The Legend of Zelda: Breath of the Wild     open-world     [GOTY 2023]
+  [ ] fist                        2021  F.I.S.T. Forged In Shadow Torch             metroidvania   [GOTY 2023]
+
+  2024
+  [ ] wukong                      2024  Black Myth: Wukong                          action         [GOTY 2024 PLAT]
+  [ ] death-stranding             2019  Death Stranding                             open-world     [GOTY 2024]
+
+  2025
+  [ ] split-fiction               2025  Split Fiction                               co-op          [GOTY 2025]
+  [ ] dead-cells                  2018  Dead Cells                                  roguelite      [GOTY 2025]
+
+  2026
+  [ ] brotato                     2022  Brotato                                     roguelite      [GOTY 2026 PLAT]
+
+============================================================================
+3. UNI → PRESENT DAY
+  main quest · era: uni (or alsoEra: uni), excluding online
+============================================================================
+63 entries.
+  [ ] wukong                      2024  Black Myth: Wukong                          action         [GOTY 2024 PLAT]
+
+  [ ] diablo-2                    2000  Diablo II                                   arpg           
+  [ ] diablo-2-dlc                2001  Diablo II: Lord of Destruction              arpg           [DLC]
+
+  [ ] gta-vc                      2002  Grand Theft Auto: Vice City                 open-world     [GOTY All-Time]
+  [ ] gta-3                       2001  GTA III                                     open-world     
+  [ ] gta-4                       2008  Grand Theft Auto IV                         open-world     
+  [ ] gta-4-dlc                   2009  GTA IV: Episodes from Liberty City          open-world     [DLC]
+  [ ] gta-5                       2013  Grand Theft Auto V                          open-world     [GOTY 2018]
+  
+  [ ] fist                        2021  F.I.S.T. Forged In Shadow Torch             metroidvania   [GOTY 2023]
+  
+  [ ] dark-souls-1                2011  Dark Souls                                  soulslike      [GOTY 2018 PLAT]
+  [ ] dark-souls-1-dlc            2012  Dark Souls: Artorias of the Abyss           soulslike      [DLC]
+  [ ] dark-souls-2                2014  Dark Souls II                               soulslike      
+  [ ] dark-souls-2-dlc-crowns     2014  Dark Souls II: The Lost Crowns              soulslike      [DLC]
+  [ ] dark-souls-3                2016  Dark Souls III                              soulslike      [GOTY 2020 PLAT]
+  [ ] dark-souls-3-dlc-ariandel   2016  Dark Souls III: Ashes of Ariandel           soulslike      [DLC]
+  [ ] dark-souls-3-dlc            2017  Dark Souls III: The Ringed City             soulslike      [DLC]
+  
+  [ ] bloodborne                  2015  Bloodborne                                  soulslike      [GOTY 2022]
+  [ ] bloodborne-dlc              2015  Bloodborne: The Old Hunters                 soulslike      [DLC]
+
+  [ ] sekiro                      2019  Sekiro: Shadows Die Twice                   soulslike      [GOTY 2019 PLAT]
+
+  [ ] elden-ring                  2022  Elden Ring                                  soulslike      [GOTY 2022 PLAT]
+  [ ] elden-ring-dlc              2024  Elden Ring: Shadow of the Erdtree           soulslike      [DLC]
+
+  [ ] inside                      2016  Inside                                      puzzle         [GOTY 2021]
+
+  [ ] cyberpunk                   2020  Cyberpunk 2077                              open-world     [GOTY 2021 PLAT]
+  [ ] cyberpunk-dlc               2023  Cyberpunk 2077: Phantom Liberty             open-world     [DLC]
+ 
+  [ ] a-way-out                   2018  A Way Out                                   co-op          
+  [ ] it-takes-two                2021  It Takes Two                                co-op          [GOTY 2023 PLAT]
+  [ ] split-fiction               2025  Split Fiction                               co-op          [GOTY 2025]
+
+  [ ] titan-fall-2                2016  Titanfall 2                                 shooter        
+  
+  [ ] zelda-breath                2017  The Legend of Zelda: Breath of the Wild     open-world     [GOTY 2023]
+  [ ] zelda-tears                 2023  The Legend of Zelda: Tears of the Kingdom   open-world     
+  [ ] zelda-echo                  2024  The Legend of Zelda: Echoes of Wisdom       adventure     
+ 
+  [ ] overcooked                  2016  Overcooked!                                 co-op          
+  [ ] overcooked2                 2018  Overcooked! 2                               co-op          
+  
+  
+  [ ] nioh                        2017  Nioh                                        soulslike      
+  [ ] nioh-dlc                    2017  Nioh: Dragon of the North                   soulslike      [DLC]
+  [ ] nioh-dlc2                   2017  Nioh: Defiant Honor                         soulslike      [DLC]
+  [ ] nioh-dlc3                   2017  Nioh: Bloodshed's End                       soulslike      [DLC]
+
+  [ ] brotato                     2022  Brotato                                     roguelite      [GOTY 2026 PLAT]
+  [ ] brotato-dlc                 2024  Brotato: Abyssal Terrors                    roguelite      [DLC]
+  [ ] hades                       2020  Hades                                       roguelite      [GOTY 2020]
+  [ ] dead-cells                  2018  Dead Cells                                  roguelite      [GOTY 2025]
+  [ ] dead-cells-dlc              2023  Dead Cells: Return to Castlevania           roguelite      [DLC]
+  
+  [ ] slay-the-spire              2019  Slay the Spire                              roguelite      
+  
+  [ ] ori-will                    2020  Ori and the Will of the Wisps               metroidvania   
+  
+  [ ] nfs-heat                    2019  Need For Speed: Heat                        racing         
+  [ ] balatro                     2024  Balatro                                     card           
+  [ ] storm                       2016  Naruto: Ultimate Ninja Storm 4              fighting       
+  [ ] nba2k21                     2020  NBA 2K21                                    sports         
+  
+
+============================================================================
+4. CRT CHILDHOOD
+  origin story · era: childhood, excluding online
+============================================================================
+25 entries.
+
+  [ ] gta-vc                      2002  Grand Theft Auto: Vice City                 open-world     [GOTY All-Time]
+  [ ] gta-sa                      2004  Grand Theft Auto: San Andreas               open-world     
+  [ ] diablo-2                    2000  Diablo II                                   arpg           
+  [ ] diablo-2-dlc                2001  Diablo II: Lord of Destruction              arpg           [DLC]
+  
+  |Divider|
+
+  [ ] aoe2                        1999  Age of Empires II                           strategy       
+  [ ] aoe2-dlc                    2000  Age of Empires II: The Conquerors           strategy       [DLC]
+  [ ] red-alert                   2000  Command & Conquer: Red Alert II             strategy       
+  [ ] yuris-revenge               2001  Command & Conquer: Yuri's Revenge           strategy       
+
+  |Divider|
+
+  [ ] cs1-6                       2003  Counter-Strike 1.6                          shooter        
+  [ ] warcraft3                   2003  Warcraft III: Frozen Throne                 strategy  
+  [ ] pvz                         2009  Plants vs Zombies                           tower-defense  
+
+  |Divider|
+
+  [ ] road-rash                   1991  Road Rash                                   racing         
+  [ ] contra                      1987  Contra                                      arcade         
+  [ ] metal-slug                  1996  Metal Slug                                  arcade     
+  [ ] street-fighter              1987  Street Fighter                              fighting       
+  [ ] kof                         1994  The King of Fighters                        fighting       
+
+  |Divider|
+
+  [ ] prototype                   2009  Prototype                                   action         
+  [ ] devil4                      2008  Devil May Cry 4                             action       
+
+  [ ] nba2k                       1999  NBA 2K Series                               sports         
+  [ ] minecraft                   2009  Minecraft                                   sandbox    
+
+  |Divider|
+
+  [ ] cod-mw                      2007  Call of Duty: Modern Warfare                shooter        
+  [ ] cod-waw                     2008  Call of Duty: World at War                  shooter        
+  [ ] cod-mw2                     2009  Call of Duty: Modern Warfare II             shooter        
+  [ ] cod-blackops                2010  Call of Duty: Black Ops                     shooter        
+  [ ] cod-mw3                     2011  Call of Duty: Modern Warfare III            shooter        
+
+
+============================================================================
+5. ONLINE ARENA
+  versus mode · anything flagged online
+============================================================================
+9 entries. These are pulled OUT of the two library sections above.
+
+  [ ] cf                          2007  CrossFire                                   shooter        [ONLINE]
+  [ ] dnf                         2005  Dungeon & Fighter                           beat-em-up     [ONLINE]
+  [ ] dota                        2003  Dota                                        moba           [ONLINE]
+  [ ] dota-2                      2013  Dota 2                                      moba           [ONLINE]
+  [ ] lol                         2009  League of Legends                           moba           [ONLINE]
+  [ ] pubg                        2017  PUBG: Battlegrounds                         battle-royale  [ONLINE]
+  [ ] hearthstone                 2014  Hearthstone                                 card           [ONLINE]
+  [ ] goose                       2021  Goose Goose Duck                            social         [ONLINE]
+  [ ] cs-2                        2023  Counter-Strike 2                            shooter        [ONLINE]
+
+============================================================================
+6. UNFINISHED BUSINESS
+  shelved · started but not done
+============================================================================
+5 entries.
+
+  [ ] death-stranding             2019  Death Stranding                             open-world     [GOTY 2024]
+
+  [ ] rdr2                        2018  Red Dead Redemption 2                       open-world     
+
+  [ ] nioh2                       2020  Nioh 2                                      soulslike      
+  [ ] nioh2-dlc                   2020  Nioh 2: The Tengu's Disciple                soulslike      [DLC]
+  [ ] nioh2-dlc2                  2020  Nioh 2: Darkness in the Capital             soulslike      [DLC]
+  [ ] nioh2-dlc3                  2021  Nioh 2: The First Samurai                   soulslike      [DLC]
+
+  [ ] witcher3                    2015  The Witcher 3: Wild Hunt                    rpg            
+  [ ] witcher3-dlc                2015  The Witcher 3: Hearts of Stone              rpg            [DLC]
+  [ ] witcher3-dlc2               2016  The Witcher 3: Blood and Wine               rpg            [DLC]
+
+  [ ] sifu                        2022  Sifu                                        action         
+  [ ] limbo                       2010  Limbo                                       puzzle         
+  [ ] unravel2                    2018  Unravel Two                                 co-op          
+  [ ] goat                        2014  Goat Simulator                              sandbox        
+  [ ] dmc5                        2019  Devil May Cry 5                             action         
+  [ ] diablo-4                    2023  Diablo IV                                   arpg           
+
+============================================================================
+7. TIMELINE
+  chronology · auto-generated from the whole library
+============================================================================
+Nothing to curate — this section builds itself from every entry.
+Range 1987–2025.
+
+============================================================================
+8. UNPLACED
+  not shown in any library section right now
+============================================================================
+None — every game appears in at least one section.
+
+============================================================================
+9. FULL POOL
+  every entry, alphabetical · copy rows from here
+============================================================================
+  [ ] a-way-out                   2018  A Way Out                                   co-op          
+  [ ] aoe2                        1999  Age of Empires II                           strategy       
+  [ ] aoe2-dlc                    2000  Age of Empires II: The Conquerors           strategy       [DLC]
+  [ ] balatro                     2024  Balatro                                     card           
+  [ ] wukong                      2024  Black Myth: Wukong                          action         [GOTY 2024 PLAT]
+  [ ] bloodborne                  2015  Bloodborne                                  soulslike      [GOTY 2022]
+  [ ] bloodborne-dlc              2015  Bloodborne: The Old Hunters                 soulslike      [DLC]
+  [ ] brotato                     2022  Brotato                                     roguelite      [GOTY 2026 PLAT]
+  [ ] brotato-dlc                 2024  Brotato: Abyssal Terrors                    roguelite      [DLC]
+  [ ] cod-blackops                2010  Call of Duty: Black Ops                     shooter        
+  [ ] cod-mw                      2007  Call of Duty: Modern Warfare                shooter        
+  [ ] cod-mw2                     2009  Call of Duty: Modern Warfare II             shooter        
+  [ ] cod-mw3                     2011  Call of Duty: Modern Warfare III            shooter        
+  [ ] cod-waw                     2008  Call of Duty: World at War                  shooter        
+  [ ] red-alert                   2000  Command & Conquer: Red Alert II             strategy       
+  [ ] yuris-revenge               2001  Command & Conquer: Yuri's Revenge           strategy       
+  [ ] contra                      1987  Contra                                      arcade         
+  [ ] cs1-6                       2003  Counter-Strike 1.6                          shooter        
+  [ ] cs-2                        2023  Counter-Strike 2                            shooter        [ONLINE]
+  [ ] cf                          2007  CrossFire                                   shooter        [ONLINE]
+  [ ] cyberpunk                   2020  Cyberpunk 2077                              open-world     [GOTY 2021 PLAT]
+  [ ] cyberpunk-dlc               2023  Cyberpunk 2077: Phantom Liberty             open-world     [DLC]
+  [ ] dark-souls-1                2011  Dark Souls                                  soulslike      [GOTY 2018 PLAT]
+  [ ] dark-souls-2                2014  Dark Souls II                               soulslike      
+  [ ] dark-souls-2-dlc-crowns     2014  Dark Souls II: The Lost Crowns              soulslike      [DLC]
+  [ ] dark-souls-3                2016  Dark Souls III                              soulslike      [GOTY 2020 PLAT]
+  [ ] dark-souls-3-dlc-ariandel   2016  Dark Souls III: Ashes of Ariandel           soulslike      [DLC]
+  [ ] dark-souls-3-dlc            2017  Dark Souls III: The Ringed City             soulslike      [DLC]
+  [ ] dark-souls-1-dlc            2012  Dark Souls: Artorias of the Abyss           soulslike      [DLC]
+  [ ] dead-cells                  2018  Dead Cells                                  roguelite      [GOTY 2025]
+  [ ] dead-cells-dlc              2023  Dead Cells: Return to Castlevania           roguelite      [DLC]
+  [ ] death-stranding             2019  Death Stranding                             open-world     [GOTY 2024]
+  [ ] devil4                      2008  Devil May Cry 4                             action         
+  [ ] dmc5                        2019  Devil May Cry 5                             action         
+  [ ] diablo-2                    2000  Diablo II                                   arpg           
+  [ ] diablo-2-dlc                2001  Diablo II: Lord of Destruction              arpg           [DLC]
+  [ ] diablo-4                    2023  Diablo IV                                   arpg           
+  [ ] dota                        2003  Dota                                        moba           [ONLINE]
+  [ ] dota-2                      2013  Dota 2                                      moba           [ONLINE]
+  [ ] dnf                         2005  Dungeon & Fighter                           beat-em-up     [ONLINE]
+  [ ] elden-ring                  2022  Elden Ring                                  soulslike      [GOTY 2022 PLAT]
+  [ ] elden-ring-dlc              2024  Elden Ring: Shadow of the Erdtree           soulslike      [DLC]
+  [ ] fist                        2021  F.I.S.T. Forged In Shadow Torch             metroidvania   [GOTY 2023]
+  [ ] goat                        2014  Goat Simulator                              sandbox        
+  [ ] goose                       2021  Goose Goose Duck                            social         [ONLINE]
+  [ ] gta-4                       2008  Grand Theft Auto IV                         open-world     
+  [ ] gta-5                       2013  Grand Theft Auto V                          open-world     [GOTY 2018]
+  [ ] gta-sa                      2004  Grand Theft Auto: San Andreas               open-world     
+  [ ] gta-vc                      2002  Grand Theft Auto: Vice City                 open-world     [GOTY All-Time]
+  [ ] gta-3                       2001  GTA III                                     open-world     
+  [ ] gta-4-dlc                   2009  GTA IV: Episodes from Liberty City          open-world     [DLC]
+  [ ] hades                       2020  Hades                                       roguelite      [GOTY 2020]
+  [ ] hearthstone                 2014  Hearthstone                                 card           [ONLINE]
+  [ ] inside                      2016  Inside                                      puzzle         [GOTY 2021]
+  [ ] it-takes-two                2021  It Takes Two                                co-op          [GOTY 2023 PLAT]
+  [ ] lol                         2009  League of Legends                           moba           [ONLINE]
+  [ ] limbo                       2010  Limbo                                       puzzle         
+  [ ] metal-slug                  1996  Metal Slug                                  arcade         
+  [ ] minecraft                   2009  Minecraft                                   sandbox        
+  [ ] storm                       2016  Naruto: Ultimate Ninja Storm 4              fighting       
+  [ ] nba2k                       1999  NBA 2K Series                               sports         
+  [ ] nba2k21                     2020  NBA 2K21                                    sports         
+  [ ] nfs-heat                    2019  Need For Speed: Heat                        racing         
+  [ ] nioh                        2017  Nioh                                        soulslike      
+  [ ] nioh2                       2020  Nioh 2                                      soulslike      
+  [ ] nioh2-dlc2                  2020  Nioh 2: Darkness in the Capital             soulslike      [DLC]
+  [ ] nioh2-dlc3                  2021  Nioh 2: The First Samurai                   soulslike      [DLC]
+  [ ] nioh2-dlc                   2020  Nioh 2: The Tengu's Disciple                soulslike      [DLC]
+  [ ] nioh-dlc3                   2017  Nioh: Bloodshed's End                       soulslike      [DLC]
+  [ ] nioh-dlc2                   2017  Nioh: Defiant Honor                         soulslike      [DLC]
+  [ ] nioh-dlc                    2017  Nioh: Dragon of the North                   soulslike      [DLC]
+  [ ] ori-will                    2020  Ori and the Will of the Wisps               metroidvania   
+  [ ] overcooked                  2016  Overcooked!                                 co-op          
+  [ ] overcooked2                 2018  Overcooked! 2                               co-op          
+  [ ] pvz                         2009  Plants vs Zombies                           tower-defense  
+  [ ] prototype                   2009  Prototype                                   action         
+  [ ] pubg                        2017  PUBG: Battlegrounds                         battle-royale  [ONLINE]
+  [ ] rdr2                        2018  Red Dead Redemption 2                       open-world     
+  [ ] road-rash                   1991  Road Rash                                   racing         
+  [ ] sekiro                      2019  Sekiro: Shadows Die Twice                   soulslike      [GOTY 2019 PLAT]
+  [ ] sifu                        2022  Sifu                                        action         
+  [ ] slay-the-spire              2019  Slay the Spire                              roguelite      
+  [ ] split-fiction               2025  Split Fiction                               co-op          [GOTY 2025]
+  [ ] street-fighter              1987  Street Fighter                              fighting       
+  [ ] kof                         1994  The King of Fighters                        fighting       
+  [ ] zelda-breath                2017  The Legend of Zelda: Breath of the Wild     open-world     [GOTY 2023]
+  [ ] zelda-echo                  2024  The Legend of Zelda: Echoes of Wisdom       adventure      
+  [ ] zelda-tears                 2023  The Legend of Zelda: Tears of the Kingdom   open-world     
+  [ ] witcher3-dlc2               2016  The Witcher 3: Blood and Wine               rpg            [DLC]
+  [ ] witcher3-dlc                2015  The Witcher 3: Hearts of Stone              rpg            [DLC]
+  [ ] witcher3                    2015  The Witcher 3: Wild Hunt                    rpg            
+  [ ] titan-fall-2                2016  Titanfall 2                                 shooter        
+  [ ] unravel2                    2018  Unravel Two                                 co-op          
+  [ ] warcraft3                   2003  Warcraft III: Frozen Throne                 strategy       

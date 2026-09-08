@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Footer Options — No Stats</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap"
+    />
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: #0d0d18;
+        font-family: "Press Start 2P", ui-monospace, monospace;
+      }
+      .wrap {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 40px 24px 90px;
+      }
+      .opt-label {
+        font-size: 11px;
+        color: #00e5ff;
+        letter-spacing: 0.15em;
+        margin: 46px 0 12px;
+      }
+      .opt-sub {
+        font-size: 8px;
+        color: rgba(232, 232, 240, 0.45);
+        letter-spacing: 0.1em;
+        line-height: 1.8;
+        margin-bottom: 16px;
+      }
+      a.cx {
+        color: inherit;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+      }
+      a.cx:hover {
+        color: #00e5ff;
+      }
+      a.cx svg {
+        flex: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap" id="root"></div>
+
+    <script>
+      const PINK = "#ff2e88";
+      const CYAN = "#00e5ff";
+
+      function mail(size) {
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="none"
+            stroke="${CYAN}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+          <path d="m3 6 9 7 9-7"></path></svg>`;
+      }
+      function li(size) {
+        return `<svg width="${size}" height="${size}" viewBox="0 0 24 24" fill="${CYAN}">
+          <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.45v6.29zM5.34 7.43a2.06 2.06 0 1 1 0-4.13 2.06 2.06 0 0 1 0 4.13zM7.12 20.45H3.55V9h3.57v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.22.79 24 1.77 24h20.45c.98 0 1.78-.78 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"></path></svg>`;
+      }
+      // contact as a row (icons + labels)
+      function contactRow(gap) {
+        return `<div style="display:flex; gap:${gap || 28}px; font-size:8px; color:rgba(232,232,240,0.6); letter-spacing:0.08em;">
+          <a class="cx" href="mailto:johnnymu0809@gmail.com">${mail(15)}<span>JOHNNYMU0809@GMAIL.COM</span></a>
+          <a class="cx" href="https://linkedin.com/in/zicheng-mu" target="_blank" rel="noopener">${li(15)}<span>LINKEDIN.COM/IN/ZICHENG-MU</span></a>
+        </div>`;
+      }
+      // contact as icon-only buttons
+      function contactIcons() {
+        const box = (inner, href, ext) =>
+          `<a class="cx" href="${href}" ${ext ? 'target="_blank" rel="noopener"' : ""}
+             style="width:44px; height:44px; border:2px solid rgba(255,255,255,0.18);
+                    display:flex; align-items:center; justify-content:center;">${inner}</a>`;
+        return `<div style="display:flex; gap:12px;">
+          ${box(mail(18), "mailto:johnnymu0809@gmail.com", false)}
+          ${box(li(18), "https://linkedin.com/in/zicheng-mu", true)}
+        </div>`;
+      }
+
+      // ===== OPTION A — Minimal centered sign-off =====
+      function optA() {
+        return `<div style="padding:48px 40px 26px; border-top:3px solid ${PINK}; background:#1a1a2e; text-align:center;">
+          <div style="font-size:16px; letter-spacing:0.05em; color:#e8e8f0;">JOHNNY'S GAME LIBRARY<span style="color:${PINK};">.</span></div>
+          <div style="display:flex; justify-content:center; margin-top:26px;">${contactRow(34)}</div>
+          <div style="margin-top:30px; font-size:8px; color:rgba(232,232,240,0.3); letter-spacing:0.2em;">► INSERT COIN TO CONTINUE ◄</div>
+        </div>`;
+      }
+
+      // ===== OPTION B — Wordmark left, icon buttons right =====
+      function optB() {
+        return `<div style="padding:40px 40px 22px; border-top:3px solid ${PINK}; background:#1a1a2e;">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:30px; flex-wrap:wrap;">
+            <div>
+              <div style="font-size:15px; letter-spacing:0.05em; color:#e8e8f0;">JOHNNY'S GAME LIBRARY<span style="color:${PINK};">.</span></div>
+              <div style="font-size:8px; color:rgba(232,232,240,0.4); letter-spacing:0.1em; margin-top:12px;">PRESS START · LET'S TALK GAMES</div>
+            </div>
+            ${contactIcons()}
+          </div>
+          <div style="margin-top:30px; padding-top:22px; border-top:1px solid rgba(255,255,255,0.07); display:flex; justify-content:space-between; font-size:8px; color:rgba(232,232,240,0.3); letter-spacing:0.15em; flex-wrap:wrap; gap:10px;">
+            <span>© ${new Date().getFullYear()} ZICHENG MU</span>
+            <span>► INSERT COIN TO CONTINUE ◄</span>
+          </div>
+        </div>`;
+      }
+
+      // ===== OPTION C — GAME OVER end-screen =====
+      function optC() {
+        return `<div style="padding:54px 40px 30px; border-top:3px solid ${PINK}; background:#1a1a2e; text-align:center;">
+          <div style="font-size:30px; color:${PINK}; letter-spacing:0.08em; text-shadow:0 0 18px rgba(255,46,136,0.5);">GAME OVER</div>
+          <div style="font-size:9px; color:#e8e8f0; letter-spacing:0.18em; margin-top:20px;">CONTINUE? — REACH OUT ↓</div>
+          <div style="display:flex; justify-content:center; margin-top:22px;">${contactRow(34)}</div>
+        </div>`;
+      }
+
+      // ===== OPTION D — Contact bar, big tappable rows =====
+      function optD() {
+        const row = (inner, href, ext, label) =>
+          `<a class="cx" href="${href}" ${ext ? 'target="_blank" rel="noopener"' : ""}
+              style="flex:1; min-width:240px; padding:18px 20px; border:2px solid rgba(255,255,255,0.14);
+                     justify-content:flex-start; font-size:9px; letter-spacing:0.1em; color:#e8e8f0;">
+             ${inner}<span>${label}</span></a>`;
+        return `<div style="padding:40px 40px 24px; border-top:3px solid ${PINK}; background:#1a1a2e;">
+          <div style="font-size:9px; color:${CYAN}; letter-spacing:0.2em; margin-bottom:18px;">▸ SAY HELLO</div>
+          <div style="display:flex; gap:14px; flex-wrap:wrap;">
+            ${row(mail(18), "mailto:johnnymu0809@gmail.com", false, "JOHNNYMU0809@GMAIL.COM")}
+            ${row(li(18), "https://linkedin.com/in/zicheng-mu", true, "LINKEDIN.COM/IN/ZICHENG-MU")}
+          </div>
+          <div style="margin-top:26px; font-size:8px; color:rgba(232,232,240,0.3); text-align:center; letter-spacing:0.2em;">► INSERT COIN TO CONTINUE ◄</div>
+        </div>`;
+      }
+
+      const opts = [
+        ["OPTION A — MINIMAL CENTERED", "Wordmark, contact, sign-off. Quiet and clean.", optA()],
+        ["OPTION B — WORDMARK + ICON BUTTONS", "Brand left, tappable icon squares right, slim legal strip below.", optB()],
+        ["OPTION C — GAME OVER END-SCREEN", "Full arcade theatrics. 'Continue?' invites contact.", optC()],
+        ["OPTION D — SAY HELLO CONTACT BAR", "Two big tappable contact rows. Friendly and direct.", optD()],
+      ];
+
+      document.getElementById("root").innerHTML = opts
+        .map(
+          ([l, s, html]) =>
+            `<div class="opt-label">${l}</div><div class="opt-sub">${s}</div>${html}`,
+        )
+        .join("");
+    </script>
+  </body>
+</html>

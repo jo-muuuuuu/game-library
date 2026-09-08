@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en"><head><meta charset="UTF-8" /><title>Card title font options</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Silkscreen:wght@400;700&family=Chakra+Petch:wght@600;700&family=Bebas+Neue&family=Orbitron:wght@600;700&family=Space+Grotesk:wght@600;700&display=swap" />
+<style>
+body{margin:0;background:#0d0d18;color:#e8e8f0;font-family:ui-monospace,monospace;padding:26px}
+h1{font-family:"Press Start 2P",monospace;font-size:13px;letter-spacing:.08em;margin:0 0 22px;color:#e8e8f0}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:26px}
+.opt{min-width:0}
+.lab{font-family:"Press Start 2P",monospace;font-size:8px;letter-spacing:.14em;color:#ff2e88;margin-bottom:10px}
+.card{border:3px solid #00e5ff;background:#0d1420;padding:10px;box-shadow:4px 4px 0 #000}
+.shot{position:relative;aspect-ratio:16/9;overflow:hidden;border:2px solid #0b1a26}
+.shot img{width:100%;height:100%;object-fit:cover;filter:saturate(1.15) contrast(1.05)}
+.shot::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.22) 0 1px,transparent 1px 3px)}
+.goty{position:absolute;bottom:6px;right:6px;z-index:2;background:#ff2e88;color:#0d0d18;font-family:"Press Start 2P",monospace;font-size:7px;padding:4px 6px;box-shadow:2px 2px 0 #000}
+.t{margin-top:9px;line-height:1.05;color:#e8e8f0}
+.t2{margin-top:7px;line-height:1.05;color:#8f8fa8}
+.a .t,.a .t2{font-family:VT323,monospace;font-size:25px}
+.b .t,.b .t2{font-family:"Silkscreen",monospace;font-size:15px;letter-spacing:.02em}
+.c .t,.c .t2{font-family:"Chakra Petch",sans-serif;font-weight:700;font-size:22px}
+.d .t,.d .t2{font-family:"Bebas Neue",sans-serif;font-size:28px;letter-spacing:.04em}
+.e .t,.e .t2{font-family:"Orbitron",sans-serif;font-weight:700;font-size:18px;letter-spacing:.02em}
+.f .t,.f .t2{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:21px}
+</style></head>
+<body>
+<h1>MOSAIC CARD TITLE — 6 OPTIONS</h1>
+<div class="grid">
+<div class="opt a"><div class="lab">A · VT323 (CURRENT)</div><div class="card"><div class="shot"><img src="../img/wukong.jpg" alt="" /><div class="goty">★ GOTY</div></div><div class="t">Black Myth: Wukong</div><div class="t2">Dark Souls III: The Ringed City</div></div></div>
+<div class="opt b"><div class="lab">B · SILKSCREEN</div><div class="card"><div class="shot"><img src="../img/wukong.jpg" alt="" /><div class="goty">★ GOTY</div></div><div class="t">Black Myth: Wukong</div><div class="t2">Dark Souls III: The Ringed City</div></div></div>
+<div class="opt c"><div class="lab">C · CHAKRA PETCH</div><div class="card"><div class="shot"><img src="../img/wukong.jpg" alt="" /><div class="goty">★ GOTY</div></div><div class="t">Black Myth: Wukong</div><div class="t2">Dark Souls III: The Ringed City</div></div></div>
+<div class="opt d"><div class="lab">D · BEBAS NEUE</div><div class="card"><div class="shot"><img src="../img/wukong.jpg" alt="" /><div class="goty">★ GOTY</div></div><div class="t">Black Myth: Wukong</div><div class="t2">Dark Souls III: The Ringed City</div></div></div>
+<div class="opt e"><div class="lab">E · ORBITRON</div><div class="card"><div class="shot"><img src="../img/wukong.jpg" alt="" /><div class="goty">★ GOTY</div></div><div class="t">Black Myth: Wukong</div><div class="t2">Dark Souls III: The Ringed City</div></div></div>
+<div class="opt f"><div class="lab">F · SPACE GROTESK</div><div class="card"><div class="shot"><img src="../img/wukong.jpg" alt="" /><div class="goty">★ GOTY</div></div><div class="t">Black Myth: Wukong</div><div class="t2">Dark Souls III: The Ringed City</div></div></div>
+</div>
+</body></html>

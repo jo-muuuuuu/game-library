@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en"><head><meta charset="UTF-8" /><title>UNI → PRESENT DAY · mosaic hover study</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Caveat:wght@600;700&display=swap" />
+<style>
+:root{--accent:#ff2e88;--neon:#00e5ff;--ink:#e8e8f0;--bg:#0d0d18;--u:132px}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:VT323,ui-monospace,monospace}
+.shell{width:1280px;max-width:100%;margin:0 auto;padding:0 40px 90px}
+.head{padding:46px 0 20px}
+.krow{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.krow .sq{width:12px;height:12px;background:var(--accent)}
+.kick{font-family:"Press Start 2P",monospace;font-size:8px;color:var(--accent);letter-spacing:.2em}
+.rule{flex:1;height:2px;background:repeating-linear-gradient(90deg,var(--accent) 0 8px,transparent 8px 14px)}
+.count{font-family:"Press Start 2P",monospace;font-size:7px;color:rgba(232,232,240,.4);letter-spacing:.1em}
+h2{font-family:"Press Start 2P",monospace;font-size:22px;margin:0;letter-spacing:.04em}
+.sub{font-family:"Press Start 2P",monospace;font-size:8px;color:rgba(232,232,240,.5);letter-spacing:.12em;margin-top:14px}
+.tools{display:flex;align-items:center;gap:10px;margin:26px 0 4px}
+.btn{font-family:"Press Start 2P",monospace;font-size:8px;letter-spacing:.1em;color:var(--accent);background:#1a1a2e;border:2px solid var(--accent);box-shadow:3px 3px 0 #000;padding:9px 12px;cursor:pointer}
+.btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 #000}
+.hint{font-family:VT323,monospace;font-size:19px;color:rgba(232,232,240,.5)}
+
+.mosaic{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));grid-auto-rows:var(--u);grid-auto-flow:dense;gap:10px;padding:22px 0}
+.tile{position:relative;padding:0;border:0;background:none;font:inherit;color:inherit;text-align:left;cursor:pointer;-webkit-appearance:none;appearance:none;z-index:1}
+.tile.w{grid-column:span 2}
+.tile.b{grid-column:span 2;grid-row:span 2}
+.box{position:relative;width:100%;height:100%;background:#0a0a1a;border:2px solid #2a2a44;box-shadow:3px 3px 0 #000;overflow:hidden;transition:transform .16s cubic-bezier(.3,0,.2,1),border-color .16s,box-shadow .16s}
+.box img{width:100%;height:100%;object-fit:cover;filter:saturate(.7) brightness(.6);transition:filter .16s}
+.box::after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.28) 0 1px,transparent 1px 3px)}
+.trophy{position:relative;display:block}
+.plat{position:absolute;bottom:4px;left:4px;padding:3px 4px 1px;background:#0a0a1a;border:2px solid var(--neon);box-shadow:2px 2px 0 #000,0 0 10px rgba(0,229,255,.35);line-height:0;z-index:3}
+.goty{position:absolute;bottom:4px;right:4px;background:var(--accent);color:#0d0d18;font-family:"Press Start 2P",monospace;font-size:6px;padding:3px 5px;box-shadow:2px 2px 0 #000;z-index:3}
+
+.tile:hover,.tile:focus-visible{z-index:60;outline:none}
+.tile:hover .box,.tile:focus-visible .box{border-color:var(--neon);box-shadow:3px 3px 0 #000,0 0 22px rgba(0,229,255,.3)}
+.tile:hover .box img,.tile:focus-visible .box img{filter:saturate(1.05) brightness(.85)}
+
+/* hover popup: always 16:9 so the cover is never cropped */
+.pop{position:absolute;left:50%;top:50%;width:340px;transform:translate(-50%,-50%) scale(.94);transform-origin:center center;background:#1a1a2e;border:3px solid var(--neon);box-shadow:inset 0 0 0 2px #0d0d18,6px 6px 0 #000,0 0 30px rgba(0,229,255,.28);padding:10px 10px 11px;opacity:0;pointer-events:none;transition:opacity .13s,transform .13s cubic-bezier(.3,0,.2,1);z-index:70}
+.tile:hover .pop,.tile:focus-visible .pop{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.pop .screen{position:relative;aspect-ratio:16/9;width:100%;background:#000;overflow:hidden;box-shadow:inset 0 0 30px rgba(0,0,0,.8)}
+.pop .screen img{width:100%;height:100%;object-fit:cover;filter:saturate(1.15) contrast(1.05)}
+.pop .screen::after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.22) 0 1px,transparent 1px 3px),radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.55) 100%)}
+.pop .t{font-family:VT323,monospace;font-size:25px;line-height:1.05;margin-top:9px}
+.pop .plat{bottom:6px;left:6px;padding:4px 5px 2px}
+.pop .goty{bottom:6px;right:6px;font-size:7px;padding:4px 6px}
+.pop .note{position:absolute;top:-12px;right:-12px;transform:rotate(4deg);background:#fff066;color:#1a1a1a;padding:7px 10px;max-width:130px;font-family:Caveat,"Comic Sans MS",cursive;font-weight:700;font-size:14px;line-height:1.25;box-shadow:3px 3px 0 rgba(0,0,0,.7);white-space:pre-line;z-index:5}
+.tile.edge-l .pop{left:0;transform:translate(0,-50%) scale(.94)}
+.tile.edge-l:hover .pop,.tile.edge-l:focus-visible .pop{transform:translate(0,-50%) scale(1)}
+.tile.edge-r .pop{left:auto;right:0;transform:translate(0,-50%) scale(.94)}
+.tile.edge-r:hover .pop,.tile.edge-r:focus-visible .pop{transform:translate(0,-50%) scale(1)}
+.scan{position:fixed;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,0,0,.12) 0 1px,transparent 1px 3px);z-index:99}
+</style></head>
+<body>
+<div class="shell">
+  <div class="head">
+    <div class="krow"><div class="sq"></div><div class="kick">MAIN QUEST</div><div class="rule"></div><div class="count" id="count"></div></div>
+    <h2>UNI → PRESENT DAY</h2>
+    <div class="sub">► MIXED SQUARES + WIDE TILES · HOVER FOR A 16:9 PREVIEW</div>
+  </div>
+  <div class="tools">
+    <button class="btn" id="reshuffle" type="button">RESHUFFLE SHAPES</button>
+    <div class="hint">Shapes are seeded per game, so the mosaic is stable across reloads.</div>
+  </div>
+  <div class="mosaic" id="mosaic"></div>
+</div>
+<div class="scan"></div>
+
+<script src="../games-data.js"></script>
+<script>
+const uni = (window.GAMES || []).filter(g => (g.era === 'uni' || g.alsoEra === 'uni') && !g.online);
+document.getElementById('count').textContent = uni.length + ' GAMES';
+const host = document.getElementById('mosaic');
+
+// pixel platinum trophy — same sprite as the main library
+const TROPHY_PIXELS = ['..OOOOOOOOOO..','..OLLLLLLLLO..','..OLHLLLLLLO..','.OOM......MOO.','OOMD......DMOO','OMD........DMO','.OOMD....DMOO.','..OOM....MOO..','..OMM....MMO..','...OMMMMMMO...','....OMMMMO....','.....OMMO.....','.....OMMO.....','..OOMMMMMMOO..','.OMLLLLLLLLMO.','.OOOOOOOOOOOO.'];
+const TROPHY_PALETTE = { O:'#0a0a1a', D:'#4a6878', M:'#8aa8b8', L:'#d4e8f0', H:'#ffffff' };
+function trophy(scale) {
+  const h = TROPHY_PIXELS.length, w = TROPHY_PIXELS[0].length, sh = [];
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) {
+    if (x === 0 && y === 0) continue;
+    const ch = TROPHY_PIXELS[y][x];
+    if (ch !== '.') sh.push((x * scale) + 'px ' + (y * scale) + 'px 0 ' + (TROPHY_PALETTE[ch] || '#fff'));
+  }
+  const first = TROPHY_PIXELS[0][0];
+  const bg = first !== '.' ? (TROPHY_PALETTE[first] || '#fff') : 'transparent';
+  return '<span class="trophy" style="width:' + (w * scale) + 'px;height:' + (h * scale) + 'px">' +
+    '<span style="position:absolute;top:0;left:0;width:' + scale + 'px;height:' + scale + 'px;background:' + bg + ';box-shadow:' + sh.join(',') + '"></span></span>';
+}
+
+// deterministic hash → per-game shape, so the wall looks the same on every load
+function hash(str, salt) {
+  let h = 2166136261 ^ salt;
+  for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return (h >>> 0) / 4294967295;
+}
+// weights: mostly squares, a scattering of wide 2×1s, rare 2×2 hero
+function shapeFor(g, salt) {
+  const r = hash(g.id, salt);
+  if (g.goty && r < 0.45) return 'b';
+  if (r < 0.60) return '';
+  if (r < 0.93) return 'w';
+  return 'b';
+}
+
+function render(salt) {
+  host.innerHTML = '';
+  uni.forEach(g => {
+    const el = document.createElement('button');
+    el.type = 'button';
+    const shape = shapeFor(g, salt);
+    el.className = 'tile' + (shape ? ' ' + shape : '');
+    const img = (g.img || '').replace('./img', '../img');
+    el.innerHTML =
+      '<div class="box"><img src="' + img + '" alt="" loading="lazy" />' +
+      (g.platinum ? '<div class="plat" title="PLATINUM">' + trophy(1) + '</div>' : '') +
+      '</div>' +
+      '<div class="pop"><div class="screen"><img src="' + img + '" alt="" loading="lazy" />' +
+      (g.platinum ? '<div class="plat" title="PLATINUM">' + trophy(2) + '</div>' : '') +
+      (g.goty ? '<div class="goty">★ GOTY</div>' : '') + '</div>' +
+      '<div class="t">' + g.title + '</div>' +
+      (g.personalNote ? '<div class="note">' + g.personalNote + '</div>' : '') + '</div>';
+    host.appendChild(el);
+  });
+  markEdges();
+}
+
+// tag tiles sitting against either edge so the popup stays on screen
+function markEdges() {
+  const hostBox = host.getBoundingClientRect();
+  host.querySelectorAll('.tile').forEach(t => {
+    const r = t.getBoundingClientRect();
+    t.classList.toggle('edge-l', r.left - hostBox.left < 4);
+    t.classList.toggle('edge-r', hostBox.right - r.right < 4);
+  });
+}
+
+// keep rows square: row height tracks the real column width
+function sizeRows() {
+  const cols = 8, gap = 10;
+  const w = host.clientWidth;
+  if (w) host.style.setProperty('--u', ((w - gap * (cols - 1)) / cols) + 'px');
+}
+
+let salt = 7;
+sizeRows();
+render(salt);
+window.addEventListener('resize', () => { sizeRows(); markEdges(); });
+document.getElementById('reshuffle').addEventListener('click', () => { salt = (salt * 31 + 17) % 9973; render(salt); });
+</script>
+</body></html>

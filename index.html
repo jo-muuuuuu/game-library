@@ -59,14 +59,17 @@
     <div id="root"></div>
 
     <!-- Game data (sets window.GAMES, window.GOTYS, etc.) -->
-    <script src="games-data.js"></script>
+    <script src="games-data.js?v=17"></script>
+
+    <!-- Saved tile order / sizes for the UNI → PRESENT DAY mosaic -->
+    <script src="uni-layout.js?v=2"></script>
 
     <!-- Reusable tweaks panel — open by calling:
        window.postMessage({ type: '__activate_edit_mode' }, '*') -->
     <script type="text/babel" src="tweaks-panel.jsx"></script>
 
     <!-- Arcade / CRT layout direction -->
-    <script type="text/babel" src="arcade.jsx"></script>
+    <script type="text/babel" src="arcade.jsx?v=4"></script>
 
     <!-- App shell -->
     <script type="text/babel" data-presets="react">

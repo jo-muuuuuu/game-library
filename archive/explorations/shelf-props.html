@@ -1,0 +1,233 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Shelf props</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"><style>
+body{margin:0;background:#0f0f1e;color:#e8e8f0;font-family:"JetBrains Mono",ui-monospace,monospace;padding:40px 44px 60px}
+h1{font-family:"Press Start 2P";font-size:13px;color:#00e5ff;letter-spacing:.08em;margin:0 0 6px}
+.sub{font-size:11px;color:#8a8aa8;margin:0 0 34px;max-width:70ch;line-height:1.6}
+h2{font-family:"Press Start 2P";font-size:9px;letter-spacing:.1em;color:#ff2e88;margin:0 0 12px;text-transform:uppercase}
+.note{font-size:10px;color:#8a8aa8;margin:0 0 14px}
+.shelf{margin-bottom:52px}
+.row{display:flex;align-items:flex-end;gap:8px}
+.scalenote{font-size:10px;color:#8a8aa8;margin:0 0 10px}
+.sp{flex:0 0 56px;height:170px;background:#1a1a2e;border:2px solid #2a2a44;border-top:6px solid #00e5ff;box-shadow:inset -3px 0 6px rgba(0,0,0,.4);display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:10px 0 8px;box-sizing:border-box}
+.sp u{width:24px;height:8px;background:#0a0a1a;border:1px solid #2a2a44;display:block}
+.sp s{writing-mode:vertical-rl;transform:rotate(180deg);text-decoration:none;font-size:15px;line-height:1;color:#e8e8f0;max-height:118px;overflow:hidden;white-space:nowrap}
+.sp em{font-family:"Press Start 2P";font-size:6px;color:rgba(232,232,240,.32);font-style:normal}
+.sp.g2{border-top-color:#a3e635}.sp.g3{border-top-color:#ff7e3e}
+.board{height:16px;background:linear-gradient(180deg,#ff2e88cc,#16162b);border:3px solid #2a2a44;box-shadow:6px 6px 0 #000}
+.prop{flex:0 0 auto;display:flex;align-items:flex-end;justify-content:center;padding:0 10px 2px}
+.prop svg{flex-shrink:0}
+.prop svg{display:block;height:auto;image-rendering:pixelated;filter:drop-shadow(2px 2px 0 #000)}
+.gallery{display:flex;flex-wrap:wrap;gap:26px;align-items:flex-end;padding:22px;background:#14142a;border:2px solid #2a2a44;margin-bottom:44px}
+.gallery figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:9px}
+.gallery figcaption{font-family:"Press Start 2P";font-size:6px;color:#8a8aa8;letter-spacing:.08em}
+</style></head><body>
+<h1>SHELF PROPS</h1><p class="sub">Pixel-art desk objects standing between studio groups instead of a divider line. Everything is scaled off the game case itself — a spine is ~19 cm tall, so 1 cm ≈ 9 px.</p>
+<div class="gallery" id="gal"></div>
+<div id="out"></div>
+<script>
+const P = {}; // name -> svg markup
+const px = (w,h,cells) => `<svg viewBox="0 0 ${w} ${h}" width="${w*3}" shape-rendering="crispEdges">${cells}</svg>`;
+const r = (x,y,w,h,c) => `<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${c}"/>`;
+
+// ---- controller (gamepad) ----
+P.controller = px(22,14,
+  r(1,4,20,8,'#2a2a44')+r(0,6,3,5,'#2a2a44')+r(19,6,3,5,'#2a2a44')+
+  r(2,3,18,2,'#3a3a5c')+
+  r(4,6,2,4,'#0f0f1e')+r(3,7,4,2,'#0f0f1e')+
+  r(15,6,2,2,'#ff2e88')+r(17,8,2,2,'#00e5ff')+r(13,8,2,2,'#a3e635')+r(15,10,2,2,'#ffd23e')+
+  r(2,1,4,2,'#3a3a5c')+r(16,1,4,2,'#3a3a5c')
+);
+// ---- headphones resting on stand ----
+P.headphones = px(18,26,
+  r(4,24,10,2,'#3a3a5c')+r(6,22,6,2,'#2a2a44')+   // base
+  r(8,6,2,17,'#2a2a44')+                          // pole reaches up under the headband
+  r(7,5,4,2,'#3a3a5c')+                           // hook the band sits on
+  r(4,3,10,2,'#e8e8f0')+r(3,4,2,4,'#e8e8f0')+r(13,4,2,4,'#e8e8f0')+ // band draped over hook
+  r(2,7,4,7,'#ff2e88')+r(12,7,4,7,'#ff2e88')+r(3,9,2,3,'#0f0f1e')+r(13,9,2,3,'#0f0f1e')
+);
+// ---- mechanical keyboard (full 4-row deck + spacebar) ----
+P.keyboard = px(46,15,
+  r(0,3,46,12,'#2a2a44')+r(1,2,44,2,'#3a3a5c')+r(1,13,44,2,'#22223c')+   // case
+  [...Array(20)].map((_,i)=>r(2+i*2.2,4,1.4,1.4,'#00e5ff')).join('')+       // function row
+  [...Array(20)].map((_,i)=>r(2+i*2.2,6,1.4,1.4,'#e8e8f0')).join('')+       // number row
+  [...Array(19)].map((_,i)=>r(2.6+i*2.2,8,1.4,1.4,'#e8e8f0')).join('')+     // qwerty row
+  [...Array(18)].map((_,i)=>r(3.2+i*2.2,10,1.4,1.4,'#e8e8f0')).join('')+    // home row
+  r(3,12,4,1.4,'#8a8aa8')+r(8,12,3,1.4,'#8a8aa8')+r(12,12,18,1.4,'#8a8aa8')+ // mods + spacebar
+  r(31,12,3,1.4,'#8a8aa8')+r(35,12,3,1.4,'#8a8aa8')+r(39,12,4,1.4,'#ff2e88')
+);
+// ---- mouse ----
+P.mouse = px(14,20,
+  r(6,0,2,4,'#3a3a5c')+r(5,3,2,2,'#3a3a5c')+       // cable
+  r(4,4,6,2,'#2a2a44')+                             // nose taper
+  r(3,6,8,10,'#3a3a5c')+r(2,8,10,7,'#3a3a5c')+     // body
+  r(3,16,8,2,'#2a2a44')+r(4,18,6,1,'#22223c')+     // heel + shadow
+  r(3,6,3,6,'#4a4a70')+r(8,6,3,6,'#4a4a70')+       // left / right buttons
+  r(6,6,2,4,'#22223c')+r(6,5,2,2,'#ff2e88')+       // split line + scroll wheel
+  r(2,10,1,4,'#22223c')+r(11,10,1,4,'#22223c')
+);
+// ---- 1:24 sedan model (19 cm long, ~5.5 cm tall) ----
+P.lego = px(56,18,
+  r(14,1,26,5,'#e8e8f0')+r(16,0,22,1,'#e8e8f0')+                 // roofline
+  r(17,2,9,4,'#00121a')+r(27,2,11,4,'#00121a')+                  // glass
+  r(2,6,52,6,'#c8102e')+r(4,5,48,1,'#e0344f')+                   // body
+  r(0,7,2,4,'#c8102e')+r(54,7,2,4,'#c8102e')+
+  r(2,11,52,1,'#8a0b20')+                                         // sill
+  r(3,7,3,2,'#ffd23e')+r(50,7,3,2,'#ff2e88')+                    // lights
+  r(20,6,1,6,'#8a0b20')+r(36,6,1,6,'#8a0b20')+                   // door lines
+  r(7,12,9,5,'#0f0f1e')+r(9,13,5,3,'#8a8aa8')+r(10,14,3,1,'#3a3a5c')+   // wheels
+  r(40,12,9,5,'#0f0f1e')+r(42,13,5,3,'#8a8aa8')+r(43,14,3,1,'#3a3a5c')+
+  r(2,16,52,1,'#14141f')                                          // ground shadow
+);
+// ---- figure: blond man in a mauve suit (Kira-ish) ---- [retired]
+const _kira = px(20,30,
+  r(5,27,10,3,'#2a2a44')+r(4,29,12,1,'#3a3a5c')+r(6,28,8,1,'#1a1a2e')+        // display base
+  r(6,14,8,13,'#9b6fb0')+                                                       // suit jacket
+  r(4,15,3,9,'#8a5fa0')+r(13,15,3,9,'#8a5fa0')+                                 // sleeves
+  r(4,24,3,2,'#e8c9a0')+r(13,24,3,2,'#e8c9a0')+                                 // hands
+  r(8,14,4,9,'#e8e8f0')+                                                        // shirt placket
+  r(9,15,2,6,'#3fa06a')+r(9,14,2,1,'#2f7a52')+                                  // green tie
+  r(6,14,2,6,'#7d4f93')+r(12,14,2,6,'#7d4f93')+                                 // lapels
+  r(6,23,4,4,'#5c4470')+r(10,23,4,4,'#5c4470')+r(6,26,4,1,'#14141f')+r(10,26,4,1,'#14141f')+ // trousers + shoes
+  r(7,20,2,2,'#8a5fa0')+                                                        // pocket
+  r(7,12,6,2,'#e8c9a0')+                                                        // neck
+  r(5,4,10,9,'#f0d2ab')+                                                        // face
+  r(4,2,12,4,'#f2e2a6')+r(3,4,2,4,'#f2e2a6')+r(15,4,2,4,'#f2e2a6')+r(4,6,3,2,'#e6d18c')+ // blond hair
+  r(6,7,2,2,'#0f0f1e')+r(11,7,2,2,'#0f0f1e')+r(6,7,1,1,'#ffffff')+r(11,7,1,1,'#ffffff')+ // eyes
+  r(5,6,3,1,'#c9a06a')+r(11,6,3,1,'#c9a06a')+r(9,9,2,1,'#d9b487')+r(7,11,5,1,'#c98a7a')  // brows, nose, mouth
+);
+// ---- figure: red-haired captain in a black cloak (Shanks-ish) ----
+P['figure-shanks'] = px(22,32,
+  r(6,29,10,3,'#2a2a44')+r(5,31,12,1,'#3a3a5c')+r(7,30,8,1,'#1a1a2e')+          // display base
+  r(6,26,4,3,'#3b2a1d')+r(12,26,4,3,'#3b2a1d')+r(5,28,6,1,'#14141f')+r(11,28,6,1,'#14141f')+ // boots
+  r(7,20,8,7,'#2b2b3a')+                                                          // trousers
+  r(4,13,14,10,'#14141f')+r(3,14,3,10,'#14141f')+r(18,14,2,8,'#14141f')+          // long black cloak
+  r(4,22,14,2,'#0a0a12')+r(6,13,2,10,'#22222e')+r(14,13,2,10,'#22222e')+          // cloak hem + folds
+  r(8,13,6,8,'#e8e8f0')+r(9,14,4,7,'#d8d8e4')+                                    // white shirt
+  r(8,18,6,3,'#ffd23e')+r(8,19,6,1,'#e0a800')+                                    // yellow sash
+  r(7,21,8,1,'#8a5a2a')+r(10,21,2,1,'#c9a227')+                                   // belt + buckle
+  r(3,19,3,5,'#22222e')+r(3,23,3,2,'#e8c9a0')+                                    // left sleeve (lighter) + hand
+  r(17,15,3,7,'#14141f')+                                                          // right sleeve (empty, tied)
+  r(16,16,2,2,'#22222e')+
+  r(15,13,6,4,'#c8102e')+r(17,16,4,8,'#8a0b20')+                                  // red cape behind the shoulder
+  r(8,11,6,2,'#e8c9a0')+                                                           // neck
+  r(6,3,10,9,'#f0d2ab')+                                                           // face
+  r(5,1,12,4,'#c8102e')+r(4,3,2,5,'#c8102e')+r(16,3,2,5,'#c8102e')+r(6,5,3,2,'#a80d24')+ // red hair
+  r(7,6,2,2,'#0f0f1e')+r(12,6,2,2,'#0f0f1e')+r(7,6,1,1,'#ffffff')+r(12,6,1,1,'#ffffff')+ // eyes
+  r(6,4,3,1,'#8a0b20')+r(6,5,1,4,'#a83a3a')+r(7,4,1,1,'#a83a3a')+                 // scar over left eye
+  r(10,8,2,1,'#d9b487')+r(8,10,5,1,'#c98a7a')                                      // nose + mouth
+);
+// ---- deer model ----
+P.deer = px(32,30,
+  r(7,27,3,3,'#5a3b22')+r(11,27,3,3,'#5a3b22')+r(16,27,3,3,'#5a3b22')+r(20,27,3,3,'#5a3b22')+ // legs
+  r(7,29,3,1,'#2a1a10')+r(11,29,3,1,'#2a1a10')+r(16,29,3,1,'#2a1a10')+r(20,29,3,1,'#2a1a10')+ // hooves
+  r(6,17,18,10,'#8a5a34')+r(6,17,18,2,'#a06b3f')+                                  // body
+  r(8,22,3,2,'#c99a6a')+r(14,21,3,2,'#c99a6a')+r(19,23,2,2,'#c99a6a')+             // spots
+  r(6,24,18,3,'#6f4526')+                                                           // belly shadow
+  r(21,14,4,6,'#8a5a34')+r(22,12,3,3,'#a06b3f')+                                    // neck
+  r(20,7,7,6,'#a06b3f')+r(26,9,4,3,'#8a5a34')+                                      // head + muzzle block
+  r(29,10,2,2,'#2a1a10')+r(27,10,2,1,'#6f4526')+                                    // nose + mouth line
+  r(23,8,2,2,'#0f0f1e')+r(23,8,1,1,'#ffffff')+                                      // eye
+  r(18,6,3,3,'#a06b3f')+r(19,7,1,1,'#6f4526')+                                      // ear
+  r(21,2,2,6,'#c9a06a')+r(25,2,2,6,'#c9a06a')+                                      // antler beams
+  r(19,1,2,3,'#c9a06a')+r(23,0,2,3,'#c9a06a')+r(27,1,2,3,'#c9a06a')+                // tines
+  r(17,2,2,2,'#c9a06a')+r(29,2,2,2,'#c9a06a')+
+  r(4,18,3,6,'#8a5a34')+r(4,17,2,2,'#a06b3f')                                        // rump / tail
+);
+// ---- arcade fightstick (30 x ~20 cm) ----
+P.joystick = px(30,20,
+  r(0,10,30,10,'#2a2a44')+r(1,9,28,2,'#3a3a5c')+r(0,18,30,2,'#1a1a2e')+   // deck
+  r(14,4,2,6,'#8a8aa8')+r(13,3,4,2,'#8a8aa8')+r(12,0,6,4,'#ff2e88')+       // shaft + ball top
+  r(19,12,4,3,'#ffd23e')+r(24,12,4,3,'#00e5ff')+
+  r(19,16,4,2,'#a3e635')+r(24,16,4,2,'#b06cff')+
+  r(4,13,4,3,'#ff7e3e')+r(4,16,4,2,'#2a2a44')
+);
+// ---- mini CRT ----
+P.crt = px(20,20,
+  r(1,2,18,14,'#3a3a5c')+r(3,4,14,10,'#00121a')+r(4,5,12,8,'#00e5ff')+
+  r(4,5,12,2,'#7ff2ff')+r(2,16,16,3,'#2a2a44')+r(5,19,10,1,'#3a3a5c')
+);
+// ---- collectible speckled egg on a ring stand ----
+// viewBox height == last drawn row, so the stand sits flush on the shelf board.
+P.egg = px(20,24,
+  // shell base — 19-row ovoid: 4px crown, gentle 8-row taper down to the
+  // widest band (y8–13, below centre), blunt 5-row curve into the base
+  r(8,0,4,1,'#eddcbe')+r(7,1,6,1,'#eddcbe')+r(6,2,8,1,'#eddcbe')+
+  r(5,3,10,2,'#eddcbe')+r(4,5,12,3,'#eddcbe')+r(3,8,14,6,'#eddcbe')+
+  r(4,14,12,2,'#eddcbe')+r(5,16,10,1,'#eddcbe')+r(6,17,8,1,'#eddcbe')+
+  r(7,18,6,1,'#eddcbe')+
+  // lit face — tracks the bowed terminator, 1px of base tone between them
+  r(9,0,1,1,'#f7ecd8')+r(8,1,1,1,'#f7ecd8')+r(7,2,2,1,'#f7ecd8')+
+  r(6,3,4,2,'#f7ecd8')+r(5,5,5,1,'#f7ecd8')+r(5,6,4,2,'#f7ecd8')+
+  r(4,8,5,1,'#f7ecd8')+r(4,9,4,5,'#f7ecd8')+r(5,14,3,2,'#f7ecd8')+
+  r(6,16,2,1,'#f7ecd8')+r(7,17,1,1,'#f7ecd8')+
+  // specular
+  r(7,2,2,1,'#fffaf0')+r(7,3,3,2,'#fffaf0')+r(6,5,2,1,'#fffaf0')+
+  // shaded crescent — terminator bows with the form (x 10→11→10→9),
+  // thin at the crown, thickest through the lower-right flank
+  r(10,0,2,1,'#d9c3a0')+r(10,1,3,1,'#d9c3a0')+r(10,2,4,1,'#d9c3a0')+
+  r(11,3,4,2,'#d9c3a0')+r(11,5,5,1,'#d9c3a0')+r(10,6,6,2,'#d9c3a0')+
+  r(10,8,7,1,'#d9c3a0')+r(9,9,8,5,'#d9c3a0')+r(9,14,7,2,'#d9c3a0')+
+  r(9,16,6,1,'#d9c3a0')+r(9,17,5,1,'#d9c3a0')+r(9,18,4,1,'#d9c3a0')+
+  // core shadow, held a pixel off the rim so the shell stays round
+  r(13,6,2,2,'#bfa77f')+r(13,8,3,6,'#bfa77f')+r(12,14,2,2,'#bfa77f')+
+  r(11,16,2,1,'#bfa77f')+r(11,17,1,1,'#bfa77f')+
+  // light bouncing back up off the stand
+  r(4,15,1,1,'#e5d4b4')+r(5,16,1,1,'#e5d4b4')+r(6,17,2,1,'#e5d4b4')+
+  r(7,18,2,1,'#e5d4b4')+
+  // speckles
+  r(10,3,1,1,'#cba97a')+r(12,7,1,1,'#cba97a')+r(6,9,1,1,'#cba97a')+
+  r(5,11,1,1,'#cba97a')+r(14,11,1,1,'#cba97a')+r(8,13,1,1,'#cba97a')+
+  r(11,15,1,1,'#cba97a')+r(9,17,1,1,'#cba97a')+
+  // ring stand
+  r(6,19,8,2,'#3a3a5c')+r(7,19,6,1,'#4a4a70')+
+  r(4,21,12,2,'#2a2a44')+r(5,23,10,1,'#1a1a2e')
+);
+// ---- cassette / cartridge box stack (laid flat) ----
+P.stack = px(20,12,
+  r(1,7,18,5,'#2a2a44')+r(2,8,16,1,'#ff2e88')+
+  r(3,2,14,5,'#22223c')+r(4,3,12,1,'#a3e635')
+);
+// Scale reference: the cartridge spine = a real game case, ~19 cm tall = 170 px → ~9 px per cm.
+const PPCM = 9;
+const cm = (v) => Math.round(v * PPCM);
+const SIZE = {
+  keyboard:{w:cm(35)},        // tenkeyless, 35 cm wide
+  mouse:{w:cm(6.5)},          // 6.5 cm across
+  controller:{w:cm(15.5)},    // 15.5 cm across
+  headphones:{h:cm(28)},      // stand + cups, taller than a game case
+  lego:{w:cm(19)},            // 1:24 sedan model
+  'figure-shanks':{h:cm(25)}, // 25 cm statue
+  deer:{h:cm(22)},            // carved deer ornament
+  joystick:{w:cm(30)},        // fightstick
+  crt:{w:cm(24)},             // small retro TV
+  egg:{h:cm(8)},              // collectible egg on its stand
+  stack:{w:cm(19)},           // cases lying flat
+};
+const names = Object.keys(P);
+document.getElementById('gal').innerHTML = names.map(n=>`<figure>${P[n]}<figcaption>${n}</figcaption></figure>`).join('');
+
+const games=[["Age of Empires II",""],["Red Alert II","g2"],["Yuri's Revenge","g2"],["Vice City","g3"],["San Andreas","g3"],["Warcraft III",""],["Counter-Strike",""],["Dota","g2"],["Metal Slug","g3"]];
+const breaks=[3,6];
+const shelves=[
+ ["mixed props","one object per studio break, rotating through the set",["controller","headphones","lego","joystick"]],
+ ["tech desk set","peripherals only \u2014 reads as a real desk",["keyboard","headphones","mouse","controller"]],
+ ["collectibles","toys and figures",["lego","figure-shanks","deer","egg"]],
+];
+document.getElementById('out').innerHTML = shelves.map(([t,note,set])=>{
+ const rows = set.map((k)=>{
+  const picks = games.slice(0,6);
+  const row = picks.map((g,i)=> (i===3?`<div class="prop" data-prop="${k}">${P[k]}</div>`:'') + `<div class="sp ${g[1]}"><u></u><s>${g[0]}</s><em>\u00b7</em></div>`).join('');
+  return `<div class="row">${row}<div style="flex:1 0 0"></div></div><div class="board"></div>`;
+ }).join('<div style="height:26px"></div>');
+ return `<div class="shelf"><h2>${t}</h2><p class="note">${note}</p>${rows}</div>`;
+}).join('');
+function sizeSvg(svg, key){
+  const s = SIZE[key] || {w:44};
+  const vb = svg.getAttribute('viewBox').split(' ').map(Number);
+  const w = s.w != null ? s.w : s.h * vb[2] / vb[3];
+  svg.removeAttribute('width'); svg.removeAttribute('height');
+  svg.style.width = w + 'px'; svg.style.height = (w * vb[3] / vb[2]) + 'px';
+}
+document.querySelectorAll('#gal figure').forEach(f=>sizeSvg(f.querySelector('svg'), f.querySelector('figcaption').textContent));
+document.querySelectorAll('.prop').forEach(p=>sizeSvg(p.querySelector('svg'), p.dataset.prop));
+</script></body></html>

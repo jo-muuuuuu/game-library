@@ -1,0 +1,52 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Shelf dividers</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"><style>
+body{margin:0;background:#0f0f1e;color:#e8e8f0;font-family:"JetBrains Mono",ui-monospace,monospace;padding:40px 44px 60px}
+h1{font-family:"Press Start 2P";font-size:13px;color:#00e5ff;letter-spacing:.08em;margin:0 0 6px}
+.sub{font-size:11px;color:#8a8aa8;margin:0 0 36px}
+h2{font-family:"Press Start 2P";font-size:9px;letter-spacing:.1em;color:#ff2e88;margin:0 0 4px;text-transform:uppercase}
+.note{font-size:10px;color:#8a8aa8;margin:0 0 16px}
+.shelf{margin-bottom:46px}
+.row{display:flex;align-items:flex-end;gap:8px}
+.sp{flex:0 1 56px;min-width:44px;height:170px;background:#1a1a2e;border:2px solid #2a2a44;border-top:6px solid #00e5ff;box-shadow:inset -3px 0 6px rgba(0,0,0,.4);display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:10px 0 8px;box-sizing:border-box}
+.sp u{width:24px;height:8px;background:#0a0a1a;border:1px solid #2a2a44;display:block}
+.sp s{writing-mode:vertical-rl;transform:rotate(180deg);text-decoration:none;font-size:15px;line-height:1;color:#e8e8f0;max-height:118px;overflow:hidden;white-space:nowrap}
+.sp em{font-family:"Press Start 2P";font-size:6px;color:rgba(232,232,240,.32);font-style:normal}
+.g2 .sp,.sp.g2{border-top-color:#a3e635}.sp.g3{border-top-color:#ff7e3e}
+.board{height:16px;background:linear-gradient(180deg,#ff2e88cc,#16162b);border:3px solid #2a2a44;box-shadow:6px 6px 0 #000}
+.d{flex:1 1 22px;min-width:14px;height:170px;display:flex;align-items:flex-end;justify-content:center}
+.dA{align-items:stretch}.dA i{display:block;width:100%;background:repeating-linear-gradient(45deg,#22223c,#22223c 5px,#1a1a2e 5px,#1a1a2e 10px);border:2px solid #2a2a44;border-top:4px solid #ff2e88}
+.dB i{width:4px;height:78%;background:repeating-linear-gradient(180deg,#3a3a5c 0 4px,transparent 4px 10px)}
+.dC{align-items:flex-end}.dC i{width:70%;height:8px;background:#ff2e88;box-shadow:0 0 10px #ff2e8899}
+.dD{flex-direction:column;justify-content:center;gap:5px}.dD b{width:7px;height:7px;background:#2a2a44}
+.dE i{display:none}
+.dF{align-items:flex-end;position:relative}.dF i{width:2px;height:60%;background:#2a2a44}.dF span{position:absolute;bottom:0;left:50%;transform:translateX(-50%) rotate(180deg);writing-mode:vertical-rl;font-family:"Press Start 2P";font-size:6px;color:#8a8aa8;letter-spacing:.1em;white-space:nowrap}
+.dG{align-items:flex-end}.dG i{width:100%;height:26px;background:#16162b;border:2px solid #2a2a44;border-bottom:none;box-shadow:inset 0 3px 0 #ff2e8855}
+.dH{align-items:center}.dH i{width:1px;height:100%;background:linear-gradient(180deg,transparent,#2a2a44 20%,#2a2a44 80%,transparent)}
+</style></head><body>
+<h1>SHELF DIVIDER OPTIONS</h1><p class="sub">Same shelf, eight divider treatments. Dividers sit between studio groups and soak up leftover width.</p>
+<div id="out"></div>
+<script>
+const games=[["Age of Empires II",""],["Red Alert II","g2"],["Yuri's Revenge","g2"],["Vice City","g3"],["San Andreas","g3"],["Warcraft III",""],["Counter-Strike",""],["Dota","g2"],["Metal Slug","g3"]];
+const breaks=[1,3,5,7];
+const styles=[
+ ["current","thin neon gradient rule (what's live now)","dCUR"],
+ ["A — hatched bookend","solid block, like a real shelf divider","dA"],
+ ["B — dotted rail","thin vertical dotted line","dB"],
+ ["C — floor notch","neon mark on the shelf board only","dC"],
+ ["D — pixel dots","three small squares, floating","dD"],
+ ["E — empty gap","no mark at all, just breathing room","dE"],
+ ["F — studio label","hairline + vertical studio name","dF"],
+ ["G — cabinet trim","low arcade-cabinet trim between groups","dG"],
+ ["H — hairline fade","1px line fading at both ends","dH"],
+];
+const labels=["ENSEMBLE","WESTWOOD","ROCKSTAR","BLIZZARD","VALVE","SNK"];
+document.getElementById('out').innerHTML=styles.map(([name,note,cls])=>{
+ let li=0;
+ const row=games.map((g,i)=>{
+  const dv=breaks.includes(i)?`<div class="d ${cls}">${cls==='dD'?'<b></b><b></b><b></b>':cls==='dF'?`<i></i><span>${labels[li++%labels.length]}</span>`:'<i></i>'}</div>`:'';
+  return dv+`<div class="sp ${g[1]}"><u></u><s>${g[0]}</s><em>·</em></div>`;
+ }).join('');
+ return `<div class="shelf"><h2>${name}</h2><p class="note">${note}</p><div class="row">${row}<div style="flex:1 0 0"></div></div><div class="board"></div></div>`;
+}).join('');
+document.querySelectorAll('.dCUR i').forEach(i=>{i.style.cssText='width:3px;height:100%;background:linear-gradient(180deg,transparent,#ff2e8888 30%,#ff2e88bb)'});
+</script></body></html>
