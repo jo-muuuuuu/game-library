@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Uni Layout Editor</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" type="image/x-icon" href="../icon/orange.ico" />
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet" />
+<style>
+:root{--ink:#e8e8f0;--bg:#0d0d18;--panel:#14141f;--line:#2a2a44;--accent:#ff2e88;--neon:#00e5ff;--warn:#ffd23e;--pix:"Press Start 2P",monospace;--scr:"Silkscreen",monospace}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink)}
+body{font-family:var(--scr);-webkit-font-smoothing:antialiased}
+a{color:var(--neon)}a:hover{color:var(--accent)}
+.wrap{width:1280px;max-width:100%;margin:0 auto;padding:0 28px 80px}
+header{position:sticky;top:0;z-index:80;background:rgba(13,13,24,.96);border-bottom:2px solid var(--line);padding:16px 0 14px;margin-bottom:22px}
+.hrow{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+h1{font-family:var(--pix);font-size:13px;letter-spacing:.06em;margin:0;line-height:1.6}
+h1 .dot{color:var(--accent)}
+.sub{font-family:var(--pix);font-size:7px;letter-spacing:.14em;color:rgba(232,232,240,.45);line-height:1.9;margin-top:6px}
+.spacer{flex:1}
+button{font-family:var(--pix);font-size:8px;letter-spacing:.1em;color:var(--ink);background:#1a1a2e;border:2px solid var(--line);box-shadow:3px 3px 0 #000;padding:9px 11px;cursor:pointer}
+button:hover{border-color:var(--neon);color:#fff}
+button:disabled{opacity:.3;cursor:not-allowed;border-color:var(--line);color:var(--ink)}
+button.primary{background:var(--accent);color:#0d0d18;border-color:var(--accent)}
+button.primary:hover{color:#0d0d18;box-shadow:3px 3px 0 #000,0 0 18px rgba(255,46,136,.4)}
+.bar{display:flex;gap:8px;flex-wrap:wrap}
+.status{font-family:var(--pix);font-size:7px;letter-spacing:.12em;color:var(--neon);line-height:1.9}
+.status .warn{color:var(--warn)}
+.legend{display:flex;gap:18px;flex-wrap:wrap;font-family:var(--pix);font-size:7px;letter-spacing:.1em;color:rgba(232,232,240,.4);line-height:1.9;margin-bottom:14px}
+.board{display:grid;grid-template-columns:40px minmax(0,1fr);gap:10px}
+.rail{display:grid;grid-auto-rows:var(--u,132px);gap:10px}
+.rh{display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:2px 0;border-right:2px solid var(--line)}
+.rh .rn{font-family:var(--pix);font-size:7px;color:rgba(232,232,240,.4)}
+.rh .rb{display:flex;flex-direction:column;gap:6px}
+.rh button{padding:5px 0;width:30px;font-size:7px;box-shadow:2px 2px 0 #000}
+.rh.spare .rn{color:var(--neon)}
+.grid{position:relative;display:grid;grid-template-columns:repeat(8,minmax(0,1fr));grid-auto-rows:var(--u,132px);gap:10px}
+.cell{border:2px dashed rgba(232,232,240,.08)}
+.cell.gap{border-color:rgba(255,210,62,.45);background:repeating-linear-gradient(45deg,rgba(255,210,62,.06) 0 6px,transparent 6px 12px)}
+.cell.spare{border-color:rgba(0,229,255,.18)}
+.ghost{pointer-events:none;border:3px solid var(--neon);background:rgba(0,229,255,.12);box-shadow:0 0 18px rgba(0,229,255,.35);z-index:20}
+.ghost.swap{border-color:var(--accent);background:rgba(255,46,136,.12);box-shadow:0 0 18px rgba(255,46,136,.35)}
+.ghost.bad{border-color:#ff5a5a;background:rgba(255,90,90,.1);box-shadow:none}
+.t{position:relative;background:#0a0a1a;border:2px solid var(--line);box-shadow:3px 3px 0 #000;overflow:hidden;cursor:grab;user-select:none;z-index:2}
+.t img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(.7) brightness(.5);pointer-events:none}
+.t:hover{border-color:var(--neon);z-index:5}
+.t:hover img{filter:saturate(1) brightness(.75)}
+.t.drag{opacity:.3;border-color:var(--accent)}
+.t.brk{border-right:2px dashed rgba(232,232,240,.5)}
+.t.sel{border-color:var(--accent);box-shadow:3px 3px 0 #000,0 0 20px rgba(255,46,136,.45)}
+.t.shake{animation:shake .3s}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:8px;font-family:var(--pix);font-size:7px;line-height:1.6;color:var(--neon)}
+.ttl{position:absolute;left:0;right:0;bottom:0;padding:6px 7px;background:linear-gradient(transparent,rgba(10,10,26,.94) 55%);font-size:11px;line-height:1.2;pointer-events:none}
+.n{position:absolute;top:3px;left:4px;font-family:var(--pix);font-size:6px;color:rgba(232,232,240,.5)}
+.ctl{position:absolute;top:0;left:0;right:0;display:flex;gap:3px;padding:4px;opacity:0;transition:opacity .12s;justify-content:flex-end}
+.t:hover .ctl,.t.sel .ctl{opacity:1}
+.ctl b{font-family:var(--pix);font-size:6px;font-weight:400;letter-spacing:.04em;padding:4px 4px;background:rgba(13,13,24,.92);border:1px solid var(--line);color:rgba(232,232,240,.7);cursor:pointer;line-height:1}
+.ctl b:hover{border-color:var(--neon);color:#fff}
+.ctl b.on{background:var(--accent);border-color:var(--accent);color:#0d0d18}
+.msg{font-family:var(--pix);font-size:7px;letter-spacing:.12em;color:#ff5a5a;line-height:1.9}
+.out{margin-top:26px;border:2px solid var(--line);background:var(--panel);padding:12px}
+.out textarea{width:100%;height:190px;background:#0a0a1a;color:var(--neon);border:1px solid var(--line);font-family:var(--scr);font-size:12px;line-height:1.5;padding:10px;resize:vertical}
+.out .lbl{font-family:var(--pix);font-size:7px;letter-spacing:.12em;color:rgba(232,232,240,.45);margin-bottom:8px;line-height:1.8}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+<div class="hrow">
+<div>
+<h1>UNI → PRESENT DAY · LAYOUT EDITOR<span class="dot">.</span></h1>
+<div class="sub">DRAG A TILE ONTO ANY CELL · DROP ON ANOTHER TILE TO SWAP · + / − ON THE LEFT TO ADD OR REMOVE ROWS</div>
+</div>
+<div class="spacer"></div>
+<div class="bar">
+<button id="save" class="primary">SAVE &amp; APPLY</button>
+<button id="undo">UNDO</button>
+<button id="revert">REVERT</button>
+<button id="reset">RESET TO AUTO</button>
+<button id="site">OPEN SITE</button>
+</div>
+</div>
+</div></header>
+<div class="wrap">
+<div class="legend">
+<span id="status" class="status"></span>
+<span>1×1 SQUARE · 2×1 WIDE · 2×2 HERO</span>
+<span>| = GROUP DIVIDER AFTER TILE</span>
+<span id="msg" class="msg"></span>
+</div>
+<div class="board">
+<div id="rail" class="rail"></div>
+<div id="grid" class="grid"></div>
+</div>
+<div class="out">
+<div class="lbl">PERMANENT COPY: PASTE THIS INTO <b>UNI_LAYOUT</b> IN uni-layout.js</div>
+<textarea id="code" readonly></textarea>
+<div class="bar" style="margin-top:10px"><button id="copy">COPY CODE</button></div>
+</div>
+</div>
+<script>window.__IMG_BASE = "../img";</script>
+<script src="../games-data.js?v=19"></script>
+<script src="../uni-layout.js?v=5"></script>
+<script>
+const COLS = window.UNI_COLS || 8;
+const GAP = 10;
+const grid = document.getElementById("grid");
+const rail = document.getElementById("rail");
+const statusEl = document.getElementById("status");
+const msgEl = document.getElementById("msg");
+const codeEl = document.getElementById("code");
+
+// Every tile gets a fixed col/row so it can sit anywhere, gaps included.
+function stamp(list) {
+  const packed = window.uniPack(list, COLS);
+  return list.map((e, i) => ({ id: e.id, w: packed.tiles[i].w, h: packed.tiles[i].h, brk: !!e.brk, col: packed.tiles[i].col, row: packed.tiles[i].row }));
+}
+const clone = (l) => l.map((e) => ({ ...e }));
+const startLayout = stamp(window.uniLoadLayout() || window.uniDefaultLayout());
+let layout = clone(startLayout);
+let history = [];
+let sel = null;
+let dragId = null;
+let ghostAt = null;
+const nodes = new Map();
+const extras = [];
+
+function commit(next) { history.push(clone(layout)); if (history.length > 50) history.shift(); layout = next; }
+function game(id) { return (window.GAMES_BY_ID || {})[id] || { id, title: id }; }
+function usedRows(l = layout) { return l.reduce((m, e) => Math.max(m, e.row + e.h), 0); }
+function overlaps(a, b) { return a.col < b.col + b.w && b.col < a.col + a.w && a.row < b.row + b.h && b.row < a.row + a.h; }
+function fits(t, l, ignore) {
+  if (t.col < 0 || t.row < 0 || t.col + t.w > COLS) return false;
+  return !l.some((o) => !ignore.includes(o.id) && overlaps(t, o));
+}
+function tileAt(c, r, except) { return layout.find((o) => o.id !== except && c >= o.col && c < o.col + o.w && r >= o.row && r < o.row + o.h); }
+function say(t) { msgEl.textContent = t; clearTimeout(say.t); if (t) say.t = setTimeout(() => (msgEl.textContent = ""), 2200); }
+function shake(id) { const el = nodes.get(id); if (!el) return; el.classList.remove("shake"); void el.offsetWidth; el.classList.add("shake"); }
+
+// Where would the dragged tile land if dropped at cell (c, r)?
+function plan(id, c, r) {
+  const a = layout.find((x) => x.id === id);
+  const hit = tileAt(c, r, id);
+  if (hit) {
+    const A = { ...a, col: hit.col, row: hit.row };
+    const B = { ...hit, col: a.col, row: a.row };
+    const ok = fits(A, layout, [a.id, hit.id]) && fits(B, layout, [a.id, hit.id]) && !overlaps(A, B);
+    return { kind: ok ? "swap" : "bad", A, B, hit };
+  }
+  const A = { ...a, col: Math.min(c, COLS - a.w), row: r };
+  return { kind: fits(A, layout, [a.id]) ? "move" : "bad", A };
+}
+
+function cellFromEvent(ev) {
+  const r = grid.getBoundingClientRect();
+  const u = (r.width - GAP * (COLS - 1)) / COLS;
+  const c = Math.max(0, Math.min(COLS - 1, Math.floor((ev.clientX - r.left) / (u + GAP))));
+  const row = Math.max(0, Math.floor((ev.clientY - r.top) / (u + GAP)));
+  return { c, r: row };
+}
+
+function node(e) {
+  if (nodes.has(e.id)) return nodes.get(e.id);
+  const g = game(e.id);
+  const el = document.createElement("div");
+  el.className = "t";
+  el.draggable = true;
+  el.title = g.title;
+  el.innerHTML =
+    (g.img ? '<img src="' + g.img + '" alt="" loading="lazy" />' : '<div class="ph">' + g.title.toUpperCase() + "</div>") +
+    '<div class="n"></div><div class="ttl">' + g.title + "</div>" +
+    '<div class="ctl"><b data-s="1x1">1×1</b><b data-s="2x1">2×1</b><b data-s="2x2">2×2</b><b data-s="brk">|</b></div>';
+  el.addEventListener("click", (ev) => {
+    const b = ev.target.closest("b[data-s]");
+    sel = e.id;
+    if (b) {
+      const s = b.dataset.s;
+      const it = layout.find((x) => x.id === e.id);
+      if (s === "brk") { commit(layout.map((x) => (x.id === e.id ? { ...x, brk: !x.brk } : x))); }
+      else {
+        const w = +s[0], h = +s[2];
+        let t = { ...it, w, h, col: Math.min(it.col, COLS - w) };
+        if (!fits(t, layout, [it.id])) t = { ...t, col: it.col - (w - it.w) };
+        if (fits(t, layout, [it.id])) commit(layout.map((x) => (x.id === e.id ? t : x)));
+        else { say("NO ROOM FOR " + w + "×" + h + " HERE — CLEAR SPACE OR ADD A ROW"); shake(e.id); }
+      }
+    }
+    render();
+  });
+  el.addEventListener("dragstart", (ev) => {
+    dragId = e.id;
+    ev.dataTransfer.effectAllowed = "move";
+    try { ev.dataTransfer.setData("text/plain", e.id); } catch (err) {}
+    requestAnimationFrame(() => el.classList.add("drag"));
+  });
+  el.addEventListener("dragend", () => { dragId = null; ghostAt = null; el.classList.remove("drag"); render(); });
+  nodes.set(e.id, el);
+  return el;
+}
+
+const ghost = document.createElement("div");
+ghost.className = "ghost";
+
+grid.addEventListener("dragover", (ev) => {
+  if (!dragId) return;
+  ev.preventDefault();
+  const { c, r } = cellFromEvent(ev);
+  if (ghostAt && ghostAt.c === c && ghostAt.r === r) return;
+  ghostAt = { c, r };
+  const p = plan(dragId, c, r);
+  ghost.className = "ghost" + (p.kind === "swap" ? " swap" : p.kind === "bad" ? " bad" : "");
+  ghost.style.gridColumn = p.A.col + 1 + " / span " + p.A.w;
+  ghost.style.gridRow = p.A.row + 1 + " / span " + p.A.h;
+  if (ghost.parentNode !== grid) grid.appendChild(ghost);
+});
+grid.addEventListener("dragleave", (ev) => { if (!grid.contains(ev.relatedTarget)) { ghost.remove(); ghostAt = null; } });
+grid.addEventListener("drop", (ev) => {
+  ev.preventDefault();
+  if (!dragId) return;
+  const { c, r } = cellFromEvent(ev);
+  const p = plan(dragId, c, r);
+  if (p.kind === "move") commit(layout.map((x) => (x.id === dragId ? p.A : x)));
+  else if (p.kind === "swap") commit(layout.map((x) => (x.id === dragId ? p.A : x.id === p.hit.id ? p.B : x)));
+  else { say("DOESN'T FIT THERE"); shake(dragId); }
+  sel = dragId;
+  ghost.remove();
+  ghostAt = null;
+  render();
+});
+
+function rowEmpty(r) { return !layout.some((o) => r >= o.row && r < o.row + o.h); }
+function straddled(r) { return layout.some((o) => o.row < r && o.row + o.h > r); }
+function insertRow(r) { commit(layout.map((o) => (o.row >= r ? { ...o, row: o.row + 1 } : o))); render(); }
+function deleteRow(r) { commit(layout.map((o) => (o.row > r ? { ...o, row: o.row - 1 } : o))); render(); }
+
+function render() {
+  const used = usedRows();
+  const rows = used + 1; // one spare row to drop into
+  const order = layout.slice().sort((a, b) => a.row - b.row || a.col - b.col);
+  layout = order;
+  extras.splice(0).forEach((x) => x.remove());
+  const occ = new Set();
+  layout.forEach((o) => { for (let y = o.row; y < o.row + o.h; y++) for (let x = o.col; x < o.col + o.w; x++) occ.add(y * COLS + x); });
+  let gaps = 0;
+  for (let y = 0; y < rows; y++) for (let x = 0; x < COLS; x++) {
+    if (occ.has(y * COLS + x)) continue;
+    const d = document.createElement("div");
+    const spare = y >= used;
+    const isGap = !spare && !rowEmpty(y);
+    if (isGap) gaps++;
+    d.className = "cell" + (spare ? " spare" : isGap ? " gap" : "");
+    d.style.gridColumn = x + 1 + " / span 1";
+    d.style.gridRow = y + 1 + " / span 1";
+    grid.appendChild(d);
+    extras.push(d);
+  }
+  layout.forEach((e, i) => {
+    const el = node(e);
+    el.style.gridColumn = e.col + 1 + " / span " + e.w;
+    el.style.gridRow = e.row + 1 + " / span " + e.h;
+    el.classList.toggle("brk", !!e.brk);
+    el.classList.toggle("sel", sel === e.id);
+    el.querySelector(".n").textContent = i + 1;
+    const size = e.w + "x" + e.h;
+    el.querySelectorAll("b[data-s]").forEach((b) => b.classList.toggle("on", b.dataset.s === "brk" ? !!e.brk : b.dataset.s === size));
+    if (el.parentNode !== grid) grid.appendChild(el);
+  });
+  rail.innerHTML = "";
+  let emptyRows = 0;
+  for (let y = 0; y < rows; y++) {
+    const spare = y >= used;
+    const empty = !spare && rowEmpty(y);
+    if (empty) emptyRows++;
+    const h = document.createElement("div");
+    h.className = "rh" + (spare ? " spare" : "");
+    h.innerHTML = '<span class="rn">' + (spare ? "+" : y + 1) + '</span><span class="rb"></span>';
+    const rb = h.querySelector(".rb");
+    if (!spare) {
+      const add = document.createElement("button");
+      add.textContent = "+";
+      add.title = straddled(y) ? "A 2-row tile crosses this line" : "Insert empty row above row " + (y + 1);
+      add.disabled = straddled(y);
+      add.onclick = () => insertRow(y);
+      rb.appendChild(add);
+      if (empty) {
+        const del = document.createElement("button");
+        del.textContent = "−";
+        del.title = "Remove this empty row";
+        del.onclick = () => deleteRow(y);
+        rb.appendChild(del);
+      }
+    }
+    rail.appendChild(h);
+  }
+  statusEl.innerHTML =
+    layout.length + " TILES · " + used + " ROWS" +
+    (emptyRows ? " · " + emptyRows + " EMPTY ROW" + (emptyRows > 1 ? "S" : "") : "") + " · " +
+    (gaps ? '<span class="warn">' + gaps + " GAP" + (gaps > 1 ? "S" : "") + "</span>" : "NO GAPS");
+  codeEl.value = "[\n" + layout.map((e) => '  {"id":"' + e.id + '","w":' + e.w + ',"h":' + e.h + ',"brk":' + !!e.brk + ',"col":' + e.col + ',"row":' + e.row + "},").join("\n").replace(/,$/, "") + "\n]";
+  document.getElementById("undo").disabled = !history.length;
+  sizeUnit();
+}
+
+function sizeUnit() {
+  const w = grid.clientWidth;
+  if (w) document.documentElement.style.setProperty("--u", (w - GAP * (COLS - 1)) / COLS + "px");
+}
+window.addEventListener("resize", sizeUnit);
+
+document.getElementById("save").onclick = () => {
+  window.uniSaveLayout(layout.map((e) => ({ id: e.id, w: e.w, h: e.h, brk: !!e.brk, col: e.col, row: e.row })));
+  flash(document.getElementById("save"), "SAVED ✓", "SAVE & APPLY");
+};
+document.getElementById("undo").onclick = () => { if (history.length) { layout = history.pop(); render(); } };
+document.getElementById("revert").onclick = () => { commit(clone(startLayout)); sel = null; render(); };
+document.getElementById("reset").onclick = () => { window.uniClearLayout(); commit(stamp(window.uniDefaultLayout())); sel = null; render(); };
+document.getElementById("site").onclick = () => { window.open("../index.html", "_blank"); };
+document.getElementById("copy").onclick = () => {
+  codeEl.select();
+  navigator.clipboard ? navigator.clipboard.writeText(codeEl.value) : document.execCommand("copy");
+  flash(document.getElementById("copy"), "COPIED ✓", "COPY CODE");
+};
+function flash(btn, msg, back) { btn.textContent = msg; setTimeout(() => { btn.textContent = back; }, 1400); }
+document.addEventListener("keydown", (ev) => { if ((ev.metaKey || ev.ctrlKey) && ev.key === "z") { ev.preventDefault(); document.getElementById("undo").click(); } });
+
+render();
+</script>
+</body>
+</html>

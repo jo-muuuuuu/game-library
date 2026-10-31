@@ -93,13 +93,14 @@ const RAW_GAMES = [
   { id: 'elden-ring-dlc', title: 'Elden Ring: Shadow of the Erdtree',   img: `${IMG}/elden-ring-dlc.jpg`,  year: 2024, era: 'uni', tag: 'soulslike', series: 'elden-ring', dlc: true, baseOf: 'elden-ring', company: 'fromsoftware' },
   { id: 'sifu',           title: 'Sifu',                                img: `${IMG}/sifu.jpeg`,           year: 2022, era: 'uni', tag: 'action', company: 'sloclap' },
   { id: 'cs-2',           title: 'Counter-Strike 2',                    img: `${IMG}/cs-2.jpeg`,           year: 2023, era: 'uni', tag: 'shooter',      online: true, series: 'cs', company: 'valve' },
-  { id: 'zelda-tears',    title: 'The Legend of Zelda: Tears of the Kingdom', img: `${IMG}/zelda-tears.jpg`, year: 2023, era: 'uni', tag: 'open-world', series: 'zelda', company: 'nintendo' },
+  { id: 'zelda-tears',    title: 'The Legend of Zelda: Tears of the Kingdom', img: `${IMG}/zelda-tears.jpg`, year: 2023, era: 'uni', tag: 'open-world', goty: '2026', series: 'zelda', company: 'nintendo' },
   { id: 'zelda-echo',     title: 'The Legend of Zelda: Echoes of Wisdom', img: `${IMG}/zelda-echo.jpg`,    year: 2024, era: 'uni', tag: 'adventure', series: 'zelda', company: 'nintendo' },
   { id: 'balatro',        title: 'Balatro',                             img: `${IMG}/balatro.jpg`,         year: 2024, era: 'uni', tag: 'card', company: 'localthunk' },
   { id: 'wukong',         title: 'Black Myth: Wukong',                  img: `${IMG}/wukong.jpg`,          year: 2024, era: 'uni', tag: 'action',       platinum: true, goty: '2024', company: 'game-science', personalNote: 'Souls combat, my heritage.' },
   { id: 'split-fiction',  title: 'Split Fiction',                       img: `${IMG}/split-fiction.jpg`,   year: 2025, era: 'uni', tag: 'co-op',        goty: '2025', company: 'hazelight' },
   { id: 'dead-cells',     title: 'Dead Cells',                          img: `${IMG}/dead-cells.jpg`,      year: 2018, era: 'uni', tag: 'roguelite',    goty: '2025', company: 'motion-twin' },
   { id: 'dead-cells-dlc', title: 'Dead Cells: DLCs', img: `${IMG}/dead-cells-dlcs.png`, parts: ['Rise of the Giant', 'The Bad Seed', 'Fatal Falls', 'The Queen and the Sea', 'Return to Castlevania'], year: 2023, era: 'uni', tag: 'roguelite', dlc: true, baseOf: 'dead-cells', company: 'motion-twin' },
+  { id: 'reanimal',       title: 'Reanimal',                            img: `${IMG}/reanimal.jpeg`,       year: 2026, era: 'uni', tag: 'horror', company: 'tarsier' },
 ];
 
 // Cluster by studio first, then by franchise (with its DLC), then chronologically —
@@ -136,7 +137,7 @@ const GOTYS = [
   { year: '2023',     games: ['it-takes-two', 'zelda-breath', 'fist'] },
   { year: '2024',     games: ['wukong', 'death-stranding'] },
   { year: '2025',     games: ['split-fiction', 'dead-cells'] },
-  { year: '2026',     games: ['brotato'] },
+  { year: '2026',     games: ['brotato', 'zelda-tears'] },
 ];
 
 // ---------------------------------------------------------------------------
@@ -166,7 +167,8 @@ const SECTIONS = {
     'brotato', 'brotato-dlc', 'hades', 'dead-cells', 'dead-cells-dlc', null,
     'slay-the-spire', null,
     'ori-will', null,
-    'nfs-heat', 'balatro', 'storm', 'nba2k21',
+    'nfs-heat', 'balatro', 'storm', 'nba2k21', null,
+    'reanimal',
   ],
   childhood: [
     'gta-vc', 'gta-sa', 'diablo-2', 'diablo-2-dlc', null,
