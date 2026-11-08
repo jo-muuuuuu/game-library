@@ -5,6 +5,10 @@
     <title>Johnny's Game Library</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/x-icon" href="./icon/orange.ico" />
+    <link rel="preconnect" href="https://unpkg.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link id="arc-fonts" rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Silkscreen:wght@400;700&family=Caveat:wght@600;700&display=swap" />
     <style>
       html,
       body {
@@ -38,119 +42,24 @@
         }
       }
     </style>
-
     <script
-      src="https://unpkg.com/react@18.3.1/umd/react.development.js"
-      integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L"
+      src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"
+      integrity="sha384-DGyLxAyjq0f9SPpVevD6IgztCFlnMF6oW/XQGmfe+IsZ8TqEiDrcHkMLKI6fiB/Z"
       crossorigin="anonymous"
     ></script>
     <script
-      src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"
-      integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm"
-      crossorigin="anonymous"
-    ></script>
-    <script
-      src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"
-      integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y"
+      src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"
+      integrity="sha384-gTGxhz21lVGYNMcdJOyq01Edg0jhn/c22nsx0kyqP0TxaV5WVdsSH1fSDUf5YJj1"
       crossorigin="anonymous"
     ></script>
   </head>
   <body>
     <div id="root"></div>
-
-    <!-- Game data (sets window.GAMES, window.GOTYS, etc.) -->
-    <script src="games-data.js?v=19"></script>
-
-    <!-- Saved tile order / sizes for the UNI → PRESENT DAY mosaic -->
-    <script src="uni-layout.js?v=4"></script>
-
-    <!-- Reusable tweaks panel — open by calling:
-       window.postMessage({ type: '__activate_edit_mode' }, '*') -->
-    <script type="text/babel" src="tweaks-panel.jsx"></script>
-
-    <!-- Arcade / CRT layout direction -->
-    <script type="text/babel" src="arcade.jsx?v=4"></script>
-
-    <!-- App shell -->
-    <script type="text/babel" data-presets="react">
-      // ── TWEAK DEFAULTS ───────────────────────────────────────────────────────
-      // Edit these values to change the starting theme, or use the TWEAKS panel
-      // at runtime — changes are saved to localStorage automatically.
-      //
-      // Colour roles:
-      //   arcAccent  — primary neon highlight (buttons, borders, headings)
-      //   arcNeon    — secondary neon (CRT glow, stats, year labels)
-      //   arcSticky  — sticky-note background colour
-      //   arcTagColor / arcTagBg / arcTagFont — Now Playing badge styles
-      //
-      // Preset palettes (arcAccent, arcNeon, arcSticky):
-      //   Hot pink / Cyan / Yellow  → '#ff2e88', '#00e5ff', '#fff066'
-      //   Orange  / Blue  / Gold    → '#ff7e3e', '#3dc8ff', '#ffd23e'
-      //   Lime    / Pink  / Cream   → '#a3e635', '#ff6ec7', '#fef08a'
-      //   Amber   / Red   / Teal    → '#f7b801', '#ee4266', '#06a77d'
-      // ─────────────────────────────────────────────────────────────────────────
-      const TWEAK_DEFAULTS = {
-        arcAccent: "#ff2e88",
-        arcNeon: "#00e5ff",
-        arcSticky: "#fff066",
-        arcTagColor: "#ff7e3e",
-        arcTagBg: "#1a1a2e",
-        arcTagFont: "#e8e8f0",
-        arcPlayerName: "JOHNNY",
-        arcTagline: "Souls connoisseur · open-world tourist · co-op believer",
-        arcPlatinum: 8,
-      };
-
-      // Restore persisted tweaks (survives page reloads)
-      const _stored = (() => {
-        try {
-          const s = localStorage.getItem("johnny-lib-tweaks");
-          return s ? JSON.parse(s) : {};
-        } catch {
-          return {};
-        }
-      })();
-      const initialTweaks = { ...TWEAK_DEFAULTS, ..._stored };
-
-      function App() {
-        const [t, setTweak] = useTweaks(initialTweaks);
-
-        // Expose setTweak globally so arcade.jsx can trigger theme changes
-        React.useEffect(() => {
-          window.__setTweak = setTweak;
-        }, [setTweak]);
-
-        // Persist every change to localStorage
-        React.useEffect(() => {
-          const handler = (e) => {
-            try {
-              const cur = JSON.parse(localStorage.getItem("johnny-lib-tweaks") || "{}");
-              localStorage.setItem(
-                "johnny-lib-tweaks",
-                JSON.stringify({ ...cur, ...e.detail }),
-              );
-            } catch {}
-          };
-          window.addEventListener("tweakchange", handler);
-          return () => window.removeEventListener("tweakchange", handler);
-        }, []);
-
-        return (
-          <Arcade
-            accent={t.arcAccent}
-            neon={t.arcNeon}
-            sticky={t.arcSticky}
-            playerName={t.arcPlayerName}
-            tagline={t.arcTagline}
-            platinum={t.arcPlatinum}
-            tagColor={t.arcTagColor}
-            tagBg={t.arcTagBg}
-            tagFont={t.arcTagFont}
-          />
-        );
-      }
-
-      ReactDOM.createRoot(document.getElementById("root")).render(<App />);
-    </script>
+    <!-- Precompiled from .jsx sources (see DEPLOY.md → 改代码后重新编译) -->
+    <script src="games-data.js?v=20"></script>
+    <script src="uni-layout.js?v=5"></script>
+    <script src="tweaks-panel.js?v=1"></script>
+    <script src="arcade.js?v=6"></script>
+    <script src="app.js?v=1"></script>
   </body>
 </html>
